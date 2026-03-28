@@ -1,6 +1,6 @@
 const CACHE_NAME = 'team-lira-v1';
 const urlsToCache = [
-  '/index.html'
+  '/team-lira/index.html'
 ];
 
 self.addEventListener('install', event => {

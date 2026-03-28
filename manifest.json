@@ -2,7 +2,7 @@
   "name": "Team Lira",
   "short_name": "Team Lira",
   "description": "App Team Lira",
-  "start_url": "/index.html",
+  "start_url": "/team-lira/index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#F5C518",
