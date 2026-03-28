@@ -734,6 +734,18 @@ window.showToast=showToast;
 
 // ===== AUTH =====
 onAuthStateChanged(auth, async user => {
+  // Check if admin session exists first
+  if(localStorage.getItem('tl_admin_session') === '1') {
+    isAdmin = true;
+    showScreen('screen-admin');
+    loadAdminData();
+    if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
+    window.adminRefreshInterval = setInterval(() => {
+      if(isAdmin) loadAdminData();
+      else clearInterval(window.adminRefreshInterval);
+    }, 30000);
+    return;
+  }
   if(isAdmin) return;
   if(user) {
     try {
@@ -818,6 +830,7 @@ function doAdminLogin() {
   if(pass!==ADMIN_PASS){err.style.display='block';return;}
   err.style.display='none';
   isAdmin=true;
+  localStorage.setItem('tl_admin_session', '1');
   showScreen('screen-admin');
   loadAdminData();
   // Auto-refresh every 30 seconds
@@ -830,6 +843,7 @@ function doAdminLogin() {
 
 async function doLogout() {
   isAdmin=false; currentUserData=null;
+  localStorage.removeItem('tl_admin_session');
   if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
   await signOut(auth);
   showScreen('screen-login');
