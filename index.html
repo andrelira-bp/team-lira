@@ -433,9 +433,17 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="check-left"><div class="check-icon">💪</div><div><div class="check-name">Treino concluído</div><div class="check-pts">+50 pontos</div></div></div>
       <div class="check-btn" id="btn-treino">✓</div>
     </div>
+    <div class="check-item" id="check-cardio" onclick="toggleCheck('cardio')">
+      <div class="check-left"><div class="check-icon">🏃</div><div><div class="check-name">Cardio do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-btn" id="btn-cardio">✓</div>
+    </div>
     <div class="check-item" id="check-cafe" onclick="toggleCheck('cafe')">
       <div class="check-left"><div class="check-icon">☀️</div><div><div class="check-name">Café da manhã seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-cafe">✓</div>
+    </div>
+    <div class="check-item" id="check-lanche" onclick="toggleCheck('lanche')">
+      <div class="check-left"><div class="check-icon">🥗</div><div><div class="check-name">Lanche da tarde seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-btn" id="btn-lanche">✓</div>
     </div>
     <div class="check-item" id="check-almoco" onclick="toggleCheck('almoco')">
       <div class="check-left"><div class="check-icon">🍽️</div><div><div class="check-name">Almoço seguido</div><div class="check-pts">+20 pontos</div></div></div>
@@ -444,6 +452,21 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="check-item" id="check-jantar" onclick="toggleCheck('jantar')">
       <div class="check-left"><div class="check-icon">🌙</div><div><div class="check-name">Jantar seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-jantar">✓</div>
+    </div>
+    <div class="check-item" id="check-hidratacao" onclick="toggleCheck('hidratacao')">
+      <div class="check-left"><div class="check-icon">💧</div><div><div class="check-name">Hidratação do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-btn" id="btn-hidratacao">✓</div>
+    </div>
+    <div class="check-item" id="check-peso" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="check-left"><div class="check-icon">⚖️</div><div><div class="check-name">Peso do dia</div><div class="check-pts">+20 pontos</div></div></div>
+        <div class="check-btn" id="btn-peso">✓</div>
+      </div>
+      <div id="peso-input-row" style="display:flex;gap:8px">
+        <input type="number" id="peso-checkin-input" placeholder="Ex: 72.5" step="0.1"
+          style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:15px;text-align:center;outline:none">
+        <button onclick="registrarPeso()" style="padding:10px 16px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Registrar</button>
+      </div>
     </div>
   </div>
 
