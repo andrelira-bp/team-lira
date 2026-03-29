@@ -1352,11 +1352,6 @@ function renderProfile() {
   document.getElementById('s-treinos').textContent=currentUserData.totalTreinos||0;
   document.getElementById('s-streak').textContent=(currentUserData.bestStreak||0)+' dias';
   document.getElementById('s-badges').textContent=(currentUserData.unlockedBadges||[]).length+'/'+BADGES_DEF.length;
-  const hist=currentUserData.weightHistory||[];
-  if(hist.length>0) {
-    const last=hist[hist.length-1];
-    document.getElementById('weight-history').textContent='Último: '+last.weight+'kg em '+last.date;
-  }
   renderPtsChart();
 }
 
