@@ -1196,8 +1196,8 @@ function renderProfile() {
   if(!currentUserData) return;
   const pts = currentUserData.points || 0;
   const level = getLevel(pts);
-  const levelIdx = LEVELS.indexOf(level);
-  const nextLevel = LEVELS[levelIdx + 1];
+  const levelIdx = LEVELS.findIndex(l => l.name === level.name);
+  const nextLevel = LEVELS[levelIdx + 1] || null;
 
   // Avatar
   const profAvatar = document.getElementById('prof-avatar');
