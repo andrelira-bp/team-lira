@@ -424,6 +424,21 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
   <!-- RANKING -->
   <div class="page-content hidden" id="page-ranking">
+    <!-- TABS -->
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button id="rank-tab-monthly" onclick="switchRankTab('monthly')"
+        style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--gold);color:var(--black)">
+        🏆 Este mês
+      </button>
+      <button id="rank-tab-total" onclick="switchRankTab('total')"
+        style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--dark2);color:var(--gray)">
+        👑 Geral
+      </button>
+      <button id="rank-tab-fame" onclick="switchRankTab('fame')"
+        style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--dark2);color:var(--gray)">
+        🌟 Hall
+      </button>
+    </div>
     <h2 style="margin-bottom:4px">🏆 Ranking</h2>
     <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Top alunos do Team Lira</p>
     <div class="ranking-podium" id="podium-area"></div>
@@ -901,7 +916,7 @@ async function doRegister() {
     const userData = {
       uid:cred.user.uid, name, email,
       points:0, totalTreinos:0, totalMeals:0,
-      streak:0, bestStreak:0, lastCheckinDate:null,
+      streak:0, bestStreak:0, lastCheckinDate:null, monthlyPoints:0,
       weightHistory:[], unlockedBadges:[],
       status: 'pending',
       createdAt: serverTimestamp()
@@ -962,7 +977,7 @@ async function toggleCheck(type) {
 
     const pts=PTS[type]||0;
     const userRef=doc(db,'users',currentUserData.uid);
-    const updates={points:increment(pts)};
+    const updates={points:increment(pts), monthlyPoints:increment(pts)};
     if(type==='treino') updates.totalTreinos=increment(1);
     if(['cafe','almoco','jantar'].includes(type)) updates.totalMeals=increment(1);
 
@@ -1140,6 +1155,230 @@ async function renderDashboard() {
       });
     }
   } catch(e){}
+}
+
+// ===== MONTHLY RANKING & HALL OF FAME =====
+let currentRankTab = 'monthly';
+
+function switchRankTab(tab) {
+  currentRankTab = tab;
+  const tabs = ['monthly', 'total', 'fame'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('rank-tab-' + t);
+    const sec = document.getElementById('rank-' + t + '-section');
+    if(btn) {
+      btn.style.background = t === tab ? 'var(--gold)' : 'var(--dark2)';
+      btn.style.color = t === tab ? 'var(--black)' : 'var(--gray)';
+    }
+    if(sec) sec.style.display = t === tab ? 'block' : 'none';
+  });
+  if(tab === 'monthly') renderMonthlyRanking();
+  if(tab === 'total') renderTotalRanking();
+  if(tab === 'fame') renderHallOfFame();
+}
+window.switchRankTab = switchRankTab;
+
+function getMonthKey() {
+  const now = new Date();
+  return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+}
+
+function getMonthName(key) {
+  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const [year, month] = key.split('-');
+  return months[parseInt(month) - 1] + ' ' + year;
+}
+
+async function renderMonthlyRanking() {
+  const podiumEl = document.getElementById('podium-monthly');
+  const listEl = document.getElementById('rank-list-monthly');
+  const labelEl = document.getElementById('rank-month-label');
+  if(!podiumEl || !listEl) return;
+
+  podiumEl.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  listEl.innerHTML = '';
+
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    const monthKey = getMonthKey();
+    if(labelEl) labelEl.textContent = '🏆 ' + getMonthName(monthKey);
+
+    const all = snap.docs.map(d => d.data())
+      .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked')
+      .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0));
+
+    const top3 = all.slice(0,3);
+    const emojis = ['🥇','🥈','🥉'];
+    const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]] : top3;
+
+    podiumEl.innerHTML = podiumOrder.filter(Boolean).map((u, i) => {
+      const realIdx = top3.indexOf(u);
+      const avatarContent = u.photoURL
+        ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : u.name.charAt(0).toUpperCase();
+      return '<div class="podium-item">'
+        + '<div class="podium-avatar" style="overflow:hidden">' + avatarContent + '</div>'
+        + '<div class="podium-name">' + u.name.split(' ')[0] + '</div>'
+        + '<div style="font-size:11px;color:var(--gold);margin-bottom:4px">' + (u.monthlyPoints||0) + ' pts</div>'
+        + '<div class="podium-block">' + emojis[realIdx] + '</div>'
+        + '</div>';
+    }).join('');
+
+    listEl.innerHTML = all.map((u, i) => {
+      const isMe = currentUserData && u.uid === currentUserData.uid;
+      const level = getLevel(u.points||0);
+      const avatarContent = u.photoURL
+        ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : u.name.charAt(0).toUpperCase();
+      return '<div class="rank-item ' + (isMe ? 'me' : '') + '">'
+        + '<div class="rank-pos">' + ((['🥇','🥈','🥉'][i]) || (i+1)) + '</div>'
+        + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
+        + '<div class="rank-info">'
+        + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
+        + '<div class="rank-sub">' + level.name + ' · ' + (u.monthlyPoints||0) + ' pts este mês</div>'
+        + '</div>'
+        + '<div class="rank-pts">' + (u.monthlyPoints||0).toLocaleString() + ' pts</div>'
+        + '</div>';
+    }).join('');
+  } catch(e) {
+    podiumEl.innerHTML = '<div style="color:var(--danger);text-align:center">Erro ao carregar</div>';
+  }
+}
+
+async function renderTotalRanking() {
+  const podiumEl = document.getElementById('podium-total');
+  const listEl = document.getElementById('rank-list-total');
+  if(!podiumEl || !listEl) return;
+
+  podiumEl.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  listEl.innerHTML = '';
+
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    const all = snap.docs.map(d => d.data())
+      .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked')
+      .sort((a,b) => (b.points||0) - (a.points||0));
+
+    const top3 = all.slice(0,3);
+    const emojis = ['🥇','🥈','🥉'];
+    const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]] : top3;
+
+    podiumEl.innerHTML = podiumOrder.filter(Boolean).map((u, i) => {
+      const realIdx = top3.indexOf(u);
+      const avatarContent = u.photoURL
+        ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : u.name.charAt(0).toUpperCase();
+      return '<div class="podium-item">'
+        + '<div class="podium-avatar" style="overflow:hidden">' + avatarContent + '</div>'
+        + '<div class="podium-name">' + u.name.split(' ')[0] + '</div>'
+        + '<div style="font-size:11px;color:var(--gold);margin-bottom:4px">' + (u.points||0).toLocaleString() + ' pts</div>'
+        + '<div class="podium-block">' + emojis[realIdx] + '</div>'
+        + '</div>';
+    }).join('');
+
+    listEl.innerHTML = all.map((u, i) => {
+      const isMe = currentUserData && u.uid === currentUserData.uid;
+      const level = getLevel(u.points||0);
+      const avatarContent = u.photoURL
+        ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : u.name.charAt(0).toUpperCase();
+      return '<div class="rank-item ' + (isMe ? 'me' : '') + '">'
+        + '<div class="rank-pos">' + ((['🥇','🥈','🥉'][i]) || (i+1)) + '</div>'
+        + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
+        + '<div class="rank-info">'
+        + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
+        + '<div class="rank-sub">' + level.badge + ' ' + level.name + ' · 🔥' + (u.streak||0) + ' dias</div>'
+        + '</div>'
+        + '<div class="rank-pts">' + (u.points||0).toLocaleString() + ' pts</div>'
+        + '</div>';
+    }).join('');
+  } catch(e) {
+    podiumEl.innerHTML = '<div style="color:var(--danger);text-align:center">Erro ao carregar</div>';
+  }
+}
+
+async function renderHallOfFame() {
+  const container = document.getElementById('hall-of-fame-list');
+  if(!container) return;
+  container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  try {
+    const snap = await getDocs(collection(db, 'hallOfFame'));
+    if(snap.empty) {
+      container.innerHTML = '<div style="text-align:center;padding:40px 20px">'
+        + '<div style="font-size:40px;margin-bottom:12px">🏆</div>'
+        + '<div style="color:var(--gray);font-size:14px">O Hall da Fama estará disponível<br>a partir do próximo mês!</div>'
+        + '</div>';
+      return;
+    }
+    const months = snap.docs.map(d => ({id: d.id, ...d.data()}))
+      .sort((a,b) => b.id.localeCompare(a.id));
+
+    container.innerHTML = months.map(month => {
+      const winners = month.winners || [];
+      const emojis = ['🥇','🥈','🥉'];
+      return '<div class="card" style="margin-bottom:12px">'
+        + '<div style="font-size:15px;font-weight:800;color:var(--gold);margin-bottom:12px">🌟 ' + getMonthName(month.id) + '</div>'
+        + winners.map((w, i) => {
+            const avatarContent = w.photoURL
+              ? '<img src="' + w.photoURL + '" style="width:36px;height:36px;object-fit:cover;border-radius:50%;border:2px solid var(--gold)">'
+              : '<div style="width:36px;height:36px;border-radius:50%;background:var(--dark3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">' + (w.name||'?').charAt(0).toUpperCase() + '</div>';
+            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #222">'
+              + avatarContent
+              + '<div style="flex:1">'
+              + '<div style="font-weight:700">' + emojis[i] + ' ' + (w.name||'—') + '</div>'
+              + '<div style="font-size:12px;color:var(--gray)">' + (w.points||0).toLocaleString() + ' pts no mês</div>'
+              + '</div>'
+              + '</div>';
+          }).join('')
+        + '</div>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--danger);text-align:center;padding:20px">Erro ao carregar</div>';
+  }
+}
+
+// Check and reset monthly points on day 1
+async function checkMonthlyReset() {
+  if(!currentUserData) return;
+  const today = getTodayKey();
+  const dayOfMonth = new Date().getDate();
+  const monthKey = getMonthKey();
+  const lastReset = localStorage.getItem('tl_last_reset');
+
+  if(dayOfMonth === 1 && lastReset !== monthKey) {
+    // Save hall of fame for previous month
+    try {
+      const prevDate = new Date();
+      prevDate.setDate(0); // last day of previous month
+      const prevMonth = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
+
+      const snap = await getDocs(collection(db, 'users'));
+      const all = snap.docs.map(d => d.data())
+        .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked' && (u.monthlyPoints||0) > 0)
+        .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0))
+        .slice(0, 3);
+
+      if(all.length > 0) {
+        await setDoc(doc(db, 'hallOfFame', prevMonth), {
+          winners: all.map(u => ({
+            uid: u.uid,
+            name: u.name,
+            photoURL: u.photoURL || null,
+            points: u.monthlyPoints || 0
+          })),
+          createdAt: Date.now()
+        });
+      }
+
+      // Reset all users monthly points
+      const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), {monthlyPoints: 0}));
+      await Promise.all(batch);
+      localStorage.setItem('tl_last_reset', monthKey);
+      console.log('Monthly reset done!');
+    } catch(e) {
+      console.error('Monthly reset error:', e);
+    }
+  }
 }
 
 async function renderRanking() {
@@ -2034,6 +2273,7 @@ function enterApp() {
   renderDashboard();
   renderMission();
   checkStudentMessages();
+  checkMonthlyReset();
 }
 window.enterApp = enterApp;
 
@@ -2320,7 +2560,7 @@ async function registrarPeso() {
   await setDoc(checkinRef, checkins, {merge:true});
   const userRef = doc(db,'users',currentUserData.uid);
   const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
-  await updateDoc(userRef, { points: increment(20), weightHistory: hist });
+  await updateDoc(userRef, { points: increment(20), monthlyPoints: increment(20), weightHistory: hist });
   const snap = await getDoc(userRef);
   currentUserData = snap.data();
   document.getElementById('check-peso').classList.add('done');
