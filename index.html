@@ -863,7 +863,7 @@ const BADGES_DEF = [
   {id:'pts2500',     emoji:'💎', name:'2500 Pontos',     desc:'Acumulou 2500 pts',      check:u=>u.points>=2500},
   {id:'diet_week',   emoji:'🥗', name:'Dieta em Dia',   desc:'21 refeições seguidas',  check:u=>u.totalMeals>=21},
 ];
-const PTS = {treino:50, cafe:20, almoco:20, jantar:20, weight:30};
+const PTS = {treino:50, cafe:20, lanche:20, almoco:20, jantar:20, cardio:15, hidratacao:15, peso:20};
 
 let currentUserData = null;
 let isAdmin = false;
@@ -1052,7 +1052,7 @@ async function toggleCheck(type) {
     if(['cafe','almoco','jantar'].includes(type)) updates.totalMeals=increment(1);
 
     // Sequência based on meals (2+ meals = valid day)
-    const mealTypes = ['cafe','almoco','jantar'];
+    const mealTypes = ['cafe','lanche','almoco','jantar'];
     const mealCount = mealTypes.filter(m => checkins[m]).length;
     const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
     
@@ -1148,6 +1148,40 @@ async function toggleCheck(type) {
 }
 window.toggleCheck=toggleCheck;
 
+async function registrarPeso() {
+  const val = parseFloat(document.getElementById('peso-checkin-input').value);
+  if(!val || val < 20 || val > 300) { showToast('Peso inválido!'); return; }
+
+  const today = getTodayKey();
+  const checkinRef = doc(db,'checkins',currentUserData.uid+'_'+today);
+  const checkinSnap = await getDoc(checkinRef);
+  const checkins = checkinSnap.exists() ? checkinSnap.data() : {};
+  if(checkins['peso']) { showToast('Peso já registrado hoje!'); return; }
+
+  checkins['peso'] = true;
+  await setDoc(checkinRef, checkins, {merge:true});
+
+  const userRef = doc(db,'users',currentUserData.uid);
+  const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
+  await updateDoc(userRef, {
+    points: increment(PTS.peso),
+    weightHistory: hist
+  });
+  const snap = await getDoc(userRef);
+  currentUserData = snap.data();
+
+  // Hide input, show done
+  document.getElementById('check-peso').classList.add('done');
+  document.getElementById('peso-input-row').style.display = 'none';
+  document.getElementById('btn-peso').style.background = 'var(--gold)';
+
+  showPtsPopup(PTS.peso, document.getElementById('check-peso'));
+  showToast('+' + PTS.peso + ' pontos! Peso registrado ⚖️');
+  postToFeed(currentUserData.name, 'weight');
+  renderDashboard();
+}
+window.registrarPeso = registrarPeso;
+
 async function registerWeight() {
   const val=parseFloat(document.getElementById('weight-input').value);
   if(!val||val<20||val>300){showToast('Peso inválido');return;}
@@ -1224,8 +1258,14 @@ async function renderDashboard() {
     const cSnap=await getDoc(doc(db,'checkins',currentUserData.uid+'_'+today2));
     if(cSnap.exists()) {
       const c=cSnap.data();
-      ['treino','cafe','almoco','jantar'].forEach(t=>{
-        if(c[t]) document.getElementById('check-'+t).classList.add('done');
+      ['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','peso'].forEach(t=>{
+        if(c[t]) {
+          document.getElementById('check-'+t).classList.add('done');
+          if(t==='peso') {
+            const row = document.getElementById('peso-input-row');
+            if(row) row.style.display = 'none';
+          }
+        }
       });
     }
   } catch(e){}
