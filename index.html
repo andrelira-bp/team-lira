@@ -1243,15 +1243,16 @@ async function renderMonthlyRanking() {
     const emojis = ['🥇','🥈','🥉'];
     const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]] : top3;
 
+    const pClasses = ['p2','p1','p3'];
     podiumEl.innerHTML = podiumOrder.filter(Boolean).map((u, i) => {
       const realIdx = top3.indexOf(u);
       const avatarContent = u.photoURL
         ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
         : u.name.charAt(0).toUpperCase();
-      return '<div class="podium-item">'
+      return '<div class="podium-item ' + pClasses[i] + '">'
+        + '<div class="podium-pts">' + (u.monthlyPoints||0).toLocaleString() + '</div>'
         + '<div class="podium-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="podium-name">' + u.name.split(' ')[0] + '</div>'
-        + '<div style="font-size:11px;color:var(--gold);margin-bottom:4px">' + (u.monthlyPoints||0) + ' pts</div>'
         + '<div class="podium-block">' + emojis[realIdx] + '</div>'
         + '</div>';
     }).join('');
@@ -1295,15 +1296,16 @@ async function renderTotalRanking() {
     const emojis = ['🥇','🥈','🥉'];
     const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]] : top3;
 
+    const pClassesT = ['p2','p1','p3'];
     podiumEl.innerHTML = podiumOrder.filter(Boolean).map((u, i) => {
       const realIdx = top3.indexOf(u);
       const avatarContent = u.photoURL
         ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
         : u.name.charAt(0).toUpperCase();
-      return '<div class="podium-item">'
+      return '<div class="podium-item ' + pClassesT[i] + '">'
+        + '<div class="podium-pts">' + (u.points||0).toLocaleString() + '</div>'
         + '<div class="podium-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="podium-name">' + u.name.split(' ')[0] + '</div>'
-        + '<div style="font-size:11px;color:var(--gold);margin-bottom:4px">' + (u.points||0).toLocaleString() + ' pts</div>'
         + '<div class="podium-block">' + emojis[realIdx] + '</div>'
         + '</div>';
     }).join('');
