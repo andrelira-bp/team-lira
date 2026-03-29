@@ -288,6 +288,28 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 .story-progress{height:3px;background:rgba(255,255,255,0.3);border-radius:99px;margin:0 16px 8px;overflow:hidden;}
 .story-progress-fill{height:100%;background:#fff;border-radius:99px;transition:width 5s linear;}
 
+
+/* ===== CHAT ===== */
+.chat-container{display:flex;flex-direction:column;height:calc(100vh - 160px);}
+.chat-messages{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px;}
+.chat-msg{display:flex;gap:8px;align-items:flex-end;}
+.chat-msg.mine{flex-direction:row-reverse;}
+.chat-msg-avatar{width:32px;height:32px;border-radius:50%;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;border:2px solid #333;}
+.chat-bubble{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;position:relative;}
+.chat-msg.mine .chat-bubble{background:var(--gold);color:var(--black);border-bottom-right-radius:4px;}
+.chat-msg:not(.mine) .chat-bubble{background:var(--dark2);color:var(--white);border-bottom-left-radius:4px;border:1px solid #2a2a2a;}
+.chat-msg-name{font-size:11px;color:var(--gray);margin-bottom:3px;}
+.chat-msg.mine .chat-msg-name{text-align:right;}
+.chat-msg-time{font-size:10px;opacity:0.6;margin-top:4px;}
+.chat-msg.mine .chat-msg-time{text-align:right;}
+.chat-input-row{display:flex;gap:8px;padding:8px 0;border-top:1px solid #222;margin-top:8px;}
+.chat-input{flex:1;padding:12px 14px;background:var(--dark2);border:1px solid #333;border-radius:24px;color:var(--white);font-size:14px;outline:none;}
+.chat-input:focus{border-color:var(--gold);}
+.chat-send-btn{width:44px;height:44px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.chat-delete-btn{font-size:12px;color:var(--danger);cursor:pointer;margin-top:4px;display:none;}
+.chat-msg:hover .chat-delete-btn{display:block;}
+.chat-day-divider{text-align:center;font-size:11px;color:var(--gray);padding:8px 0;}
+
 /* SPINNER */
 .spinner{width:20px;height:20px;border:2px solid #333;border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -485,6 +507,27 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <button class="btn-primary" style="margin-top:8px" onclick="doLogout()">Sair da conta</button>
   </div>
 
+  <!-- CHAT PAGE -->
+  <div class="page-content hidden" id="page-chat" style="padding-bottom:70px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <h2 style="margin-bottom:2px">💬 Chat do Time</h2>
+        <p style="font-size:12px;color:var(--gray)">Grupo Team Lira</p>
+      </div>
+      <div id="chat-online" style="font-size:12px;color:var(--success)"></div>
+    </div>
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <div style="text-align:center;color:var(--gray);font-size:13px;padding:20px">Carregando mensagens...</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" placeholder="Mensagem..." maxlength="500"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg();}">
+        <button class="chat-send-btn" onclick="sendChatMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FEED PAGE -->
   <div class="page-content hidden" id="page-feed">
     <h2 style="margin-bottom:4px">💬 Feed do Time</h2>
@@ -504,6 +547,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <div class="nav-item" onclick="showPage('feed')" id="nav-feed">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>Feed
+    </div>
+    <div class="nav-item" onclick="showPage('chat')" id="nav-chat">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat
     </div>
     <div class="nav-item" onclick="showPage('profile')" id="nav-profile">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Perfil
@@ -535,6 +581,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">🏆 Ranking</div>
       <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">📅 Semanal</div>
       <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">💬 Feed</div>
+      <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">🗨️ Chat</div>
       <div class="admin-tab" onclick="showAdminTab('msgs')" id="atab-msgs">✉️ Mensagens</div>
     </div>
     <div class="admin-grid">
@@ -577,6 +624,17 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="card hidden" id="admin-weekly-section">
       <div class="card-title">📅 Relatório da semana</div>
       <div id="weekly-content"></div>
+    </div>
+
+    <!-- ADMIN CHAT -->
+    <div class="card hidden" id="admin-chat-section">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        🗨️ Chat do Time
+        <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminChat()">↻ Atualizar</span>
+      </div>
+      <div id="admin-chat-list" style="max-height:400px;overflow-y:auto">
+        <div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>
+      </div>
     </div>
 
     <!-- MESSAGES -->
@@ -826,7 +884,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 function showPage(page) {
-  ['home','ranking','badges','feed','profile'].forEach(p=>{
+  ['home','ranking','badges','feed','chat','profile'].forEach(p=>{
     const el = document.getElementById('page-'+p);
     const nav = document.getElementById('nav-'+p);
     if(el) el.classList.toggle('hidden',p!==page);
@@ -836,6 +894,7 @@ function showPage(page) {
   if(page==='badges') renderBadges();
   if(page==='profile') renderProfile();
   if(page==='feed') renderFeed();
+  if(page==='chat') initChat();
 }
 function switchTab(tab) {
   ['login','register','admin'].forEach((t,i)=>{
@@ -1365,6 +1424,44 @@ function filterAdminTable() {
 window.filterAdminTable = filterAdminTable;
 
 // ===== ADMIN FEED =====
+async function loadAdminChat() {
+  const container = document.getElementById('admin-chat-list');
+  if(!container) return;
+  container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>';
+  
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
+      container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Nenhuma mensagem ainda.</div>';
+      return;
+    }
+    
+    const msgs = [...snap.data().messages].reverse(); // newest first for admin
+    container.innerHTML = msgs.map((msg, idx) => {
+      const realIdx = snap.data().messages.length - 1 - idx;
+      const time = getTimeAgo(msg.timestamp);
+      const avatarContent = msg.photoURL
+        ? '<img src="' + msg.photoURL + '" style="width:28px;height:28px;object-fit:cover;border-radius:50%">'
+        : '<div style="width:28px;height:28px;border-radius:50%;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">' + msg.name.charAt(0).toUpperCase() + '</div>';
+      
+      return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #222">'
+        + avatarContent
+        + '<div style="flex:1">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center">'
+        + '<span style="font-size:12px;font-weight:700;color:var(--gold)">' + msg.name.split(' ')[0] + '</span>'
+        + '<div style="display:flex;align-items:center;gap:8px">'
+        + '<span style="font-size:11px;color:var(--gray)">' + time + '</span>'
+        + '<button onclick="adminDeleteChatMsg(' + realIdx + ')" style="background:transparent;border:none;color:var(--danger);cursor:pointer;font-size:12px">🗑️</button>'
+        + '</div></div>'
+        + '<div style="font-size:13px;color:var(--white);margin-top:2px">' + msg.text + '</div>'
+        + '</div></div>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">Erro ao carregar chat.</div>';
+  }
+}
+window.loadAdminChat = loadAdminChat;
+
 async function loadAdminFeed() {
   const container = document.getElementById('admin-feed-list');
   if(!container) return;
@@ -1589,19 +1686,20 @@ window.confirmSendMsg=confirmSendMsg;
 
 // ===== ADMIN TABS =====
 function showAdminTab(tab) {
-  ['ranking','weekly','feed','msgs'].forEach(t => {
+  ['ranking','weekly','feed','chat','msgs'].forEach(t => {
     const el = document.getElementById('atab-'+t);
     if(el) el.classList.toggle('active', t===tab);
   });
-  // Show/hide ranking card
   const rankingCard = document.getElementById('admin-ranking-card');
   if(rankingCard) rankingCard.classList.toggle('hidden', tab!=='ranking');
   document.getElementById('admin-weekly-section').classList.toggle('hidden', tab!=='weekly');
   document.getElementById('admin-msgs-section').classList.toggle('hidden', tab!=='msgs');
   document.getElementById('admin-feed-section').classList.toggle('hidden', tab!=='feed');
+  document.getElementById('admin-chat-section').classList.toggle('hidden', tab!=='chat');
   if(tab==='weekly') renderWeeklyReport();
   if(tab==='msgs') renderAdminMsgs();
   if(tab==='feed') loadAdminFeed();
+  if(tab==='chat') loadAdminChat();
 }
 window.showAdminTab=showAdminTab;
 
@@ -2086,6 +2184,122 @@ function closeStoryViewer() {
 }
 window.openStoryViewer = openStoryViewer;
 window.closeStoryViewer = closeStoryViewer;
+
+// ===== GROUP CHAT =====
+let chatUnsubscribe = null;
+let chatInitialized = false;
+
+async function initChat() {
+  const container = document.getElementById('chat-messages');
+  if(!container) return;
+  
+  // Load messages
+  loadChatMessages();
+  
+  // Auto refresh every 5 seconds
+  if(window.chatInterval) clearInterval(window.chatInterval);
+  window.chatInterval = setInterval(loadChatMessages, 5000);
+}
+
+async function loadChatMessages() {
+  const container = document.getElementById('chat-messages');
+  if(!container || !currentUserData) return;
+  
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    if(!snap.exists()) {
+      container.innerHTML = '<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">Nenhuma mensagem ainda.<br>Seja o primeiro a falar! 💬</div>';
+      return;
+    }
+    
+    const msgs = snap.data().messages || [];
+    const wasAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
+    
+    container.innerHTML = msgs.map((msg, idx) => {
+      const isMe = msg.uid === currentUserData.uid;
+      const time = getTimeAgo(msg.timestamp);
+      const avatarContent = msg.photoURL 
+        ? '<img src="' + msg.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : msg.name.charAt(0).toUpperCase();
+      
+      return '<div class="chat-msg ' + (isMe ? 'mine' : '') + '" data-idx="' + idx + '">'
+        + '<div class="chat-msg-avatar">' + avatarContent + '</div>'
+        + '<div>'
+        + (!isMe ? '<div class="chat-msg-name">' + msg.name.split(' ')[0] + '</div>' : '')
+        + '<div class="chat-bubble">' + escapeHtml(msg.text) + '</div>'
+        + '<div class="chat-msg-time">' + time + '</div>'
+        + (isMe ? '<div class="chat-delete-btn" onclick="deleteChatMsg(' + idx + ')">🗑️ apagar</div>' : '')
+        + '</div>'
+        + '</div>';
+    }).join('');
+    
+    if(wasAtBottom || !chatInitialized) {
+      container.scrollTop = container.scrollHeight;
+      chatInitialized = true;
+    }
+  } catch(e) { console.error('Chat error:', e); }
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function sendChatMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text || !currentUserData) return;
+  
+  input.value = '';
+  
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.exists() ? (snap.data().messages || []) : [];
+    
+    msgs.push({
+      uid: currentUserData.uid,
+      name: currentUserData.name,
+      photoURL: currentUserData.photoURL || null,
+      text: text,
+      timestamp: Date.now()
+    });
+    
+    // Keep only last 200 messages
+    const trimmed = msgs.slice(-200);
+    await setDoc(doc(db, 'chat', 'group'), {messages: trimmed});
+    loadChatMessages();
+  } catch(e) {
+    showToast('Erro ao enviar. Tente novamente.');
+    console.error(e);
+  }
+}
+window.sendChatMsg = sendChatMsg;
+
+async function deleteChatMsg(idx) {
+  if(!confirm('Apagar esta mensagem?')) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.data().messages || [];
+    msgs.splice(idx, 1);
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
+    showToast('Mensagem apagada!');
+    loadChatMessages();
+  } catch(e) { showToast('Erro ao apagar.'); }
+}
+window.deleteChatMsg = deleteChatMsg;
+
+// Admin delete any message
+async function adminDeleteChatMsg(idx) {
+  if(!confirm('Apagar esta mensagem?')) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.data().messages || [];
+    msgs.splice(idx, 1);
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
+    showToast('Mensagem apagada! 🗑️');
+    loadAdminChat();
+  } catch(e) { showToast('Erro ao apagar.'); }
+}
+window.adminDeleteChatMsg = adminDeleteChatMsg;
 
 async function checkStudentMessages() {
   if(!currentUserData) return;
