@@ -428,15 +428,15 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div style="display:flex;gap:8px;margin-bottom:16px">
       <button id="rank-tab-monthly" onclick="switchRankTab('monthly')"
         style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--gold);color:var(--black)">
-        🏆 Este mês
+        📅 Mês atual
       </button>
       <button id="rank-tab-total" onclick="switchRankTab('total')"
         style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--dark2);color:var(--gray)">
-        👑 Geral
+        👑 Pontuação Geral
       </button>
       <button id="rank-tab-fame" onclick="switchRankTab('fame')"
         style="flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--dark2);color:var(--gray)">
-        🌟 Hall
+        🏆 Meses anteriores
       </button>
     </div>
     <h2 style="margin-bottom:4px">🏆 Ranking</h2>
@@ -1311,7 +1311,7 @@ async function renderHallOfFame() {
       return;
     }
     const months = snap.docs.map(d => ({id: d.id, ...d.data()}))
-      .sort((a,b) => b.id.localeCompare(a.id));
+      .sort((a,b) => b.id.localeCompare(a.id)).slice(0, 12);
 
     container.innerHTML = months.map(month => {
       const winners = month.winners || [];
