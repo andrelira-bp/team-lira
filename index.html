@@ -330,6 +330,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <h2 style="font-size:22px;font-weight:700">Olá, <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
       <p style="font-size:13px;color:var(--gray);margin-top:4px" id="dash-date"></p>
     </div>
+    <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:14px">
+      <p style="font-size:13px;color:var(--white);font-style:italic;line-height:1.5" id="daily-phrase"></p>
+    </div>
 
     <div class="level-card">
       <div class="level-row">
@@ -545,6 +548,20 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
 
     <div class="card">
+      <div class="card-title">💬 Frase motivacional do dia</div>
+      <div style="background:var(--dark3);border-radius:8px;padding:12px;font-size:13px;color:var(--white);font-style:italic;margin-bottom:10px" id="current-phrase-display">Carregando...</div>
+      <div id="phrase-edit-area">
+        <textarea id="custom-phrase-input" placeholder="Digite uma frase personalizada para hoje... (deixe vazio para usar a automática)" 
+          style="width:100%;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:13px;outline:none;resize:none;min-height:80px;font-family:inherit"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn-gold" style="flex:1" onclick="saveCustomPhrase()">Salvar frase</button>
+          <button onclick="clearCustomPhrase()" style="padding:10px 14px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--gray);cursor:pointer;font-size:13px">Usar automática</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--gray);margin-top:8px">A frase aparece para todos os alunos no dashboard e na tela de boas-vindas.</div>
+    </div>
+
+    <div class="card">
       <div class="card-title">⚙️ Código de convite</div>
       <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
         <div style="flex:1;background:var(--dark3);border-radius:8px;padding:12px;font-size:18px;font-weight:800;letter-spacing:3px;color:var(--gold)">TEAMLIRA</div>
@@ -672,6 +689,50 @@ const db = getFirestore(app);
 // ===== CONSTANTS =====
 const INVITE_CODE = 'TEAMLIRA';
 const ADMIN_PASS = 'lira2025';
+// ===== MOTIVATIONAL PHRASES =====
+const PHRASES = [
+  "A dor de hoje é a força de amanhã. 💪",
+  "Disciplina é a ponte entre metas e conquistas. 🏆",
+  "Seu corpo pode suportar quase tudo. É sua mente que você precisa convencer. 🧠",
+  "Não pare quando estiver cansado. Pare quando terminar. 🔥",
+  "Cada treino é um passo mais perto do seu objetivo. 👣",
+  "O sucesso é a soma de pequenos esforços repetidos dia após dia. ⚡",
+  "Seja mais forte do que suas desculpas. 💥",
+  "Transformação não acontece na zona de conforto. 🚀",
+  "Você não precisa ser perfeito, precisa ser consistente. 🎯",
+  "O único treino ruim é o que não foi feito. 💪",
+  "Sua maior competição é quem você era ontem. 🏅",
+  "Resultados não mentem. Continue. 📈",
+  "Foco, força e fé. Todo dia. 🙏",
+  "Um dia de cada vez. Um treino de cada vez. ✅",
+  "A mudança começa quando o desconforto supera o medo. 🔑",
+  "Invista em você. É o melhor investimento que existe. 💎",
+  "Corpos são construídos na academia, mas esculpidos na cozinha. 🥗",
+  "Não espere motivação. Crie disciplina. ⚙️",
+  "Cada escolha certa te aproxima do seu objetivo. 🎯",
+  "O segredo é começar. O resto vem com o tempo. ⏳",
+  "Força não vem do que você consegue fazer. Vem de superar o que achava impossível. 💫",
+  "Consistência bate intensidade. Todo dia. 🔄",
+  "Sua versão futura está te agradecendo por cada treino de hoje. 🙌",
+  "LET'S GO! Hoje é dia de evoluir. 🏆",
+  "Time Lira. Juntos somos mais fortes. ❤️",
+  "Acredite no processo. Os resultados vêm. 🌱",
+  "Mais um dia, mais uma chance de ser melhor. ☀️",
+  "A dieta de hoje é o corpo de amanhã. 🥩",
+  "Não existe atalho. Existe dedicação. 💪",
+  "Você chegou até aqui. Não pare agora. 🔥",
+];
+
+function getDailyPhrase() {
+  // Check if professor set a custom phrase for today
+  const todayKey = getTodayKey();
+  const customPhrase = localStorage.getItem('tl_custom_phrase_' + todayKey);
+  if(customPhrase) return customPhrase;
+  // Otherwise use automatic rotation
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  return PHRASES[dayOfYear % PHRASES.length];
+}
+
 const LEVELS = [
   {name:'Iniciante', badge:'🥉 Iniciante', min:0,    max:500},
   {name:'Guerreiro', badge:'⚔️ Guerreiro', min:500,  max:1200},
@@ -759,10 +820,14 @@ onAuthStateChanged(auth, async user => {
           await signOut(auth);
           showScreen('screen-blocked');
         } else {
-          showScreen('screen-app');
-          renderDashboard();
-          renderMission();
-          checkStudentMessages();
+          // Show welcome screen first
+          const wName = document.getElementById('welcome-name');
+          const wStreak = document.getElementById('welcome-streak');
+          const wQuote = document.getElementById('welcome-quote');
+          if(wName) wName.textContent = currentUserData.name.split(' ')[0];
+          if(wStreak) wStreak.textContent = currentUserData.streak || 0;
+          if(wQuote) wQuote.textContent = getDailyPhrase();
+          showScreen('screen-welcome');
         }
       } else {
         showScreen('screen-login');
@@ -1024,11 +1089,15 @@ async function renderDashboard() {
   const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   document.getElementById('dash-date').textContent=days[today.getDay()]+', '+today.getDate()+' de '+months[today.getMonth()];
+  
+  // Update daily phrase
+  const phraseEl = document.getElementById('daily-phrase');
+  if(phraseEl) phraseEl.textContent = getDailyPhrase();
 
   // ranking position
   try {
     const snap=await getDocs(collection(db,'users'));
-    const all=snap.docs.map(d=>d.data()).filter(u=>u.status!=='deleted'&&u.status!=='pending').sort((a,b)=>(b.points||0)-(a.points||0));
+    const all=snap.docs.map(d=>d.data()).filter(u=>u.status!=='deleted'&&u.status!=='pending'&&u.status!=='blocked').sort((a,b)=>(b.points||0)-(a.points||0));
     const pos=all.findIndex(u=>u.uid===currentUserData.uid)+1;
     document.getElementById('stat-rank').textContent='#'+pos;
   } catch(e){}
@@ -1053,7 +1122,7 @@ async function renderRanking() {
   list.innerHTML='';
   try {
     const snap=await getDocs(collection(db,'users'));
-    const all=snap.docs.map(d=>d.data()).filter(u=>u.status!=='deleted'&&u.status!=='pending').sort((a,b)=>(b.points||0)-(a.points||0));
+    const all=snap.docs.map(d=>d.data()).filter(u=>u.status!=='deleted'&&u.status!=='pending'&&u.status!=='blocked').sort((a,b)=>(b.points||0)-(a.points||0));
     const top3=all.slice(0,3);
     const order=[top3[1],top3[0],top3[2]].filter(Boolean);
     const pClasses=['p2','p1','p3'];
@@ -1120,6 +1189,7 @@ function renderProfile() {
 }
 
 async function loadAdminData() {
+  updateAdminPhraseDisplay();
   document.getElementById('admin-loading').style.display='block';
   document.getElementById('admin-table').classList.add('hidden');
   try {
@@ -1277,6 +1347,34 @@ function editInviteCode() {
   document.getElementById('invite-code-input').value = current;
   document.getElementById('invite-edit-area').classList.toggle('hidden');
 }
+
+function saveCustomPhrase() {
+  const text = document.getElementById('custom-phrase-input').value.trim();
+  const todayKey = getTodayKey();
+  if(text) {
+    localStorage.setItem('tl_custom_phrase_' + todayKey, text);
+    showToast('Frase do dia atualizada! 💬');
+  } else {
+    localStorage.removeItem('tl_custom_phrase_' + todayKey);
+    showToast('Usando frase automática!');
+  }
+  updateAdminPhraseDisplay();
+}
+
+function clearCustomPhrase() {
+  const todayKey = getTodayKey();
+  localStorage.removeItem('tl_custom_phrase_' + todayKey);
+  document.getElementById('custom-phrase-input').value = '';
+  showToast('Usando frase automática! ✅');
+  updateAdminPhraseDisplay();
+}
+
+function updateAdminPhraseDisplay() {
+  const el = document.getElementById('current-phrase-display');
+  if(el) el.textContent = getDailyPhrase();
+}
+window.saveCustomPhrase = saveCustomPhrase;
+window.clearCustomPhrase = clearCustomPhrase;
 
 function saveInviteCode() {
   const newCode = document.getElementById('invite-code-input').value.trim().toUpperCase();
@@ -1799,6 +1897,15 @@ function imageToBase64(file, maxSize) {
   });
 }
 window.uploadPhoto = uploadPhoto;
+
+function enterApp() {
+  showScreen('screen-app');
+  showPage('home');
+  renderDashboard();
+  renderMission();
+  checkStudentMessages();
+}
+window.enterApp = enterApp;
 
 async function checkStudentMessages() {
   if(!currentUserData) return;
