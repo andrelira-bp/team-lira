@@ -882,8 +882,6 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
-// Show login screen immediately while Firebase loads
 showScreen('screen-login');
 function showPage(page) {
   ['home','ranking','badges','feed','chat','profile'].forEach(p=>{
@@ -2570,6 +2568,5 @@ async function checkStudentMessages() {
     <button class="btn-primary" style="margin-top:8px" onclick="doLogout()">Sair</button>
   </div>
 
-</div>
 </body>
 </html>
