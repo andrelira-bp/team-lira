@@ -265,6 +265,29 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 .invite-edit-input{flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--gold);font-size:16px;font-weight:800;letter-spacing:2px;outline:none;text-transform:uppercase;}
 .invite-edit-input:focus{border-color:var(--gold);}
 
+
+/* ===== STORIES ===== */
+.stories-row{display:flex;gap:12px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;}
+.stories-row::-webkit-scrollbar{display:none;}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0;}
+.story-ring{width:62px;height:62px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));position:relative;}
+.story-ring.seen{background:linear-gradient(135deg,#444,#333);}
+.story-ring.add{background:linear-gradient(135deg,var(--dark3),var(--dark2));border:2px dashed var(--gold);}
+.story-avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--black);background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;}
+.story-name{font-size:10px;color:var(--gray);text-align:center;max-width:62px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.story-add-icon{position:absolute;bottom:0;right:0;background:var(--gold);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--black);border:2px solid var(--black);}
+/* Story viewer */
+.story-viewer{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:5000;display:flex;flex-direction:column;}
+.story-viewer.hidden{display:none!important;}
+.story-viewer-header{display:flex;align-items:center;gap:12px;padding:16px;position:absolute;top:0;left:0;right:0;z-index:5001;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);}
+.story-viewer-avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;object-fit:cover;}
+.story-viewer-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.story-viewer-time{font-size:12px;color:rgba(255,255,255,0.7);}
+.story-viewer-close{font-size:24px;color:#fff;cursor:pointer;padding:4px;}
+.story-viewer-img{width:100%;height:100%;object-fit:contain;}
+.story-progress{height:3px;background:rgba(255,255,255,0.3);border-radius:99px;margin:0 16px 8px;overflow:hidden;}
+.story-progress-fill{height:100%;background:#fff;border-radius:99px;transition:width 5s linear;}
+
 /* SPINNER */
 .spinner{width:20px;height:20px;border:2px solid #333;border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -350,6 +373,21 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="stat-box"><div class="stat-num" id="stat-rank">#—</div><div class="stat-label">🏆 Ranking</div></div>
     </div>
 
+
+    <!-- STORIES -->
+    <div style="margin-bottom:4px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">📸 Treinos de hoje</div>
+      <div class="stories-row" id="stories-row">
+        <!-- My story add button -->
+        <div class="story-item" onclick="document.getElementById('story-input').click()">
+          <div class="story-ring add">
+            <div class="story-avatar" style="color:var(--gold)">📷</div>
+          </div>
+          <div class="story-name">Seu treino</div>
+        </div>
+      </div>
+      <input type="file" id="story-input" accept="image/*" style="display:none" onchange="uploadStory(event)">
+    </div>
 
     <!-- DAILY MISSION -->
     <div class="mission-card" id="mission-card">
@@ -586,6 +624,22 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <button class="welcome-btn" onclick="enterApp()">BORA TREINAR 💪</button>
   </div>
+</div>
+
+<!-- STORY VIEWER -->
+<div class="story-viewer hidden" id="story-viewer">
+  <div style="position:absolute;top:8px;left:0;right:0;padding:0 16px;z-index:5002">
+    <div class="story-progress"><div class="story-progress-fill" id="story-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="story-viewer-header">
+    <div id="story-viewer-avatar" class="story-viewer-avatar" style="display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--dark3)">?</div>
+    <div>
+      <div class="story-viewer-name" id="story-viewer-name">—</div>
+      <div class="story-viewer-time" id="story-viewer-time">agora</div>
+    </div>
+    <div class="story-viewer-close" onclick="closeStoryViewer()">✕</div>
+  </div>
+  <img id="story-viewer-img" class="story-viewer-img" src="" alt="Story" style="margin-top:60px">
 </div>
 
 <!-- CELEBRATION OVERLAY -->
@@ -1102,6 +1156,9 @@ async function renderDashboard() {
     document.getElementById('stat-rank').textContent='#'+pos;
   } catch(e){}
 
+  // Load stories
+  loadStories();
+
   // today checkins
   const today2=getTodayKey();
   try {
@@ -1319,7 +1376,7 @@ async function loadAdminFeed() {
       return;
     }
     const items = snap.data().items.filter(i=>i.name&&i.name!=='[Excluído]');
-    const emojis = {treino:'💪',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
+    const emojis = {treino:'💪',treino_foto:'📸',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
     container.innerHTML = items.map(item => {
       const ago = getTimeAgo(item.timestamp);
       const avatar = item.photoURL
@@ -1792,7 +1849,7 @@ async function renderFeed() {
       return;
     }
     const items = snap.data().items.filter(i=>i.name && i.name!=='[Excluído]');
-    const emojis = {treino:'💪',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
+    const emojis = {treino:'💪',treino_foto:'📸',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
     container.innerHTML = items.map(item=>{
       const ago = getTimeAgo(item.timestamp);
       return `<div class="feed-item">
@@ -1906,6 +1963,129 @@ function enterApp() {
   checkStudentMessages();
 }
 window.enterApp = enterApp;
+
+// ===== STORIES =====
+async function uploadStory(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 10 * 1024 * 1024) { showToast('Foto muito grande! Máximo 10MB'); return; }
+  showToast('Enviando foto... ⏳');
+  try {
+    const base64 = await imageToBase64(file, 800);
+    const storyData = {
+      uid: currentUserData.uid,
+      name: currentUserData.name,
+      photoURL: currentUserData.photoURL || null,
+      image: base64,
+      timestamp: Date.now()
+    };
+    await setDoc(doc(db, 'stories', currentUserData.uid), storyData);
+    showToast('Treino postado! 💪🔥');
+    loadStories();
+    // Post to feed
+    postToFeed(currentUserData.name, 'treino_foto');
+  } catch(e) {
+    showToast('Erro ao postar. Tente novamente.');
+    console.error(e);
+  }
+  event.target.value = '';
+}
+window.uploadStory = uploadStory;
+
+async function loadStories() {
+  const container = document.getElementById('stories-row');
+  if(!container) return;
+
+  try {
+    const snap = await getDocs(collection(db, 'stories'));
+    const now = Date.now();
+    const stories = snap.docs
+      .map(d => d.data())
+      .filter(s => (now - s.timestamp) < 86400000) // only last 24h
+      .sort((a,b) => b.timestamp - a.timestamp);
+
+    // Keep the add button
+    const addBtn = container.querySelector('.story-item');
+    container.innerHTML = '';
+    if(addBtn) container.appendChild(addBtn);
+
+    // Check if current user has a story
+    const myStory = stories.find(s => s.uid === currentUserData.uid);
+    if(myStory) {
+      // Update add button to show my story
+      const ring = addBtn.querySelector('.story-ring');
+      const avatar = addBtn.querySelector('.story-avatar');
+      if(ring) ring.classList.remove('add');
+      if(avatar) {
+        if(myStory.image) {
+          avatar.innerHTML = '<img src="' + myStory.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+        }
+      }
+    }
+
+    // Add other users stories
+    stories.filter(s => s.uid !== currentUserData.uid).forEach(story => {
+      const seenKey = 'tl_seen_' + story.uid + '_' + story.timestamp;
+      const seen = localStorage.getItem(seenKey);
+      const avatarContent = story.photoURL 
+        ? '<img src="' + story.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : story.name.charAt(0).toUpperCase();
+      
+      const el = document.createElement('div');
+      el.className = 'story-item';
+      el.onclick = () => openStoryViewer(story);
+      el.innerHTML = '<div class="story-ring ' + (seen ? 'seen' : '') + '">'
+        + '<div class="story-avatar">' + avatarContent + '</div>'
+        + '</div>'
+        + '<div class="story-name">' + story.name.split(' ')[0] + '</div>';
+      container.appendChild(el);
+    });
+  } catch(e) { console.error('Error loading stories:', e); }
+}
+
+let storyTimer = null;
+function openStoryViewer(story) {
+  // Mark as seen
+  const seenKey = 'tl_seen_' + story.uid + '_' + story.timestamp;
+  localStorage.setItem(seenKey, '1');
+
+  document.getElementById('story-viewer-name').textContent = story.name.split(' ')[0];
+  document.getElementById('story-viewer-time').textContent = getTimeAgo(story.timestamp);
+  document.getElementById('story-viewer-img').src = story.image;
+
+  // Avatar
+  const avatarEl = document.getElementById('story-viewer-avatar');
+  if(story.photoURL) {
+    avatarEl.innerHTML = '<img src="' + story.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    avatarEl.textContent = story.name.charAt(0).toUpperCase();
+  }
+
+  // Progress bar
+  const fill = document.getElementById('story-progress-fill');
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  document.getElementById('story-viewer').classList.remove('hidden');
+  
+  setTimeout(() => {
+    fill.style.transition = 'width 5s linear';
+    fill.style.width = '100%';
+  }, 100);
+
+  // Auto close after 5s
+  if(storyTimer) clearTimeout(storyTimer);
+  storyTimer = setTimeout(() => closeStoryViewer(), 5100);
+
+  // Reload stories to update seen status
+  loadStories();
+}
+
+function closeStoryViewer() {
+  document.getElementById('story-viewer').classList.add('hidden');
+  if(storyTimer) clearTimeout(storyTimer);
+}
+window.openStoryViewer = openStoryViewer;
+window.closeStoryViewer = closeStoryViewer;
 
 async function checkStudentMessages() {
   if(!currentUserData) return;
