@@ -330,6 +330,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <h2 style="font-size:22px;font-weight:700">Olá, <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
       <p style="font-size:13px;color:var(--gray);margin-top:4px" id="dash-date"></p>
     </div>
+    <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:14px">
+      <p style="font-size:13px;color:var(--white);font-style:italic;line-height:1.5" id="daily-phrase"></p>
+    </div>
 
     <div class="level-card">
       <div class="level-row">
@@ -365,14 +368,34 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       </div>
     </div>
 
+    <!-- STORIES -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">📸 Treinos de hoje</div>
+      <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 0 8px" id="stories-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0" onclick="document.getElementById('story-input').click()">
+          <div style="width:62px;height:62px;border-radius:50%;padding:2px;background:var(--dark3);border:2px dashed var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px">📷</div>
+          <div style="font-size:10px;color:var(--gray)">Seu treino</div>
+        </div>
+      </div>
+      <input type="file" id="story-input" accept="image/*" style="display:none" onchange="uploadStory(event)">
+    </div>
+
     <div style="font-size:16px;font-weight:700;margin-bottom:12px">Check-in de hoje</div>
     <div class="check-item" id="check-treino" onclick="toggleCheck('treino')">
       <div class="check-left"><div class="check-icon">💪</div><div><div class="check-name">Treino concluído</div><div class="check-pts">+50 pontos</div></div></div>
       <div class="check-btn" id="btn-treino">✓</div>
     </div>
+    <div class="check-item" id="check-cardio" onclick="toggleCheck('cardio')">
+      <div class="check-left"><div class="check-icon">🏃</div><div><div class="check-name">Cardio do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-btn" id="btn-cardio">✓</div>
+    </div>
     <div class="check-item" id="check-cafe" onclick="toggleCheck('cafe')">
       <div class="check-left"><div class="check-icon">☀️</div><div><div class="check-name">Café da manhã seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-cafe">✓</div>
+    </div>
+    <div class="check-item" id="check-lanche" onclick="toggleCheck('lanche')">
+      <div class="check-left"><div class="check-icon">🥗</div><div><div class="check-name">Lanche da tarde seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-btn" id="btn-lanche">✓</div>
     </div>
     <div class="check-item" id="check-almoco" onclick="toggleCheck('almoco')">
       <div class="check-left"><div class="check-icon">🍽️</div><div><div class="check-name">Almoço seguido</div><div class="check-pts">+20 pontos</div></div></div>
@@ -381,6 +404,21 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="check-item" id="check-jantar" onclick="toggleCheck('jantar')">
       <div class="check-left"><div class="check-icon">🌙</div><div><div class="check-name">Jantar seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-jantar">✓</div>
+    </div>
+    <div class="check-item" id="check-hidratacao" onclick="toggleCheck('hidratacao')">
+      <div class="check-left"><div class="check-icon">💧</div><div><div class="check-name">Hidratação do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-btn" id="btn-hidratacao">✓</div>
+    </div>
+    <div class="check-item" id="check-peso" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="check-left"><div class="check-icon">⚖️</div><div><div class="check-name">Peso do dia</div><div class="check-pts">+20 pontos</div></div></div>
+        <div class="check-btn" id="btn-peso">✓</div>
+      </div>
+      <div id="peso-input-row" style="display:flex;gap:8px">
+        <input type="number" id="peso-checkin-input" placeholder="Ex: 72.5" step="0.1"
+          style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:15px;text-align:center;outline:none">
+        <button onclick="registrarPeso()" style="padding:10px 16px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Registrar</button>
+      </div>
     </div>
   </div>
 
@@ -437,6 +475,26 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <button class="btn-primary" style="margin-top:8px" onclick="doLogout()">Sair da conta</button>
   </div>
 
+  <!-- CHAT PAGE -->
+  <div class="page-content hidden" id="page-chat" style="padding-bottom:70px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <h2 style="margin-bottom:2px">💬 Chat do Time</h2>
+        <p style="font-size:12px;color:var(--gray)">Grupo Team Lira</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;height:calc(100vh - 160px)">
+      <div style="flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px" id="chat-messages">
+        <div style="text-align:center;color:var(--gray);font-size:13px;padding:20px">Carregando mensagens...</div>
+      </div>
+      <div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid #222;margin-top:8px">
+        <input style="flex:1;padding:12px 14px;background:var(--dark2);border:1px solid #333;border-radius:24px;color:var(--white);font-size:14px;outline:none" id="chat-input" placeholder="Mensagem..." maxlength="500"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg();}">
+        <button style="width:44px;height:44px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;font-size:20px;flex-shrink:0" onclick="sendChatMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FEED PAGE -->
   <div class="page-content hidden" id="page-feed">
     <h2 style="margin-bottom:4px">💬 Feed do Time</h2>
@@ -456,6 +514,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <div class="nav-item" onclick="showPage('feed')" id="nav-feed">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>Feed
+    </div>
+    <div class="nav-item" onclick="showPage('chat')" id="nav-chat">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat
     </div>
     <div class="nav-item" onclick="showPage('profile')" id="nav-profile">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Perfil
@@ -487,6 +548,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">🏆 Ranking</div>
       <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">📅 Semanal</div>
       <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">💬 Feed</div>
+      <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">🗨️ Chat</div>
       <div class="admin-tab" onclick="showAdminTab('msgs')" id="atab-msgs">✉️ Mensagens</div>
     </div>
     <div class="admin-grid">
@@ -531,6 +593,17 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div id="weekly-content"></div>
     </div>
 
+    <!-- ADMIN CHAT -->
+    <div class="card hidden" id="admin-chat-section">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        🗨️ Chat do Time
+        <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminChat()">↻ Atualizar</span>
+      </div>
+      <div id="admin-chat-list" style="max-height:400px;overflow-y:auto">
+        <div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>
+      </div>
+    </div>
+
     <!-- MESSAGES -->
     <div class="card hidden" id="admin-msgs-section">
       <div class="card-title">✉️ Mensagens enviadas</div>
@@ -562,6 +635,24 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <button class="welcome-btn" onclick="enterApp()">BORA TREINAR 💪</button>
   </div>
+</div>
+
+<!-- STORY VIEWER -->
+<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:5000;display:flex;flex-direction:column" id="story-viewer" class="hidden">
+  <div style="position:absolute;top:8px;left:0;right:0;padding:0 16px;z-index:5002">
+    <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:99px;overflow:hidden">
+      <div style="height:100%;background:#fff;border-radius:99px;width:0%" id="story-progress-fill"></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;padding:16px;position:absolute;top:0;left:0;right:0;z-index:5001;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent)">
+    <div id="story-viewer-avatar" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--dark3)"></div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff" id="story-viewer-name">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7)" id="story-viewer-time"></div>
+    </div>
+    <div style="font-size:24px;color:#fff;cursor:pointer;padding:4px" onclick="closeStoryViewer()">✕</div>
+  </div>
+  <img id="story-viewer-img" style="width:100%;height:100%;object-fit:contain;margin-top:60px" src="" alt="Story">
 </div>
 
 <!-- CELEBRATION OVERLAY -->
@@ -683,7 +774,7 @@ const BADGES_DEF = [
   {id:'pts2500',     emoji:'💎', name:'2500 Pontos',     desc:'Acumulou 2500 pts',      check:u=>u.points>=2500},
   {id:'diet_week',   emoji:'🥗', name:'Dieta em Dia',   desc:'21 refeições seguidas',  check:u=>u.totalMeals>=21},
 ];
-const PTS = {treino:50, cafe:20, almoco:20, jantar:20, weight:30};
+const PTS = {treino:50, cafe:20, lanche:20, almoco:20, jantar:20, cardio:15, hidratacao:15, peso:20, weight:30};
 
 let currentUserData = null;
 let isAdmin = false;
@@ -704,7 +795,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 function showPage(page) {
-  ['home','ranking','badges','feed','profile'].forEach(p=>{
+  ['home','ranking','badges','feed','chat','profile'].forEach(p=>{
     const el = document.getElementById('page-'+p);
     const nav = document.getElementById('nav-'+p);
     if(el) el.classList.toggle('hidden',p!==page);
@@ -714,6 +805,7 @@ function showPage(page) {
   if(page==='badges') renderBadges();
   if(page==='profile') renderProfile();
   if(page==='feed') renderFeed();
+  if(page==='chat') initChat();
 }
 function switchTab(tab) {
   ['login','register','admin'].forEach((t,i)=>{
@@ -740,10 +832,13 @@ onAuthStateChanged(auth, async user => {
           await signOut(auth);
           showScreen('screen-blocked');
         } else {
-          showScreen('screen-app');
-          renderDashboard();
-          renderMission();
-          checkStudentMessages();
+          const wName = document.getElementById('welcome-name');
+          const wStreak = document.getElementById('welcome-streak');
+          const wQuote = document.getElementById('welcome-quote');
+          if(wName) wName.textContent = currentUserData.name.split(' ')[0];
+          if(wStreak) wStreak.textContent = currentUserData.streak || 0;
+          if(wQuote) wQuote.textContent = getDailyPhrase();
+          showScreen('screen-welcome');
         }
       } else {
         showScreen('screen-login');
@@ -1005,6 +1100,9 @@ async function renderDashboard() {
   const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   document.getElementById('dash-date').textContent=days[today.getDay()]+', '+today.getDate()+' de '+months[today.getMonth()];
+  const phraseEl = document.getElementById('daily-phrase');
+  if(phraseEl) phraseEl.textContent = getDailyPhrase();
+  loadStories();
 
   // ranking position
   try {
@@ -1020,7 +1118,7 @@ async function renderDashboard() {
     const cSnap=await getDoc(doc(db,'checkins',currentUserData.uid+'_'+today2));
     if(cSnap.exists()) {
       const c=cSnap.data();
-      ['treino','cafe','almoco','jantar'].forEach(t=>{
+      ['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','peso'].forEach(t=>{
         if(c[t]) document.getElementById('check-'+t).classList.add('done');
       });
     }
@@ -1144,7 +1242,6 @@ async function loadAdminData() {
       // Calculate last seen
       const lastSeen = u.lastCheckinDate ? getDaysAgo(u.lastCheckinDate) : 999;
       const seenBadge = isPending || isBlocked ? '' :
-        lastSeen === 999 ? '<span class="last-seen-badge warning">Novo</span>' :
         lastSeen === 0 ? '<span class="last-seen-badge ok">Hoje</span>' :
         lastSeen === 1 ? '<span class="last-seen-badge ok">Ontem</span>' :
         lastSeen <= 3 ? '<span class="last-seen-badge warning">' + lastSeen + 'd</span>' :
@@ -1768,6 +1865,15 @@ function imageToBase64(file, maxSize) {
 }
 window.uploadPhoto = uploadPhoto;
 
+function enterApp() {
+  showScreen('screen-app');
+  showPage('home');
+  renderDashboard();
+  renderMission();
+  checkStudentMessages();
+}
+window.enterApp = enterApp;
+
 async function checkStudentMessages() {
   if(!currentUserData) return;
   try {
@@ -1785,6 +1891,298 @@ async function checkStudentMessages() {
     }
   } catch(e){}
 }
+
+
+
+// ===== DAILY PHRASES =====
+const PHRASES = [
+  "A dor de hoje é a força de amanhã. 💪",
+  "Disciplina é a ponte entre metas e conquistas. 🏆",
+  "Seu corpo pode suportar quase tudo. É sua mente que você precisa convencer. 🧠",
+  "Não pare quando estiver cansado. Pare quando terminar. 🔥",
+  "Cada treino é um passo mais perto do seu objetivo. 👣",
+  "O sucesso é a soma de pequenos esforços repetidos dia após dia. ⚡",
+  "Seja mais forte do que suas desculpas. 💥",
+  "Transformação não acontece na zona de conforto. 🚀",
+  "Você não precisa ser perfeito, precisa ser consistente. 🎯",
+  "O único treino ruim é o que não foi feito. 💪",
+  "Sua maior competição é quem você era ontem. 🏅",
+  "Resultados não mentem. Continue. 📈",
+  "Foco, força e fé. Todo dia. 🙏",
+  "Um dia de cada vez. Um treino de cada vez. ✅",
+  "A mudança começa quando o desconforto supera o medo. 🔑",
+  "Invista em você. É o melhor investimento que existe. 💎",
+  "Corpos são construídos na academia, mas esculpidos na cozinha. 🥗",
+  "Não espere motivação. Crie disciplina. ⚙️",
+  "Cada escolha certa te aproxima do seu objetivo. 🎯",
+  "O segredo é começar. O resto vem com o tempo. ⏳",
+  "Consistência bate intensidade. Todo dia. 🔄",
+  "Sua versão futura está te agradecendo por cada treino de hoje. 🙌",
+  "LETS GO! Hoje é dia de evoluir. 🏆",
+  "Time Lira. Juntos somos mais fortes. ❤️",
+  "Acredite no processo. Os resultados vêm. 🌱",
+  "Mais um dia, mais uma chance de ser melhor. ☀️",
+  "A dieta de hoje é o corpo de amanhã. 🥩",
+  "Não existe atalho. Existe dedicação. 💪",
+  "Você chegou até aqui. Não pare agora. 🔥",
+  "Todo campeão já foi um iniciante. 🌟",
+];
+
+function getDailyPhrase() {
+  const todayKey = getTodayKey();
+  const custom = localStorage.getItem('tl_custom_phrase_' + todayKey);
+  if(custom) return custom;
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  return PHRASES[dayOfYear % PHRASES.length];
+}
+
+// ===== STORIES =====
+async function uploadStory(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 10 * 1024 * 1024) { showToast('Foto muito grande! Máximo 10MB'); return; }
+  showToast('Enviando foto... ⏳');
+  try {
+    const base64 = await imageToBase64(file, 800);
+    const storyData = {
+      uid: currentUserData.uid,
+      name: currentUserData.name,
+      photoURL: currentUserData.photoURL || null,
+      image: base64,
+      timestamp: Date.now()
+    };
+    await setDoc(doc(db, 'stories', currentUserData.uid), storyData);
+    showToast('Treino postado! 💪🔥');
+    loadStories();
+    postToFeed(currentUserData.name, 'treino_foto');
+  } catch(e) {
+    showToast('Erro ao postar. Tente novamente.');
+  }
+  event.target.value = '';
+}
+window.uploadStory = uploadStory;
+
+async function loadStories() {
+  const container = document.getElementById('stories-row');
+  if(!container || !currentUserData) return;
+  try {
+    const snap = await getDocs(collection(db, 'stories'));
+    const now = Date.now();
+    const stories = snap.docs.map(d => d.data()).filter(s => (now - s.timestamp) < 86400000).sort((a,b) => b.timestamp - a.timestamp);
+    const addBtn = container.querySelector('[onclick]');
+    container.innerHTML = '';
+    if(addBtn) container.appendChild(addBtn);
+    stories.forEach(story => {
+      const seenKey = 'tl_seen_' + story.uid + '_' + story.timestamp;
+      const seen = localStorage.getItem(seenKey);
+      const isMe = story.uid === currentUserData.uid;
+      const avatarContent = story.photoURL
+        ? '<img src="' + story.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : story.name.charAt(0).toUpperCase();
+      const ringColor = isMe ? 'background:var(--gold)' : seen ? 'background:#444' : 'background:linear-gradient(135deg,var(--gold),#c9a012)';
+      const el = document.createElement('div');
+      el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0';
+      el.onclick = () => openStoryViewer(story);
+      el.innerHTML = '<div style="width:62px;height:62px;border-radius:50%;padding:2px;' + ringColor + '">'
+        + '<div style="width:100%;height:100%;border-radius:50%;background:var(--dark3);border:2px solid var(--black);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden">' + avatarContent + '</div>'
+        + '</div>'
+        + '<div style="font-size:10px;color:var(--gray);max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + story.name.split(' ')[0] + '</div>';
+      container.appendChild(el);
+    });
+  } catch(e) { console.error('Stories error:', e); }
+}
+
+let storyTimerRef = null;
+function openStoryViewer(story) {
+  localStorage.setItem('tl_seen_' + story.uid + '_' + story.timestamp, '1');
+  const viewer = document.getElementById('story-viewer');
+  if(!viewer) return;
+  document.getElementById('story-viewer-name').textContent = story.name.split(' ')[0];
+  document.getElementById('story-viewer-time').textContent = getTimeAgo(story.timestamp);
+  document.getElementById('story-viewer-img').src = story.image;
+  const avatarEl = document.getElementById('story-viewer-avatar');
+  if(story.photoURL) {
+    avatarEl.innerHTML = '<img src="' + story.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    avatarEl.textContent = story.name.charAt(0).toUpperCase();
+  }
+  const fill = document.getElementById('story-progress-fill');
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  viewer.classList.remove('hidden');
+  setTimeout(() => { fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }, 100);
+  if(storyTimerRef) clearTimeout(storyTimerRef);
+  storyTimerRef = setTimeout(closeStoryViewer, 5100);
+  loadStories();
+}
+function closeStoryViewer() {
+  const viewer = document.getElementById('story-viewer');
+  if(viewer) viewer.classList.add('hidden');
+  if(storyTimerRef) clearTimeout(storyTimerRef);
+}
+window.openStoryViewer = openStoryViewer;
+window.closeStoryViewer = closeStoryViewer;
+
+// ===== CHAT =====
+let chatInitialized = false;
+
+async function initChat() {
+  loadChatMessages();
+  if(window.chatInterval) clearInterval(window.chatInterval);
+  window.chatInterval = setInterval(loadChatMessages, 5000);
+}
+
+async function loadChatMessages() {
+  const container = document.getElementById('chat-messages');
+  if(!container || !currentUserData) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
+      container.innerHTML = '<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">Nenhuma mensagem ainda. Seja o primeiro! 💬</div>';
+      return;
+    }
+    const msgs = snap.data().messages || [];
+    const wasAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
+    container.innerHTML = msgs.map((msg, idx) => {
+      const isMe = msg.uid === currentUserData.uid;
+      const time = getTimeAgo(msg.timestamp);
+      const avatarContent = msg.photoURL
+        ? '<img src="' + msg.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+        : msg.name.charAt(0).toUpperCase();
+      return '<div style="display:flex;gap:8px;align-items:flex-end;' + (isMe ? 'flex-direction:row-reverse' : '') + '">'
+        + '<div style="width:32px;height:32px;border-radius:50%;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;border:2px solid #333">' + avatarContent + '</div>'
+        + '<div>'
+        + (!isMe ? '<div style="font-size:11px;color:var(--gray);margin-bottom:3px">' + msg.name.split(' ')[0] + '</div>' : '')
+        + '<div style="max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;' + (isMe ? 'background:var(--gold);color:var(--black);border-bottom-right-radius:4px' : 'background:var(--dark2);color:var(--white);border-bottom-left-radius:4px;border:1px solid #2a2a2a') + '">' + escapeHtml(msg.text) + '</div>'
+        + '<div style="font-size:10px;color:var(--gray);opacity:0.6;margin-top:4px' + (isMe ? ';text-align:right' : '') + '">' + time + '</div>'
+        + (isMe ? '<div style="font-size:12px;color:#e53935;cursor:pointer;margin-top:4px;text-align:right" onclick="deleteChatMsg(' + idx + ')">🗑️ apagar</div>' : '')
+        + '</div>'
+        + '</div>';
+    }).join('');
+    if(wasAtBottom || !chatInitialized) {
+      container.scrollTop = container.scrollHeight;
+      chatInitialized = true;
+    }
+  } catch(e) { console.error('Chat error:', e); }
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function sendChatMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text || !currentUserData) return;
+  input.value = '';
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.exists() ? (snap.data().messages || []) : [];
+    msgs.push({ uid: currentUserData.uid, name: currentUserData.name, photoURL: currentUserData.photoURL || null, text: text, timestamp: Date.now() });
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs.slice(-200)});
+    loadChatMessages();
+  } catch(e) { showToast('Erro ao enviar.'); }
+}
+window.sendChatMsg = sendChatMsg;
+
+async function deleteChatMsg(idx) {
+  if(!confirm('Apagar esta mensagem?')) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.data().messages || [];
+    msgs.splice(idx, 1);
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
+    showToast('Mensagem apagada!');
+    loadChatMessages();
+  } catch(e) { showToast('Erro ao apagar.'); }
+}
+window.deleteChatMsg = deleteChatMsg;
+
+async function adminDeleteChatMsg(idx) {
+  if(!confirm('Apagar esta mensagem?')) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.data().messages || [];
+    msgs.splice(idx, 1);
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
+    showToast('Mensagem apagada! 🗑️');
+    loadAdminChat();
+  } catch(e) { showToast('Erro ao apagar.'); }
+}
+window.adminDeleteChatMsg = adminDeleteChatMsg;
+
+async function loadAdminChat() {
+  const container = document.getElementById('admin-chat-list');
+  if(!container) return;
+  container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>';
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
+      container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Nenhuma mensagem ainda.</div>';
+      return;
+    }
+    const msgs = [...snap.data().messages].reverse();
+    container.innerHTML = msgs.map((msg, idx) => {
+      const realIdx = snap.data().messages.length - 1 - idx;
+      const time = getTimeAgo(msg.timestamp);
+      const avatarContent = msg.photoURL
+        ? '<img src="' + msg.photoURL + '" style="width:28px;height:28px;object-fit:cover;border-radius:50%">'
+        : '<div style="width:28px;height:28px;border-radius:50%;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">' + msg.name.charAt(0).toUpperCase() + '</div>';
+      return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #222">'
+        + avatarContent
+        + '<div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center">'
+        + '<span style="font-size:12px;font-weight:700;color:var(--gold)">' + msg.name.split(' ')[0] + '</span>'
+        + '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--gray)">' + time + '</span>'
+        + '<button onclick="adminDeleteChatMsg(' + realIdx + ')" style="background:transparent;border:none;color:var(--danger);cursor:pointer;font-size:12px">🗑️</button>'
+        + '</div></div>'
+        + '<div style="font-size:13px;color:var(--white);margin-top:2px">' + msg.text + '</div>'
+        + '</div></div>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">Erro ao carregar.</div>';
+  }
+}
+window.loadAdminChat = loadAdminChat;
+
+// ===== REGISTRO DE PESO NO CHECK-IN =====
+async function registrarPeso() {
+  const val = parseFloat(document.getElementById('peso-checkin-input').value);
+  if(!val || val < 20 || val > 300) { showToast('Peso inválido!'); return; }
+  const today = getTodayKey();
+  const checkinRef = doc(db,'checkins',currentUserData.uid+'_'+today);
+  const checkinSnap = await getDoc(checkinRef);
+  const checkins = checkinSnap.exists() ? checkinSnap.data() : {};
+  if(checkins['peso']) { showToast('Peso já registrado hoje!'); return; }
+  checkins['peso'] = true;
+  await setDoc(checkinRef, checkins, {merge:true});
+  const userRef = doc(db,'users',currentUserData.uid);
+  const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
+  await updateDoc(userRef, { points: increment(20), weightHistory: hist });
+  const snap = await getDoc(userRef);
+  currentUserData = snap.data();
+  document.getElementById('check-peso').classList.add('done');
+  document.getElementById('peso-input-row').style.display = 'none';
+  document.getElementById('btn-peso').style.background = 'var(--gold)';
+  showPtsPopup(20, document.getElementById('check-peso'));
+  showToast('+20 pontos! Peso registrado ⚖️');
+  postToFeed(currentUserData.name, 'weight');
+  renderDashboard();
+}
+window.registrarPeso = registrarPeso;
+
+// ===== CUSTOM PHRASE FOR ADMIN =====
+function saveCustomPhrase() {
+  const text = document.getElementById('custom-phrase-input') ? document.getElementById('custom-phrase-input').value.trim() : '';
+  const todayKey = getTodayKey();
+  if(text) {
+    localStorage.setItem('tl_custom_phrase_' + todayKey, text);
+    showToast('Frase do dia atualizada! 💬');
+  } else {
+    localStorage.removeItem('tl_custom_phrase_' + todayKey);
+    showToast('Usando frase automática!');
+  }
+}
+window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
 </body>
