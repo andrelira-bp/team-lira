@@ -1736,7 +1736,7 @@ function renderProfile() {
   const profName = document.getElementById('prof-name');
   const profLevel = document.getElementById('prof-level');
   if(profName) profName.textContent = currentUserData.name;
-  if(profLevel) profLevel.textContent = level.badge + ' ' + level.name;
+  if(profLevel) profLevel.textContent = level.badge;
   // Pre-fill settings fields
   const cfgName = document.getElementById('cfg-name');
   const cfgEmail = document.getElementById('cfg-email');
@@ -1749,12 +1749,12 @@ function renderProfile() {
   const fillEl = document.getElementById('level-progress-fill');
   const ptsEl = document.getElementById('prof-pts-display');
   const ptsNextEl = document.getElementById('prof-pts-next');
-  if(levelNameEl) levelNameEl.textContent = level.badge + ' ' + level.name;
+  if(levelNameEl) levelNameEl.textContent = level.badge;
   if(ptsEl) ptsEl.textContent = pts.toLocaleString() + ' pts';
   if(nextLevel) {
     const progress = ((pts - level.min) / (nextLevel.min - level.min)) * 100;
     if(fillEl) fillEl.style.width = Math.min(100, Math.max(0, progress)) + '%';
-    if(nextLevelEl) nextLevelEl.textContent = nextLevel.badge + ' ' + nextLevel.name;
+    if(nextLevelEl) nextLevelEl.textContent = nextLevel.badge;
     if(ptsNextEl) ptsNextEl.textContent = 'Faltam ' + (nextLevel.min - pts).toLocaleString() + ' pts';
   } else {
     if(fillEl) fillEl.style.width = '100%';
