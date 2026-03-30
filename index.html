@@ -1017,18 +1017,11 @@ async function toggleCheck(type) {
 
     const pts=PTS[type]||0;
     const userRef=doc(db,'users',currentUserData.uid);
-    // If user's monthlyPoints are from a previous month, zero them before adding
-    const monthKey = getMonthKey();
-    const userLastReset = currentUserData.lastResetMonth || '';
-    const updates={points:increment(pts)};
-    if(userLastReset !== monthKey) {
-      // Self-reset: start fresh this month
-      updates.monthlyPoints = pts;
-      updates.lastResetMonth = monthKey;
-      currentUserData.lastResetMonth = monthKey;
-      currentUserData.monthlyPoints = 0;
-    } else {
-      updates.monthlyPoints = increment(pts);
+    const updates={points:increment(pts), monthlyPoints:increment(pts)};
+    // Mark lastResetMonth on first use
+    if(!currentUserData.lastResetMonth) {
+      updates.lastResetMonth = getMonthKey();
+      currentUserData.lastResetMonth = getMonthKey();
     }
     if(type==='treino') updates.totalTreinos=increment(1);
     if(['cafe','almoco','jantar'].includes(type)) updates.totalMeals=increment(1);
@@ -1441,19 +1434,6 @@ async function checkMonthlyReset() {
       console.log('Monthly reset done!');
     } catch(e) {
       console.error('Monthly reset error:', e);
-    }
-  } else if(!resetAlreadyDone) {
-    // Not day 1 — but check if THIS user's monthlyPoints are from a previous month
-    // (handles case where user was inactive during day 1 reset)
-    const userLastReset = currentUserData.lastResetMonth || '';
-    if(userLastReset !== monthKey && (currentUserData.monthlyPoints || 0) > 0) {
-      try {
-        await updateDoc(doc(db, 'users', currentUserData.uid), {monthlyPoints: 0, lastResetMonth: monthKey});
-        currentUserData.monthlyPoints = 0;
-        currentUserData.lastResetMonth = monthKey;
-      } catch(e) {
-        console.error('User self-reset error:', e);
-      }
     }
   }
 }
@@ -2357,8 +2337,30 @@ function enterApp() {
   renderMission();
   checkStudentMessages();
   checkMonthlyReset();
+  fixMonthlyPointsIfNeeded();
 }
 window.enterApp = enterApp;
+
+// One-time migration: restore monthlyPoints = points for users wrongly zeroed
+// Only runs before any global reset has happened (first month of app)
+async function fixMonthlyPointsIfNeeded() {
+  if(!currentUserData) return;
+  try {
+    const monthKey = getMonthKey();
+    const resetDoc = await getDoc(doc(db, 'appConfig', 'monthlyReset'));
+    if(resetDoc.exists()) return; // real reset already happened, don't touch
+    const u = currentUserData;
+    if((u.points||0) > 0 && (u.monthlyPoints||0) < (u.points||0)) {
+      await updateDoc(doc(db,'users',u.uid), {
+        monthlyPoints: u.points,
+        lastResetMonth: monthKey
+      });
+      currentUserData.monthlyPoints = u.points;
+      currentUserData.lastResetMonth = monthKey;
+      renderDashboard();
+    }
+  } catch(e) { console.error('fixMonthlyPoints error:', e); }
+}
 
 async function checkStudentMessages() {
   if(!currentUserData) return;
@@ -2643,14 +2645,9 @@ async function registrarPeso() {
   await setDoc(checkinRef, checkins, {merge:true});
   const userRef = doc(db,'users',currentUserData.uid);
   const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
-  const weightMonthKey = getMonthKey();
-  const weightLastReset = currentUserData.lastResetMonth || '';
-  const weightUpdates = { points: increment(20), weightHistory: hist };
-  if(weightLastReset !== weightMonthKey) {
-    weightUpdates.monthlyPoints = 20;
-    weightUpdates.lastResetMonth = weightMonthKey;
-  } else {
-    weightUpdates.monthlyPoints = increment(20);
+  const weightUpdates = { points: increment(20), monthlyPoints: increment(20), weightHistory: hist };
+  if(!currentUserData.lastResetMonth) {
+    weightUpdates.lastResetMonth = getMonthKey();
   }
   await updateDoc(userRef, weightUpdates);
   const snap = await getDoc(userRef);
