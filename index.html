@@ -327,13 +327,8 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <!-- HOME -->
   <div class="page-content" id="page-home">
     <div style="padding:20px 0 8px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div id="home-avatar" style="width:46px;height:46px;border-radius:50%;background:var(--dark3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;overflow:hidden"></div>
-        <div>
-          <h2 style="font-size:22px;font-weight:700;margin:0">Olá, <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
-          <p style="font-size:13px;color:var(--gray);margin:2px 0 0" id="dash-date"></p>
-        </div>
-      </div>
+      <h2 style="font-size:22px;font-weight:700">Olá, <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
+      <p style="font-size:13px;color:var(--gray);margin-top:4px" id="dash-date"></p>
     </div>
     <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:14px">
       <p style="font-size:13px;color:var(--white);font-style:italic;line-height:1.5" id="daily-phrase"></p>
@@ -1319,14 +1314,6 @@ async function renderDashboard() {
   const pct=level.index===LEVELS.length-1?100:Math.round(((pts-level.min)/(nextLevel.min-level.min))*100);
 
   document.getElementById('dash-name').textContent=currentUserData.name.split(' ')[0];
-  const homeAvatar = document.getElementById('home-avatar');
-  if(homeAvatar) {
-    if(currentUserData.photoURL) {
-      homeAvatar.innerHTML = '<img src="' + currentUserData.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
-    } else {
-      homeAvatar.textContent = currentUserData.name.charAt(0).toUpperCase();
-    }
-  }
   document.getElementById('top-username').textContent=currentUserData.name.split(' ')[0];
   document.getElementById('dash-pts').textContent=pts.toLocaleString();
   document.getElementById('dash-level-badge').textContent=level.badge;
@@ -2446,14 +2433,19 @@ function showPtsPopup(pts, el) {
 async function postToFeed(name, type, extra='') {
   if(!currentUserData || currentUserData.status==='deleted') return;
   const messages = {
-    treino: ['completou o treino de hoje 💪', 'foi pra academia! 🏋️', 'suou a camisa hoje 🔥'],
-    cafe: ['tomou café da manhã certinho ☀️', 'começou o dia na dieta! 💛'],
-    almoco: ['almoçou direitinho 🍽️', 'seguiu a dieta no almoço! ✅'],
-    jantar: ['jantar seguido! 🌙', 'fechou o dia na dieta 🌟'],
+    treino: ['concluiu mais um treino! O time não para 💪'],
+    cafe: ['começou o dia com disciplina! Foco total ☀️'],
+    lanche: ['não deixou passar o lanche! Consistência em ação 🥗'],
+    almoco: ['seguiu firme no almoço! Alimentação é treino também 🍽️'],
+    jantar: ['fechou o dia com chave de ouro! Missão cumprida 🌙'],
+    cardio: ['concluiu mais um cardio! Resistência elevada 🏃'],
+    hidratacao: ['garantiu a hidratação do dia! Corpo em alta performance 💧'],
+    peso: ['monitorou sua evolução! Quem acompanha, evolui ⚖️'],
     mission: [`concluiu a missão: ${extra} ⚡`],
     badge: [`desbloqueou a conquista: ${extra} 🎖️`],
     levelup: [`subiu para o nível ${extra}! 🏆`],
     weight: ['registrou o peso hoje ⚖️'],
+    treino_foto: ['postou o treino no feed 📸', 'compartilhou o treino de hoje 💪📸'],
   };
   const msgs = messages[type] || ['fez algo incrível!'];
   const text = msgs[Math.floor(Math.random()*msgs.length)];
