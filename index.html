@@ -500,6 +500,20 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
         <div style="font-size:12px;color:var(--gold);font-weight:700" id="prof-pts-display">0 pts</div>
         <div style="font-size:12px;color:var(--gray)" id="prof-pts-next"></div>
       </div>
+      <div style="margin-top:12px;text-align:center">
+        <button onclick="openLevelsModal()" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);padding:8px 20px;border-radius:99px;font-size:12px;font-weight:700;cursor:pointer">🏆 Ver todos os níveis</button>
+      </div>
+    </div>
+
+    <!-- MODAL NÍVEIS -->
+    <div id="levels-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9998;align-items:flex-end;justify-content:center">
+      <div style="background:#1a1a1a;border-radius:20px 20px 0 0;width:100%;max-height:80vh;overflow-y:auto;padding:20px 16px 32px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:17px;font-weight:800">🏆 Tabela de Níveis</div>
+          <div onclick="closeLevelsModal()" style="cursor:pointer;font-size:22px;color:var(--gray)">✕</div>
+        </div>
+        <div id="levels-modal-list"></div>
+      </div>
     </div>
 
     <!-- CALENDARIO SEQUENCIA -->
@@ -877,11 +891,26 @@ const db = getFirestore(app);
 const INVITE_CODE = 'TEAMLIRA';
 const ADMIN_PASS = 'lira2025';
 const LEVELS = [
-  {name:'Iniciante', badge:'🥉 Iniciante', min:0,    max:500},
-  {name:'Guerreiro', badge:'⚔️ Guerreiro', min:500,  max:1200},
-  {name:'Campeão',   badge:'🥈 Campeão',   min:1200, max:2500},
-  {name:'Elite',     badge:'🥇 Elite',     min:2500, max:5000},
-  {name:'Lenda',     badge:'🏆 Lenda',     min:5000, max:99999},
+  {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
+  {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
+  {name:'Determinado',    badge:'💪 Determinado',    min:4500,  max:7500},
+  {name:'Resistente',     badge:'🛡️ Resistente',     min:7500,  max:11000},
+  {name:'Focado',         badge:'🎯 Focado',         min:11000, max:15000},
+  {name:'Veloz',          badge:'🏃 Veloz',          min:15000, max:19500},
+  {name:'Forte',          badge:'🦾 Forte',          min:19500, max:24500},
+  {name:'Guerreiro',      badge:'⚔️ Guerreiro',      min:24500, max:29500},
+  {name:'Combatente',     badge:'💥 Combatente',     min:29500, max:34500},
+  {name:'Campeão',        badge:'🥈 Campeão',        min:34500, max:38000},
+  {name:'Destaque',       badge:'🌟 Destaque',       min:38000, max:41000},
+  {name:'Veterano',       badge:'🎖️ Veterano',       min:41000, max:43500},
+  {name:'Especialista',   badge:'🏅 Especialista',   min:43500, max:45500},
+  {name:'Elite',          badge:'🥇 Elite',          min:45500, max:47000},
+  {name:'Mestre',         badge:'🔱 Mestre',         min:47000, max:48000},
+  {name:'Grão Mestre',    badge:'👑 Grão Mestre',    min:48000, max:48800},
+  {name:'Dominante',      badge:'🌙 Dominante',      min:48800, max:49300},
+  {name:'Lendário',       badge:'💎 Lendário',       min:49300, max:49700},
+  {name:'Extraordinário', badge:'💎 Extraordinário', min:49700, max:50000},
+  {name:'Lenda Viva',     badge:'🌟 Lenda Viva',     min:50000, max:999999},
 ];
 const BADGES_DEF = [
   // 🏋️ TREINO (6)
@@ -2545,6 +2574,34 @@ function imageToBase64(file, maxSize) {
   });
 }
 window.uploadPhoto = uploadPhoto;
+
+function openLevelsModal() {
+  const modal = document.getElementById('levels-modal');
+  const list = document.getElementById('levels-modal-list');
+  const pts = currentUserData ? (currentUserData.points || 0) : 0;
+  const currentLevel = getLevel(pts);
+  let html = '';
+  LEVELS.forEach((lvl, i) => {
+    const isCurrent = lvl.name === currentLevel.name;
+    const isUnlocked = pts >= lvl.min;
+    html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;margin-bottom:8px;background:' + (isCurrent ? 'rgba(245,197,24,0.15)' : '#111') + ';border:1.5px solid ' + (isCurrent ? 'var(--gold)' : (isUnlocked ? '#333' : '#222')) + '">'
+      + '<div style="font-size:22px;width:32px;text-align:center;opacity:' + (isUnlocked ? '1' : '0.35') + '">' + lvl.badge.split(' ')[0] + '</div>'
+      + '<div style="flex:1">'
+      + '<div style="font-size:14px;font-weight:800;color:' + (isCurrent ? 'var(--gold)' : (isUnlocked ? 'var(--white)' : 'var(--gray)')) + '">' + lvl.badge.split(' ').slice(1).join(' ') + (isCurrent ? ' <span style="font-size:11px;background:var(--gold);color:#000;padding:2px 8px;border-radius:99px;margin-left:6px">Seu nível</span>' : '') + '</div>'
+      + '<div style="font-size:12px;color:var(--gray);margin-top:2px">' + (i === 0 ? 'Nível inicial' : 'A partir de ' + lvl.min.toLocaleString('pt-BR') + ' pts') + '</div>'
+      + '</div>'
+      + '<div style="font-size:18px">' + (isUnlocked ? '✅' : '🔒') + '</div>'
+      + '</div>';
+  });
+  list.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+function closeLevelsModal() {
+  document.getElementById('levels-modal').style.display = 'none';
+}
+window.openLevelsModal = openLevelsModal;
+window.closeLevelsModal = closeLevelsModal;
 
 function enterApp() {
   showScreen('screen-app');
