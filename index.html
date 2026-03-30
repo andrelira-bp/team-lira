@@ -2508,13 +2508,14 @@ window.enterApp = enterApp;
 // Migrate old badge IDs to new IDs on app entry (runs once per device)
 async function migrateBadgeIds() {
   if(!currentUserData) return;
-  if(localStorage.getItem('tl_badge_migration_v2')) return;
+  if(localStorage.getItem('tl_badge_migration_v3')) return;
   try {
     const oldToNew = {
       'first_train':'train_1','week_train':'train_10','month_train':'train_50',
       'streak3':'streak_3','streak7':'streak_7','streak30':'streak_30',
       'pts500':'pts_500','pts2500':'pts_2000','diet_week':'meal_1'
     };
+    const oldIds = Object.keys(oldToNew);
     const userRef = doc(db,'users',currentUserData.uid);
     let migrated = false;
     for(const [oldId, newId] of Object.entries(oldToNew)) {
@@ -2523,6 +2524,8 @@ async function migrateBadgeIds() {
         migrated = true;
       }
     }
+    // Remove old IDs from the array
+    currentUserData.unlockedBadges = (currentUserData.unlockedBadges||[]).filter(id => !oldIds.includes(id));
     // Also re-check all badges based on current data (catches any that should already be unlocked)
     const newBadges = [];
     for(const b of BADGES_DEF) {
@@ -2535,7 +2538,7 @@ async function migrateBadgeIds() {
     if(migrated) {
       await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
     }
-    localStorage.setItem('tl_badge_migration_v2', '1');
+    localStorage.setItem('tl_badge_migration_v3', '1');
   } catch(e) { console.error('Badge migration error:', e); }
 }
 
