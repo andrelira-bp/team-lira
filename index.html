@@ -1387,54 +1387,59 @@ async function renderHallOfFame() {
 // Check and reset monthly points on day 1
 async function checkMonthlyReset() {
   if(!currentUserData) return;
-  const dayOfMonth = new Date().getDate();
-  const monthKey = getMonthKey();
+  const monthKey = getMonthKey(); // ex: "2026-04"
 
-  // Check Firestore to see if this month's reset was already done globally
-  let resetAlreadyDone = false;
   try {
+    // Check Firestore: was this month's reset already done globally?
     const resetDoc = await getDoc(doc(db, 'appConfig', 'monthlyReset'));
-    if(resetDoc.exists() && resetDoc.data().lastResetMonth === monthKey) {
-      resetAlreadyDone = true;
-    }
-  } catch(e) {}
+    const lastResetMonth = resetDoc.exists() ? resetDoc.data().lastResetMonth : null;
 
-  if(dayOfMonth === 1 && !resetAlreadyDone) {
-    // Save hall of fame for previous month
-    try {
-      const prevDate = new Date();
-      prevDate.setDate(0); // last day of previous month
-      const prevMonth = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
+    // If reset already done for this month, nothing to do
+    if(lastResetMonth === monthKey) return;
 
-      const snap = await getDocs(collection(db, 'users'));
-      const all = snap.docs.map(d => d.data())
-        .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked' && (u.monthlyPoints||0) > 0)
-        .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0))
-        .slice(0, 3);
-
-      if(all.length > 0) {
-        await setDoc(doc(db, 'hallOfFame', prevMonth), {
-          winners: all.map(u => ({
-            uid: u.uid,
-            name: u.name,
-            photoURL: u.photoURL || null,
-            points: u.monthlyPoints || 0
-          })),
-          createdAt: Date.now()
-        });
-      }
-
-      // Reset all users monthly points
-      const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), {monthlyPoints: 0, lastResetMonth: monthKey}));
-      await Promise.all(batch);
-
-      // Mark reset as done globally in Firestore
+    // If lastResetMonth is null = app never reset before (first month ever) = don't reset
+    // Only reset if there WAS a previous month recorded (i.e. app has been running before)
+    if(!lastResetMonth) {
+      // First time ever — just record current month so next month it resets
       await setDoc(doc(db, 'appConfig', 'monthlyReset'), { lastResetMonth: monthKey, doneAt: Date.now() });
-      localStorage.setItem('tl_last_reset', monthKey);
-      console.log('Monthly reset done!');
-    } catch(e) {
-      console.error('Monthly reset error:', e);
+      return;
     }
+
+    // lastResetMonth exists but is different from current month = new month, do reset
+    const prevDate = new Date();
+    prevDate.setDate(0); // last day of previous month
+    const prevMonth = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
+
+    const snap = await getDocs(collection(db, 'users'));
+
+    // Save Hall of Fame for previous month
+    const top3 = snap.docs.map(d => d.data())
+      .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked' && (u.monthlyPoints||0) > 0)
+      .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0))
+      .slice(0, 3);
+
+    if(top3.length > 0) {
+      await setDoc(doc(db, 'hallOfFame', prevMonth), {
+        winners: top3.map(u => ({
+          uid: u.uid,
+          name: u.name,
+          photoURL: u.photoURL || null,
+          points: u.monthlyPoints || 0
+        })),
+        createdAt: Date.now()
+      });
+    }
+
+    // Reset all users monthlyPoints to 0
+    const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), { monthlyPoints: 0, lastResetMonth: monthKey }));
+    await Promise.all(batch);
+
+    // Mark reset done globally
+    await setDoc(doc(db, 'appConfig', 'monthlyReset'), { lastResetMonth: monthKey, doneAt: Date.now() });
+    localStorage.setItem('tl_last_reset', monthKey);
+    console.log('Monthly reset done for', monthKey);
+  } catch(e) {
+    console.error('Monthly reset error:', e);
   }
 }
 
