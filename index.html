@@ -891,7 +891,13 @@ window.showToast=showToast;
 
 // ===== AUTH =====
 onAuthStateChanged(auth, async user => {
-  if(isAdmin) return;
+  // Restore admin session from localStorage on page reload
+  if(localStorage.getItem('tl_admin_session') === '1') {
+    isAdmin = true;
+    showScreen('screen-admin');
+    loadAdminData();
+    return;
+  }
   if(user) {
     try {
       const snap = await getDoc(doc(db,'users',user.uid));
@@ -1893,7 +1899,18 @@ async function openStudentModal(uid) {
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo peso</span><span class="modal-stat-value">' + (u.weightHistory&&u.weightHistory.length>0 ? u.weightHistory[u.weightHistory.length-1].weight+'kg' : '-') + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>';
 
-    document.getElementById('modal-student').classList.remove('hidden');
+  // Show/hide approve button based on status
+  const approveBtn = document.getElementById('modal-approve-btn');
+  const blockBtn = document.getElementById('modal-block-btn');
+  if(isPending) {
+    approveBtn.style.display = 'block';
+    blockBtn.textContent = '🗑️ Rejeitar aluno';
+  } else {
+    approveBtn.style.display = 'none';
+    blockBtn.textContent = isBlocked ? '✅ Desbloquear aluno' : '🚫 Bloquear aluno';
+  }
+
+  document.getElementById('modal-student').classList.remove('hidden');
 }
 
 async function modalApprove() {
