@@ -94,18 +94,18 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 .check-item.done .check-btn{background:var(--gold);border-color:var(--gold);color:var(--black);}
 
 /* RANKING */
-.ranking-podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:20px 0;}
-.podium-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.podium-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;border:3px solid transparent;background:#2a2a2a;}
-.podium-item.p1 .podium-avatar{border-color:var(--gold);width:62px;height:62px;font-size:24px;}
-.podium-item.p2 .podium-avatar{border-color:#aaa;}
-.podium-item.p3 .podium-avatar{border-color:#cd7f32;}
-.podium-block{width:70px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;}
-.podium-item.p1 .podium-block{height:80px;background:var(--gold);color:var(--black);width:80px;}
-.podium-item.p2 .podium-block{height:60px;background:#888;color:var(--black);}
-.podium-item.p3 .podium-block{height:44px;background:#7a4f2d;color:var(--white);}
-.podium-name{font-size:11px;color:var(--gray);text-align:center;max-width:70px;}
-.podium-pts{font-size:12px;color:var(--gold);font-weight:700;}
+.ranking-podium{display:flex;align-items:flex-end;justify-content:center;gap:0;margin:8px 0 0 0;}
+.podium-item{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;}
+.podium-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;border:3px solid transparent;background:#2a2a2a;overflow:hidden;flex-shrink:0;}
+.podium-item.p1 .podium-avatar{border-color:var(--gold);width:72px;height:72px;font-size:26px;}
+.podium-item.p2 .podium-avatar{border-color:#aaa;width:58px;height:58px;font-size:20px;}
+.podium-item.p3 .podium-avatar{border-color:#cd7f32;width:58px;height:58px;font-size:20px;}
+.podium-block{width:100%;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;margin-top:8px;}
+.podium-item.p1 .podium-block{height:90px;background:var(--gold);color:var(--black);}
+.podium-item.p2 .podium-block{height:66px;background:#888;color:var(--black);}
+.podium-item.p3 .podium-block{height:50px;background:#7a4f2d;color:var(--white);}
+.podium-name{font-size:12px;color:var(--gray);text-align:center;margin:4px 0 2px;max-width:90px;}
+.podium-pts{font-size:13px;color:var(--gold);font-weight:800;margin-bottom:4px;}
 .rank-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;margin-bottom:8px;background:var(--dark2);border:1px solid #2a2a2a;}
 .rank-item.me{border-color:var(--gold-dim);background:var(--gold-bg);}
 .rank-pos{font-size:16px;font-weight:800;color:var(--gray2);width:24px;text-align:center;}
@@ -441,14 +441,22 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <!-- MES ATUAL -->
     <div id="rank-monthly-section">
-      <div style="font-size:12px;color:var(--gray);text-align:center;margin-bottom:12px" id="rank-month-label"></div>
-      <div class="podium" id="podium-monthly"></div>
+      <div style="margin:4px 0 16px">
+        <div style="font-size:22px;font-weight:800">🏆 Ranking</div>
+        <div style="font-size:12px;color:var(--gray)" id="rank-month-label"></div>
+      </div>
+      <div class="ranking-podium" id="podium-monthly"></div>
+      <div style="height:1px;background:#222;margin:16px 0 12px"></div>
       <div class="rank-list" id="rank-list-monthly"></div>
     </div>
     <!-- PONTUACAO GERAL -->
     <div id="rank-total-section" style="display:none">
-      <div style="font-size:12px;color:var(--gray);text-align:center;margin-bottom:12px">Pontuação acumulada desde o início</div>
-      <div class="podium" id="podium-total"></div>
+      <div style="margin:4px 0 16px">
+        <div style="font-size:22px;font-weight:800">👑 Pontuação Geral</div>
+        <div style="font-size:12px;color:var(--gray)">Pontuação acumulada desde o início</div>
+      </div>
+      <div class="ranking-podium" id="podium-total"></div>
+      <div style="height:1px;background:#222;margin:16px 0 12px"></div>
       <div class="rank-list" id="rank-list-total"></div>
     </div>
     <!-- MESES ANTERIORES -->
@@ -1009,7 +1017,19 @@ async function toggleCheck(type) {
 
     const pts=PTS[type]||0;
     const userRef=doc(db,'users',currentUserData.uid);
-    const updates={points:increment(pts), monthlyPoints:increment(pts)};
+    // If user's monthlyPoints are from a previous month, zero them before adding
+    const monthKey = getMonthKey();
+    const userLastReset = currentUserData.lastResetMonth || '';
+    const updates={points:increment(pts)};
+    if(userLastReset !== monthKey) {
+      // Self-reset: start fresh this month
+      updates.monthlyPoints = pts;
+      updates.lastResetMonth = monthKey;
+      currentUserData.lastResetMonth = monthKey;
+      currentUserData.monthlyPoints = 0;
+    } else {
+      updates.monthlyPoints = increment(pts);
+    }
     if(type==='treino') updates.totalTreinos=increment(1);
     if(['cafe','almoco','jantar'].includes(type)) updates.totalMeals=increment(1);
 
@@ -1233,7 +1253,7 @@ async function renderMonthlyRanking() {
   try {
     const snap = await getDocs(collection(db, 'users'));
     const monthKey = getMonthKey();
-    if(labelEl) labelEl.textContent = '🏆 ' + getMonthName(monthKey);
+    if(labelEl) labelEl.textContent = 'Top alunos do Team Lira · ' + getMonthName(monthKey);
 
     const all = snap.docs.map(d => d.data())
       .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked')
@@ -1268,7 +1288,7 @@ async function renderMonthlyRanking() {
         + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="rank-info">'
         + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
-        + '<div class="rank-sub">' + level.name + ' · ' + (u.monthlyPoints||0) + ' pts este mês</div>'
+        + '<div class="rank-sub">' + level.name + ' · 🔥' + (u.streak||0) + ' dias seq.</div>'
         + '</div>'
         + '<div class="rank-pts">' + (u.monthlyPoints||0).toLocaleString() + ' pts</div>'
         + '</div>';
@@ -1374,12 +1394,19 @@ async function renderHallOfFame() {
 // Check and reset monthly points on day 1
 async function checkMonthlyReset() {
   if(!currentUserData) return;
-  const today = getTodayKey();
   const dayOfMonth = new Date().getDate();
   const monthKey = getMonthKey();
-  const lastReset = localStorage.getItem('tl_last_reset');
 
-  if(dayOfMonth === 1 && lastReset !== monthKey) {
+  // Check Firestore to see if this month's reset was already done globally
+  let resetAlreadyDone = false;
+  try {
+    const resetDoc = await getDoc(doc(db, 'appConfig', 'monthlyReset'));
+    if(resetDoc.exists() && resetDoc.data().lastResetMonth === monthKey) {
+      resetAlreadyDone = true;
+    }
+  } catch(e) {}
+
+  if(dayOfMonth === 1 && !resetAlreadyDone) {
     // Save hall of fame for previous month
     try {
       const prevDate = new Date();
@@ -1405,12 +1432,28 @@ async function checkMonthlyReset() {
       }
 
       // Reset all users monthly points
-      const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), {monthlyPoints: 0}));
+      const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), {monthlyPoints: 0, lastResetMonth: monthKey}));
       await Promise.all(batch);
+
+      // Mark reset as done globally in Firestore
+      await setDoc(doc(db, 'appConfig', 'monthlyReset'), { lastResetMonth: monthKey, doneAt: Date.now() });
       localStorage.setItem('tl_last_reset', monthKey);
       console.log('Monthly reset done!');
     } catch(e) {
       console.error('Monthly reset error:', e);
+    }
+  } else if(!resetAlreadyDone) {
+    // Not day 1 — but check if THIS user's monthlyPoints are from a previous month
+    // (handles case where user was inactive during day 1 reset)
+    const userLastReset = currentUserData.lastResetMonth || '';
+    if(userLastReset !== monthKey && (currentUserData.monthlyPoints || 0) > 0) {
+      try {
+        await updateDoc(doc(db, 'users', currentUserData.uid), {monthlyPoints: 0, lastResetMonth: monthKey});
+        currentUserData.monthlyPoints = 0;
+        currentUserData.lastResetMonth = monthKey;
+      } catch(e) {
+        console.error('User self-reset error:', e);
+      }
     }
   }
 }
@@ -2600,7 +2643,16 @@ async function registrarPeso() {
   await setDoc(checkinRef, checkins, {merge:true});
   const userRef = doc(db,'users',currentUserData.uid);
   const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
-  await updateDoc(userRef, { points: increment(20), monthlyPoints: increment(20), weightHistory: hist });
+  const weightMonthKey = getMonthKey();
+  const weightLastReset = currentUserData.lastResetMonth || '';
+  const weightUpdates = { points: increment(20), weightHistory: hist };
+  if(weightLastReset !== weightMonthKey) {
+    weightUpdates.monthlyPoints = 20;
+    weightUpdates.lastResetMonth = weightMonthKey;
+  } else {
+    weightUpdates.monthlyPoints = increment(20);
+  }
+  await updateDoc(userRef, weightUpdates);
   const snap = await getDoc(userRef);
   currentUserData = snap.data();
   document.getElementById('check-peso').classList.add('done');
