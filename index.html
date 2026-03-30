@@ -836,15 +836,52 @@ const LEVELS = [
   {name:'Lenda',     badge:'🏆 Lenda',     min:5000, max:99999},
 ];
 const BADGES_DEF = [
-  {id:'first_train', emoji:'💪', name:'Primeira Suada',  desc:'1 treino feito',        check:u=>u.totalTreinos>=1},
-  {id:'week_train',  emoji:'🔥', name:'Semana de Fogo',  desc:'7 treinos feitos',       check:u=>u.totalTreinos>=7},
-  {id:'month_train', emoji:'⚡', name:'Máquina',         desc:'30 treinos feitos',      check:u=>u.totalTreinos>=30},
-  {id:'streak3',     emoji:'🌟', name:'Consistente',     desc:'3 dias de sequência',        check:u=>u.bestStreak>=3},
-  {id:'streak7',     emoji:'🚀', name:'Na Missão',       desc:'7 dias de sequência',        check:u=>u.bestStreak>=7},
-  {id:'streak30',    emoji:'👑', name:'Invicto',         desc:'30 dias de sequência',       check:u=>u.bestStreak>=30},
-  {id:'pts500',      emoji:'🎯', name:'500 Pontos',      desc:'Acumulou 500 pts',       check:u=>u.points>=500},
-  {id:'pts2500',     emoji:'💎', name:'2500 Pontos',     desc:'Acumulou 2500 pts',      check:u=>u.points>=2500},
-  {id:'diet_week',   emoji:'🥗', name:'Dieta em Dia',   desc:'21 refeições seguidas',  check:u=>u.totalMeals>=21},
+  // 🏋️ TREINO (6)
+  {id:'train_1',    emoji:'💪', name:'Primeira Suada',      desc:'Realize seu 1° treino',         check:u=>(u.totalTreinos||0)>=1},
+  {id:'train_10',   emoji:'🔟', name:'Rotina Iniciada',     desc:'10 treinos realizados',          check:u=>(u.totalTreinos||0)>=10},
+  {id:'train_50',   emoji:'🏃', name:'Sem Desculpas',       desc:'50 treinos realizados',          check:u=>(u.totalTreinos||0)>=50},
+  {id:'train_100',  emoji:'⚡', name:'Máquina de Guerra',   desc:'100 treinos realizados',         check:u=>(u.totalTreinos||0)>=100},
+  {id:'train_200',  emoji:'🦾', name:'Atleta de Elite',     desc:'200 treinos realizados',         check:u=>(u.totalTreinos||0)>=200},
+  {id:'train_365',  emoji:'👑', name:'Lenda do Treino',     desc:'365 treinos realizados',         check:u=>(u.totalTreinos||0)>=365},
+  // 🔥 SEQUÊNCIA (6)
+  {id:'streak_3',   emoji:'🌱', name:'Primeiros Passos',    desc:'3 dias de sequência',            check:u=>(u.bestStreak||0)>=3},
+  {id:'streak_7',   emoji:'🔥', name:'Pegando Fogo',        desc:'7 dias de sequência',            check:u=>(u.bestStreak||0)>=7},
+  {id:'streak_30',  emoji:'💥', name:'Imparável',           desc:'30 dias de sequência',           check:u=>(u.bestStreak||0)>=30},
+  {id:'streak_60',  emoji:'🚀', name:'Modo Berserk',        desc:'60 dias de sequência',           check:u=>(u.bestStreak||0)>=60},
+  {id:'streak_100', emoji:'🌟', name:'Inabalável',          desc:'100 dias de sequência',          check:u=>(u.bestStreak||0)>=100},
+  {id:'streak_180', emoji:'👑', name:'Lenda Viva',          desc:'180 dias de sequência',          check:u=>(u.bestStreak||0)>=180},
+  // 🍽️ ALIMENTAÇÃO (5) — conta dias com 3+ refeições (cafe+almoco+jantar)
+  {id:'meal_1',     emoji:'🥗', name:'Primeira Dieta',      desc:'1 dia com 3 refeições',          check:u=>(u.totalMealDays||0)>=1},
+  {id:'meal_15',    emoji:'🍱', name:'Consistência',        desc:'15 dias com 3 refeições',        check:u=>(u.totalMealDays||0)>=15},
+  {id:'meal_45',    emoji:'🥦', name:'Disciplina Total',    desc:'45 dias com 3 refeições',        check:u=>(u.totalMealDays||0)>=45},
+  {id:'meal_90',    emoji:'🍽️', name:'Nutri Aprovaria',    desc:'90 dias com 3 refeições',        check:u=>(u.totalMealDays||0)>=90},
+  {id:'meal_180',   emoji:'🏆', name:'Alimentação Campeão', desc:'180 dias com 3 refeições',       check:u=>(u.totalMealDays||0)>=180},
+  // ⚖️ PESO (4)
+  {id:'weight_1',   emoji:'⚖️', name:'Primeiro Registro',  desc:'Registre seu peso pela 1° vez',  check:u=>(u.totalWeightDays||0)>=1},
+  {id:'weight_15',  emoji:'📊', name:'Acompanhando',        desc:'15 registros de peso',           check:u=>(u.totalWeightDays||0)>=15},
+  {id:'weight_45',  emoji:'📈', name:'Evolução Constante',  desc:'45 registros de peso',           check:u=>(u.totalWeightDays||0)>=45},
+  {id:'weight_90',  emoji:'🎯', name:'Meta Atingida',       desc:'90 registros de peso',           check:u=>(u.totalWeightDays||0)>=90},
+  // 👑 PONTUAÇÃO (6)
+  {id:'pts_500',    emoji:'⭐', name:'Começando',           desc:'Alcance 500 pts',                check:u=>(u.points||0)>=500},
+  {id:'pts_2000',   emoji:'🌟', name:'Aquecendo',           desc:'Alcance 2.000 pts',              check:u=>(u.points||0)>=2000},
+  {id:'pts_5000',   emoji:'💫', name:'Em Chamas',           desc:'Alcance 5.000 pts',              check:u=>(u.points||0)>=5000},
+  {id:'pts_10000',  emoji:'🏅', name:'Alto Nível',          desc:'Alcance 10.000 pts',             check:u=>(u.points||0)>=10000},
+  {id:'pts_20000',  emoji:'🥇', name:'Elite',               desc:'Alcance 20.000 pts',             check:u=>(u.points||0)>=20000},
+  {id:'pts_50000',  emoji:'💎', name:'Lenda',               desc:'Alcance 50.000 pts',             check:u=>(u.points||0)>=50000},
+  // 🏆 RANKING (3) — verificado no reset mensal
+  {id:'rank_top3',  emoji:'🎖️', name:'Destaque do Mês',   desc:'Termine um mês no top 3',        check:u=>(u.monthsTop3||0)>=1},
+  {id:'rank_1st',   emoji:'🥇', name:'Campeão',            desc:'Termine um mês em 1° lugar',     check:u=>(u.monthsFirst||0)>=1},
+  {id:'rank_3x',    emoji:'👑', name:'Dinastia',            desc:'3 meses consecutivos em 1°',     check:u=>(u.monthsFirstStreak||0)>=3},
+  // 💧 HIDRATAÇÃO (3)
+  {id:'hydra_15',   emoji:'💧', name:'Hidratado',           desc:'15 dias seguidos de hidratação', check:u=>(u.totalHydrationDays||0)>=15},
+  {id:'hydra_30',   emoji:'🌊', name:'Sempre Hidratado',    desc:'30 dias seguidos de hidratação', check:u=>(u.totalHydrationDays||0)>=30},
+  {id:'hydra_60',   emoji:'💎', name:'Hidratação de Elite', desc:'60 dias seguidos de hidratação', check:u=>(u.totalHydrationDays||0)>=60},
+  // 📸 ENGAJAMENTO (5)
+  {id:'story_1',    emoji:'📸', name:'Na Mídia',            desc:'Poste seu 1° story de treino',   check:u=>(u.totalStories||0)>=1},
+  {id:'chat_30',    emoji:'💬', name:'Voz do Time',         desc:'30 dias interagindo no chat',    check:u=>(u.totalChatDays||0)>=30},
+  {id:'app_60',     emoji:'🤝', name:'Pilar do Time',       desc:'60 dias de uso do app',          check:u=>(u.totalAppDays||0)>=60},
+  {id:'app_90',     emoji:'🏅', name:'Veterano',            desc:'90 dias de uso do app',          check:u=>(u.totalAppDays||0)>=90},
+  {id:'app_180',    emoji:'🌟', name:'Comprometido',        desc:'180 dias de uso do app',         check:u=>(u.totalAppDays||0)>=180},
 ];
 const PTS = {treino:50, cafe:20, lanche:20, almoco:20, jantar:20, cardio:15, hidratacao:15, peso:20, weight:30};
 
@@ -1032,6 +1069,34 @@ async function toggleCheck(type) {
     if(type==='treino') updates.totalTreinos=increment(1);
     if(['cafe','almoco','jantar'].includes(type)) updates.totalMeals=increment(1);
 
+    // Track daily counters for badges
+    const mealTypesForBadge = ['cafe','almoco','jantar'];
+    const mealsDoneToday = mealTypesForBadge.filter(m => checkins[m]).length;
+    // Count meal day (3+ refeições = dia válido de alimentação)
+    if(mealTypesForBadge.includes(type) && mealsDoneToday >= 2 && currentUserData.lastMealDayDate !== today) {
+      updates.totalMealDays = increment(1);
+      updates.lastMealDayDate = today;
+      currentUserData.lastMealDayDate = today;
+    }
+    // Count hydration day
+    if(type === 'hidratacao' && currentUserData.lastHydrationDate !== today) {
+      updates.totalHydrationDays = increment(1);
+      updates.lastHydrationDate = today;
+      currentUserData.lastHydrationDate = today;
+    }
+    // Count weight day
+    if(type === 'peso' && currentUserData.lastWeightBadgeDate !== today) {
+      updates.totalWeightDays = increment(1);
+      updates.lastWeightBadgeDate = today;
+      currentUserData.lastWeightBadgeDate = today;
+    }
+    // Count app day (any checkin = app used today)
+    if(currentUserData.lastAppDay !== today) {
+      updates.totalAppDays = increment(1);
+      updates.lastAppDay = today;
+      currentUserData.lastAppDay = today;
+    }
+
     // Sequência based on meals (2+ meals = valid day)
     const mealTypes = ['cafe','almoco','jantar'];
     const mealCount = mealTypes.filter(m => checkins[m]).length;
@@ -1116,9 +1181,14 @@ async function toggleCheck(type) {
 
     // Post to feed
     postToFeed(currentUserData.name, type);
+    // Track story badge
+    if(type === 'story' && (currentUserData.totalStories||0) === 0) {
+      await updateDoc(userRef, { totalStories: 1 });
+      currentUserData.totalStories = 1;
+    }
 
     if(newBadges.length) {
-      setTimeout(()=>showCelebration('🎖️', 'Nova Conquista!', newBadges[0].name, false), 1200);
+      setTimeout(()=>showCelebration(newBadges[0].emoji, '🎖️ Nova Conquista!', newBadges[0].name + '\n' + newBadges[0].desc, false), 1200);
       postToFeed(currentUserData.name, 'badge', newBadges[0].name);
     }
     renderDashboard();
@@ -1434,6 +1504,31 @@ async function checkMonthlyReset() {
         })),
         createdAt: Date.now()
       });
+
+      // Update ranking badges for top 3 users
+      const allSorted = snap.docs.map(d => ({ ref: d.ref, data: d.data() }))
+        .filter(x => x.data.status !== 'deleted' && x.data.status !== 'pending' && x.data.status !== 'blocked')
+        .sort((a,b) => (b.data.monthlyPoints||0) - (a.data.monthlyPoints||0));
+
+      for(let i = 0; i < Math.min(3, allSorted.length); i++) {
+        const { ref, data: u } = allSorted[i];
+        const rankUpdates = { monthsTop3: (u.monthsTop3||0) + 1 };
+        if(i === 0) {
+          rankUpdates.monthsFirst = (u.monthsFirst||0) + 1;
+          const prevDate2 = new Date(); prevDate2.setDate(0);
+          const prevMonthKey2 = prevDate2.getFullYear() + '-' + String(prevDate2.getMonth()+1).padStart(2,'0');
+          rankUpdates.monthsFirstStreak = (u.lastFirstMonth === prevMonthKey2) ? (u.monthsFirstStreak||0)+1 : 1;
+          rankUpdates.lastFirstMonth = prevMonth;
+        } else {
+          rankUpdates.monthsFirstStreak = 0;
+        }
+        const updatedU = { ...u, ...rankUpdates };
+        const newRankBadges = BADGES_DEF.filter(b =>
+          b.id.startsWith('rank_') && !(u.unlockedBadges||[]).includes(b.id) && b.check(updatedU)
+        );
+        if(newRankBadges.length) rankUpdates.unlockedBadges = [...(u.unlockedBadges||[]), ...newRankBadges.map(b=>b.id)];
+        await updateDoc(ref, rankUpdates);
+      }
     }
 
     // Reset all users monthlyPoints to 0
@@ -1489,14 +1584,45 @@ async function renderRanking() {
 
 function renderBadges() {
   if(!currentUserData) return;
-  document.getElementById('badges-grid').innerHTML=BADGES_DEF.map(b=>{
-    const ok=currentUserData.unlockedBadges&&currentUserData.unlockedBadges.includes(b.id);
-    return `<div class="badge-box ${ok?'unlocked':''}">
-      <div class="badge-emoji">${b.emoji}</div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-    </div>`;
-  }).join('');
+  const categories = [
+    { title: '🏋️ Treino',      ids: ['train_1','train_10','train_50','train_100','train_200','train_365'] },
+    { title: '🔥 Sequência',    ids: ['streak_3','streak_7','streak_30','streak_60','streak_100','streak_180'] },
+    { title: '🍽️ Alimentação', ids: ['meal_1','meal_15','meal_45','meal_90','meal_180'] },
+    { title: '⚖️ Peso',         ids: ['weight_1','weight_15','weight_45','weight_90'] },
+    { title: '👑 Pontuação',    ids: ['pts_500','pts_2000','pts_5000','pts_10000','pts_20000','pts_50000'] },
+    { title: '🏆 Ranking',      ids: ['rank_top3','rank_1st','rank_3x'] },
+    { title: '💧 Hidratação',   ids: ['hydra_15','hydra_30','hydra_60'] },
+    { title: '📸 Engajamento',  ids: ['story_1','chat_30','app_60','app_90','app_180'] },
+  ];
+  const unlocked = currentUserData.unlockedBadges || [];
+  const total = BADGES_DEF.length;
+  const done = unlocked.length;
+  const pct = Math.round(done/total*100);
+
+  let html = `<div style="text-align:center;margin-bottom:16px">
+    <div style="font-size:13px;color:var(--gray)">Conquistas desbloqueadas</div>
+    <div style="font-size:22px;font-weight:800;color:var(--gold)">${done} <span style="color:var(--gray);font-size:14px">/ ${total}</span></div>
+    <div style="background:#2a2a2a;border-radius:99px;height:6px;margin:8px 0">
+      <div style="background:var(--gold);height:6px;border-radius:99px;width:${pct}%;transition:width .5s"></div>
+    </div>
+  </div>`;
+
+  categories.forEach(cat => {
+    const badges = BADGES_DEF.filter(b => cat.ids.includes(b.id));
+    html += `<div style="font-size:12px;font-weight:800;color:var(--gold);margin:16px 0 8px;letter-spacing:1px;text-transform:uppercase">${cat.title}</div>`;
+    html += `<div class="badges-grid">`;
+    html += badges.map(b => {
+      const ok = unlocked.includes(b.id);
+      return `<div class="badge-box ${ok?'unlocked':''}">
+        <div class="badge-emoji">${b.emoji}</div>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+      </div>`;
+    }).join('');
+    html += `</div>`;
+  });
+
+  document.getElementById('badges-grid').innerHTML = html;
 }
 
 function renderProfile() {
@@ -1547,7 +1673,7 @@ function renderProfile() {
   if(sPts) sPts.textContent = pts.toLocaleString() + ' pts';
   if(sTreinos) sTreinos.textContent = currentUserData.totalTreinos || 0;
   if(sStreak) sStreak.textContent = (currentUserData.bestStreak||0) + ' dias';
-  if(sBadges) sBadges.textContent = (currentUserData.unlockedBadges||[]).length + '/' + BADGES_DEF.length;
+  if(sBadges) sBadges.textContent = (currentUserData.unlockedBadges||[]).length + '/38';
 
   // Streak calendar
   renderStreakCalendar();
@@ -2596,6 +2722,22 @@ async function sendChatMsg() {
     const msgs = snap.exists() ? (snap.data().messages || []) : [];
     msgs.push({ uid: currentUserData.uid, name: currentUserData.name, photoURL: currentUserData.photoURL || null, text: text, timestamp: Date.now() });
     await setDoc(doc(db, 'chat', 'group'), {messages: msgs.slice(-200)});
+    // Track chat day badge
+    const today = getTodayKey();
+    if(currentUserData.lastChatDay !== today) {
+      const userRef = doc(db,'users',currentUserData.uid);
+      const chatUpdates = { totalChatDays: increment(1), lastChatDay: today };
+      await updateDoc(userRef, chatUpdates);
+      currentUserData.lastChatDay = today;
+      currentUserData.totalChatDays = (currentUserData.totalChatDays||0) + 1;
+      // Check badge
+      const chatBadge = BADGES_DEF.find(b => b.id === 'chat_30' && !(currentUserData.unlockedBadges||[]).includes('chat_30') && b.check(currentUserData));
+      if(chatBadge) {
+        currentUserData.unlockedBadges = [...(currentUserData.unlockedBadges||[]), 'chat_30'];
+        await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
+        setTimeout(()=>showCelebration(chatBadge.emoji, '🎖️ Nova Conquista!', chatBadge.name, false), 500);
+      }
+    }
     loadChatMessages();
   } catch(e) { showToast('Erro ao enviar.'); }
 }
@@ -2677,7 +2819,32 @@ async function registrarPeso() {
   if(!currentUserData.lastResetMonth) {
     weightUpdates.lastResetMonth = getMonthKey();
   }
+  // Track weight badge day
+  if(currentUserData.lastWeightBadgeDate !== today) {
+    weightUpdates.totalWeightDays = increment(1);
+    weightUpdates.lastWeightBadgeDate = today;
+  }
+  // Track app day
+  if(currentUserData.lastAppDay !== today) {
+    weightUpdates.totalAppDays = increment(1);
+    weightUpdates.lastAppDay = today;
+  }
   await updateDoc(userRef, weightUpdates);
+  // Check badges after weight registration
+  const wSnap = await getDoc(userRef);
+  currentUserData = wSnap.data();
+  const wNewBadges = [];
+  for(const b of BADGES_DEF) {
+    if(!(currentUserData.unlockedBadges||[]).includes(b.id) && b.check(currentUserData)) {
+      wNewBadges.push(b);
+      currentUserData.unlockedBadges = [...(currentUserData.unlockedBadges||[]), b.id];
+    }
+  }
+  if(wNewBadges.length) {
+    await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
+    setTimeout(()=>showCelebration(wNewBadges[0].emoji, 'Nova Conquista!', wNewBadges[0].name, false), 800);
+    postToFeed(currentUserData.name, 'badge', wNewBadges[0].name);
+  }
   const snap = await getDoc(userRef);
   currentUserData = snap.data();
   document.getElementById('check-peso').classList.add('done');
