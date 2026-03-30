@@ -2505,10 +2505,9 @@ function enterApp() {
 }
 window.enterApp = enterApp;
 
-// Migrate old badge IDs to new IDs on app entry (runs once per device)
+// Migrate old badge IDs to new IDs — checks Firestore directly, always safe to run
 async function migrateBadgeIds() {
   if(!currentUserData) return;
-  if(localStorage.getItem('tl_badge_migration_v3')) return;
   try {
     const oldToNew = {
       'first_train':'train_1','week_train':'train_10','month_train':'train_50',
@@ -2517,28 +2516,31 @@ async function migrateBadgeIds() {
     };
     const oldIds = Object.keys(oldToNew);
     const userRef = doc(db,'users',currentUserData.uid);
-    let migrated = false;
+    let badges = [...(currentUserData.unlockedBadges||[])];
+    const hasOldIds = badges.some(id => oldIds.includes(id));
+
+    // Add new IDs for any old ones found
     for(const [oldId, newId] of Object.entries(oldToNew)) {
-      if((currentUserData.unlockedBadges||[]).includes(oldId) && !(currentUserData.unlockedBadges||[]).includes(newId)) {
-        currentUserData.unlockedBadges.push(newId);
-        migrated = true;
+      if(badges.includes(oldId) && !badges.includes(newId)) {
+        badges.push(newId);
       }
     }
-    // Remove old IDs from the array
-    currentUserData.unlockedBadges = (currentUserData.unlockedBadges||[]).filter(id => !oldIds.includes(id));
-    // Also re-check all badges based on current data (catches any that should already be unlocked)
-    const newBadges = [];
+    // Always remove old IDs
+    badges = badges.filter(id => !oldIds.includes(id));
+
+    // Re-check all badges based on current data
     for(const b of BADGES_DEF) {
-      if(!(currentUserData.unlockedBadges||[]).includes(b.id) && b.check(currentUserData)) {
-        newBadges.push(b);
-        currentUserData.unlockedBadges = [...(currentUserData.unlockedBadges||[]), b.id];
-        migrated = true;
+      if(!badges.includes(b.id) && b.check(currentUserData)) {
+        badges.push(b.id);
       }
     }
-    if(migrated) {
-      await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
+
+    // Only save if something changed
+    const changed = JSON.stringify(badges.sort()) !== JSON.stringify((currentUserData.unlockedBadges||[]).slice().sort());
+    if(changed) {
+      currentUserData.unlockedBadges = badges;
+      await updateDoc(userRef, {unlockedBadges: badges});
     }
-    localStorage.setItem('tl_badge_migration_v3', '1');
   } catch(e) { console.error('Badge migration error:', e); }
 }
 
