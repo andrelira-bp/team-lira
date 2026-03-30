@@ -2664,7 +2664,7 @@ async function migrateBadgeIds() {
 // Runs once per device until a real global reset happens in April
 async function fixMonthlyPointsIfNeeded() {
   if(!currentUserData) return;
-  const migKey = 'tl_monthly_sync_done';
+  const migKey = 'tl_monthly_sync_v2';
   if(localStorage.getItem(migKey)) return;
   try {
     const resetDoc = await getDoc(doc(db, 'appConfig', 'monthlyReset'));
