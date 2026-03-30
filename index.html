@@ -546,7 +546,50 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
 
     <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto(event)">
-    <button class="btn-primary" style="margin-top:8px" onclick="doLogout()">Sair da conta</button>
+
+    <!-- CONFIGURAÇÕES DA CONTA -->
+    <div class="card" style="margin-top:8px">
+      <div class="card-title">⚙️ Configurações da conta</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+
+        <!-- Editar nome -->
+        <div>
+          <div style="font-size:13px;color:var(--gray);margin-bottom:6px">✏️ Nome de exibição</div>
+          <div style="display:flex;gap:8px">
+            <input id="cfg-name" type="text" placeholder="Seu nome"
+              style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none">
+            <button onclick="saveCfgName()" style="padding:10px 14px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Salvar</button>
+          </div>
+        </div>
+
+        <div style="height:1px;background:#2a2a2a"></div>
+
+        <!-- Trocar email -->
+        <div>
+          <div style="font-size:13px;color:var(--gray);margin-bottom:6px">📧 Trocar e-mail</div>
+          <input id="cfg-email" type="email" placeholder="Novo e-mail"
+            style="width:100%;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none;box-sizing:border-box;margin-bottom:8px">
+          <input id="cfg-email-pass" type="password" placeholder="Senha atual (para confirmar)"
+            style="width:100%;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none;box-sizing:border-box;margin-bottom:8px">
+          <button onclick="saveCfgEmail()" style="width:100%;padding:10px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Atualizar e-mail</button>
+        </div>
+
+        <div style="height:1px;background:#2a2a2a"></div>
+
+        <!-- Trocar senha -->
+        <div>
+          <div style="font-size:13px;color:var(--gray);margin-bottom:6px">🔑 Trocar senha</div>
+          <input id="cfg-pass-current" type="password" placeholder="Senha atual"
+            style="width:100%;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none;box-sizing:border-box;margin-bottom:8px">
+          <input id="cfg-pass-new" type="password" placeholder="Nova senha (mínimo 6 caracteres)"
+            style="width:100%;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none;box-sizing:border-box;margin-bottom:8px">
+          <button onclick="saveCfgPassword()" style="width:100%;padding:10px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Atualizar senha</button>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="btn-primary" style="margin-top:8px;background:#222;border:1px solid #444;color:var(--gray)" onclick="doLogout()">Sair da conta</button>
   </div>
 
   <!-- CHAT PAGE -->
@@ -807,7 +850,8 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 <!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
@@ -1660,6 +1704,11 @@ function renderProfile() {
   const profLevel = document.getElementById('prof-level');
   if(profName) profName.textContent = currentUserData.name;
   if(profLevel) profLevel.textContent = level.badge + ' ' + level.name;
+  // Pre-fill settings fields
+  const cfgName = document.getElementById('cfg-name');
+  const cfgEmail = document.getElementById('cfg-email');
+  if(cfgName) cfgName.placeholder = currentUserData.name;
+  if(cfgEmail) cfgEmail.placeholder = currentUserData.email || 'Novo e-mail';
 
   // Level progress
   const levelNameEl = document.getElementById('prof-level-name');
@@ -2911,6 +2960,65 @@ async function registrarPeso() {
   renderDashboard();
 }
 window.registrarPeso = registrarPeso;
+
+// ===== CONFIGURAÇÕES DA CONTA =====
+async function saveCfgName() {
+  const val = document.getElementById('cfg-name').value.trim();
+  if(!val || val.length < 2) { showToast('Nome muito curto!'); return; }
+  try {
+    await updateDoc(doc(db,'users',currentUserData.uid), {name: val});
+    currentUserData.name = val;
+    document.getElementById('prof-name').textContent = val;
+    document.getElementById('cfg-name').value = '';
+    showToast('Nome atualizado! ✅');
+    renderDashboard();
+  } catch(e) { showToast('Erro ao atualizar nome.'); }
+}
+window.saveCfgName = saveCfgName;
+
+async function saveCfgEmail() {
+  const newEmail = document.getElementById('cfg-email').value.trim();
+  const pass = document.getElementById('cfg-email-pass').value;
+  if(!newEmail) { showToast('Digite o novo e-mail!'); return; }
+  if(!pass) { showToast('Digite sua senha atual!'); return; }
+  try {
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, pass);
+    await reauthenticateWithCredential(user, credential);
+    await updateEmail(user, newEmail);
+    await updateDoc(doc(db,'users',currentUserData.uid), {email: newEmail});
+    currentUserData.email = newEmail;
+    document.getElementById('cfg-email').value = '';
+    document.getElementById('cfg-email-pass').value = '';
+    showToast('E-mail atualizado! ✅');
+  } catch(e) {
+    if(e.code === 'auth/wrong-password') showToast('Senha incorreta!');
+    else if(e.code === 'auth/email-already-in-use') showToast('E-mail já em uso!');
+    else if(e.code === 'auth/invalid-email') showToast('E-mail inválido!');
+    else showToast('Erro ao atualizar e-mail.');
+  }
+}
+window.saveCfgEmail = saveCfgEmail;
+
+async function saveCfgPassword() {
+  const current = document.getElementById('cfg-pass-current').value;
+  const newPass = document.getElementById('cfg-pass-new').value;
+  if(!current) { showToast('Digite sua senha atual!'); return; }
+  if(!newPass || newPass.length < 6) { showToast('Nova senha precisa ter mínimo 6 caracteres!'); return; }
+  try {
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, current);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPass);
+    document.getElementById('cfg-pass-current').value = '';
+    document.getElementById('cfg-pass-new').value = '';
+    showToast('Senha atualizada! ✅');
+  } catch(e) {
+    if(e.code === 'auth/wrong-password') showToast('Senha atual incorreta!');
+    else showToast('Erro ao atualizar senha.');
+  }
+}
+window.saveCfgPassword = saveCfgPassword;
 
 // ===== CUSTOM PHRASE FOR ADMIN =====
 function saveCustomPhrase() {
