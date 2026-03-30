@@ -1295,7 +1295,7 @@ async function registerWeight() {
   if(!val||val<20||val>300){showToast('Peso inválido');return;}
   const userRef=doc(db,'users',currentUserData.uid);
   const hist=[...(currentUserData.weightHistory||[]),{date:getTodayKey(),weight:val}];
-  await updateDoc(userRef,{weightHistory:hist,points:increment(PTS.weight)});
+  await updateDoc(userRef,{weightHistory:hist,points:increment(PTS.weight),monthlyPoints:increment(PTS.weight)});
   const snap=await getDoc(userRef);
   currentUserData=snap.data();
   document.getElementById('weight-input').value='';
@@ -1501,7 +1501,7 @@ async function renderTotalRanking() {
         + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="rank-info">'
         + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
-        + '<div class="rank-sub">' + level.badge + ' ' + level.name + ' · 🔥' + (u.streak||0) + ' dias</div>'
+        + '<div class="rank-sub">' + level.badge + ' · 🔥' + (u.streak||0) + ' dias</div>'
         + '</div>'
         + '<div class="rank-pts">' + (u.points||0).toLocaleString() + ' pts</div>'
         + '</div>';
