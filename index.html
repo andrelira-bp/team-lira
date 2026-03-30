@@ -2502,6 +2502,8 @@ async function renderPtsChart() {
 
 async function uploadPhoto(event) {
   const file = event.target.files[0];
+  // Reset input so the same file can be selected again later
+  event.target.value = '';
   if(!file) return;
   if(file.size > 10 * 1024 * 1024) { showToast('Foto muito grande! Maximo 10MB'); return; }
   document.getElementById('photo-loading').style.display = 'block';
@@ -2509,10 +2511,8 @@ async function uploadPhoto(event) {
     // Resize and convert to base64
     const base64 = await imageToBase64(file, 200);
     await updateDoc(doc(db,'users',currentUserData.uid), {photoURL: base64});
+    // Update only the photoURL field, preserving uid and all other local data
     currentUserData.photoURL = base64;
-    // Update stored user data globally
-    const updatedSnap = await getDoc(doc(db,'users',currentUserData.uid));
-    currentUserData = updatedSnap.data();
     document.getElementById('photo-loading').style.display = 'none';
     showToast('Foto atualizada! 📸');
     renderProfile();
