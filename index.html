@@ -2501,8 +2501,43 @@ function enterApp() {
   checkStudentMessages();
   checkMonthlyReset();
   fixMonthlyPointsIfNeeded();
+  migrateBadgeIds();
 }
 window.enterApp = enterApp;
+
+// Migrate old badge IDs to new IDs on app entry (runs once per device)
+async function migrateBadgeIds() {
+  if(!currentUserData) return;
+  if(localStorage.getItem('tl_badge_migration_v2')) return;
+  try {
+    const oldToNew = {
+      'first_train':'train_1','week_train':'train_10','month_train':'train_50',
+      'streak3':'streak_3','streak7':'streak_7','streak30':'streak_30',
+      'pts500':'pts_500','pts2500':'pts_2000','diet_week':'meal_1'
+    };
+    const userRef = doc(db,'users',currentUserData.uid);
+    let migrated = false;
+    for(const [oldId, newId] of Object.entries(oldToNew)) {
+      if((currentUserData.unlockedBadges||[]).includes(oldId) && !(currentUserData.unlockedBadges||[]).includes(newId)) {
+        currentUserData.unlockedBadges.push(newId);
+        migrated = true;
+      }
+    }
+    // Also re-check all badges based on current data (catches any that should already be unlocked)
+    const newBadges = [];
+    for(const b of BADGES_DEF) {
+      if(!(currentUserData.unlockedBadges||[]).includes(b.id) && b.check(currentUserData)) {
+        newBadges.push(b);
+        currentUserData.unlockedBadges = [...(currentUserData.unlockedBadges||[]), b.id];
+        migrated = true;
+      }
+    }
+    if(migrated) {
+      await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
+    }
+    localStorage.setItem('tl_badge_migration_v2', '1');
+  } catch(e) { console.error('Badge migration error:', e); }
+}
 
 // One-time migration: sync monthlyPoints = points for ALL users
 // Runs once per device until a real global reset happens in April
