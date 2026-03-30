@@ -987,7 +987,7 @@ function showPage(page) {
     if(el) el.classList.toggle('hidden',p!==page);
     if(nav) nav.classList.toggle('active',p===page);
   });
-  if(page==='ranking') renderRanking();
+  if(page==='ranking') switchRankTab(currentRankTab || 'monthly');
   if(page==='badges') renderBadges();
   if(page==='profile') renderProfile();
   if(page==='feed') renderFeed();
