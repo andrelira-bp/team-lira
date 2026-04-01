@@ -693,7 +693,10 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="card" id="admin-ranking-card">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
         <span id="admin-card-title">🏆 Ranking completo</span>
-        <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminData()">↻ Atualizar</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminData()">↻ Atualizar</span>
+          <button onclick="adminForceMonthlyReset()" style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🔄 Zerar Mês</button>
+        </div>
       </div>
       <div class="search-bar">
         <input class="search-input" id="admin-search" placeholder="🔍 Buscar aluno..." oninput="filterAdminTable()">
@@ -1564,6 +1567,8 @@ async function checkMonthlyReset() {
 
     // If reset already done for this month, nothing to do
     if(lastResetMonth === monthKey) return;
+    // Safety: if lastResetMonth is a future month somehow, don't reset
+    if(lastResetMonth > monthKey) return;
 
     // If lastResetMonth is null = app never reset before (first month ever) = don't reset
     // Only reset if there WAS a previous month recorded (i.e. app has been running before)
@@ -1961,6 +1966,45 @@ async function loadAdminData() {
   }
 }
 window.loadAdminData=loadAdminData;
+
+async function adminForceMonthlyReset() {
+  if(!confirm('Zerar pontos do mês atual de TODOS os alunos? Esta ação não pode ser desfeita.')) return;
+  try {
+    const monthKey = getMonthKey();
+    const prevDate = new Date();
+    prevDate.setDate(0);
+    const prevMonth = prevDate.getFullYear() + '-' + String(prevDate.getMonth() + 1).padStart(2, '0');
+
+    const snap = await getDocs(collection(db, 'users'));
+
+    // Save Hall of Fame
+    const top3 = snap.docs.map(d => d.data())
+      .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked' && (u.monthlyPoints||0) > 0)
+      .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0))
+      .slice(0, 3);
+
+    if(top3.length > 0) {
+      await setDoc(doc(db, 'hallOfFame', prevMonth), {
+        winners: top3.map(u => ({ uid: u.uid, name: u.name, photoURL: u.photoURL || null, points: u.monthlyPoints || 0 })),
+        createdAt: Date.now()
+      });
+    }
+
+    // Reset all monthlyPoints to 0
+    const batch = snap.docs.map(d => updateDoc(doc(db, 'users', d.id), { monthlyPoints: 0 }));
+    await Promise.all(batch);
+
+    // Update appConfig so auto-reset knows it's done
+    await setDoc(doc(db, 'appConfig', 'monthlyReset'), { lastResetMonth: monthKey, doneAt: Date.now() });
+
+    showToast('✅ Mês zerado com sucesso! Hall of Fame salvo.');
+    loadAdminData();
+  } catch(e) {
+    showToast('Erro ao zerar mês: ' + e.message);
+    console.error(e);
+  }
+}
+window.adminForceMonthlyReset = adminForceMonthlyReset;
 
 // ===== HELPER: DAYS AGO =====
 function getDaysAgo(dateStr) {
