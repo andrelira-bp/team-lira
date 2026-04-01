@@ -2663,25 +2663,7 @@ async function migrateBadgeIds() {
 // One-time migration: sync monthlyPoints = points for ALL users
 // Runs once per device until a real global reset happens in April
 async function fixMonthlyPointsIfNeeded() {
-  if(!currentUserData) return;
-  try {
-    // Check if reset already happened this month - if so, don't overwrite
-    const resetDoc = await getDoc(doc(db, 'appConfig', 'monthlyReset'));
-    const lastReset = resetDoc.exists() ? resetDoc.data().lastResetMonth : null;
-    const currentMonth = getMonthKey();
-    // Only sync if no real reset has happened yet (still first month)
-    if(lastReset && lastReset !== currentMonth) return;
-    const snap = await getDocs(collection(db, 'users'));
-    const batch = snap.docs
-      .map(d => ({ ref: d.ref, data: d.data() }))
-      .filter(({ data: u }) => (u.points||0) > 0 && (u.monthlyPoints||0) < (u.points||0))
-      .map(({ ref, data: u }) => updateDoc(ref, { monthlyPoints: u.points }));
-    if(batch.length > 0) await Promise.all(batch);
-    if((currentUserData.points||0) > (currentUserData.monthlyPoints||0)) {
-      currentUserData.monthlyPoints = currentUserData.points;
-      renderDashboard();
-    }
-  } catch(e) { console.error('fixMonthlyPoints error:', e); }
+  // This function is disabled - monthly reset handles everything now
 }
 
 async function checkStudentMessages() {
