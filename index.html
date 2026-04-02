@@ -697,6 +697,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
           <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminData()">↻ Atualizar</span>
           <button onclick="adminForceMonthlyReset()" style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🔄 Zerar Mês</button>
           <button onclick="adminFixHallOfFame()" style="background:#8e44ad;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🏆 Corrigir Hall</button>
+          <button onclick="adminSetRankOrder()" style="background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🔢 Desempate</button>
         </div>
       </div>
       <div class="search-bar">
@@ -1426,7 +1427,11 @@ async function renderMonthlyRanking() {
 
     const all = snap.docs.map(d => d.data())
       .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked')
-      .sort((a,b) => (b.monthlyPoints||0) - (a.monthlyPoints||0));
+      .sort((a,b) => {
+        const ptsDiff = (b.monthlyPoints||0) - (a.monthlyPoints||0);
+        if(ptsDiff !== 0) return ptsDiff;
+        return (a.rankOrder||999) - (b.rankOrder||999);
+      });
 
     const top3 = all.slice(0,3);
     const emojis = ['🥇','🥈','🥉'];
@@ -2080,6 +2085,92 @@ async function adminFixHallOfFame() {
   };
 }
 window.adminFixHallOfFame = adminFixHallOfFame;
+
+async function adminSetRankOrder() {
+  const snap = await getDocs(collection(db, 'users'));
+  const users = snap.docs.map(d => d.data())
+    .filter(u => u.status === 'approved')
+    .sort((a,b) => {
+      const ptsDiff = (b.monthlyPoints||0) - (a.monthlyPoints||0);
+      if(ptsDiff !== 0) return ptsDiff;
+      return (a.rankOrder||999) - (b.rankOrder||999);
+    });
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+  
+  const rows = users.map((u, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#222;border-radius:8px;margin-bottom:6px">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button onclick="moveRankUser('${u.uid}', -1)" style="background:#333;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:14px">▲</button>
+        <button onclick="moveRankUser('${u.uid}', 1)" style="background:#333;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:14px">▼</button>
+      </div>
+      <div style="width:36px;height:36px;border-radius:50%;background:#333;overflow:hidden;flex-shrink:0">
+        ${u.photoURL ? `<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700">${u.name.charAt(0)}</div>`}
+      </div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px">${u.name.split(' ')[0]}</div>
+        <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} pts mensais</div>
+      </div>
+      <div style="font-size:18px;color:var(--gold);font-weight:800">#${i+1}</div>
+    </div>`).join('');
+
+  modal.innerHTML = `
+    <div style="background:#1a1a1a;border:1px solid #444;border-radius:16px;padding:20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto">
+      <div style="font-size:16px;font-weight:800;margin-bottom:4px">🔢 Ordem do Ranking</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:16px">Use ▲▼ para reordenar em caso de empate</div>
+      <div id="rank-order-list">${rows}</div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button id="rank-cancel" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button id="rank-save" style="flex:1;padding:10px;background:#2980b9;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Salvar</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(modal);
+  
+  // Store order
+  window._rankOrderUsers = [...users];
+  
+  window.moveRankUser = function(uid, dir) {
+    const list = window._rankOrderUsers;
+    const idx = list.findIndex(u => u.uid === uid);
+    const newIdx = idx + dir;
+    if(newIdx < 0 || newIdx >= list.length) return;
+    [list[idx], list[newIdx]] = [list[newIdx], list[idx]];
+    // Re-render
+    const container = document.getElementById('rank-order-list');
+    container.innerHTML = list.map((u, i) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#222;border-radius:8px;margin-bottom:6px">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <button onclick="moveRankUser('${u.uid}', -1)" style="background:#333;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:14px">▲</button>
+          <button onclick="moveRankUser('${u.uid}', 1)" style="background:#333;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:14px">▼</button>
+        </div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#333;overflow:hidden;flex-shrink:0">
+          ${u.photoURL ? `<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700">${u.name.charAt(0)}</div>`}
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px">${u.name.split(' ')[0]}</div>
+          <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} pts mensais</div>
+        </div>
+        <div style="font-size:18px;color:var(--gold);font-weight:800">#${i+1}</div>
+      </div>`).join('');
+  };
+
+  document.getElementById('rank-cancel').onclick = () => modal.remove();
+  document.getElementById('rank-save').onclick = async () => {
+    try {
+      const batch = window._rankOrderUsers.map((u, i) => 
+        updateDoc(doc(db, 'users', u.uid), { rankOrder: i + 1 })
+      );
+      await Promise.all(batch);
+      showToast('✅ Ordem salva!');
+      modal.remove();
+    } catch(e) {
+      showToast('Erro: ' + e.message);
+    }
+  };
+}
+window.adminSetRankOrder = adminSetRankOrder;
 
 // ===== HELPER: DAYS AGO =====
 function getDaysAgo(dateStr) {
