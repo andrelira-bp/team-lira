@@ -409,16 +409,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="check-left"><div class="check-icon">💧</div><div><div class="check-name">Hidratação do dia</div><div class="check-pts">+15 pontos</div></div></div>
       <div class="check-btn" id="btn-hidratacao">✓</div>
     </div>
-    <div class="check-item" id="check-peso" style="flex-direction:column;align-items:stretch;gap:10px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="check-left"><div class="check-icon">⚖️</div><div><div class="check-name">Peso do dia</div><div class="check-pts">+20 pontos</div></div></div>
-        <div class="check-btn" id="btn-peso">✓</div>
-      </div>
-      <div id="peso-input-row" style="display:flex;gap:8px">
-        <input type="number" id="peso-checkin-input" placeholder="Ex: 72.5" step="0.1"
-          style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:15px;text-align:center;outline:none">
-        <button onclick="registrarPeso()" style="padding:10px 16px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Registrar</button>
-      </div>
+    <div class="check-item" id="check-frutas" onclick="toggleCheck('frutas',this)">
+      <div class="check-left"><div class="check-icon">🍎</div><div><div class="check-name">Comi frutas ou vegetais hoje</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-btn" id="btn-frutas">✓</div>
     </div>
   </div>
 
@@ -965,7 +958,7 @@ const BADGES_DEF = [
   {id:'app_90',     emoji:'🏅', name:'Veterano',            desc:'90 dias de uso do app',          check:u=>(u.totalAppDays||0)>=90},
   {id:'app_180',    emoji:'🌟', name:'Comprometido',        desc:'180 dias de uso do app',         check:u=>(u.totalAppDays||0)>=180},
 ];
-const PTS = {treino:50, cafe:20, lanche:20, almoco:20, jantar:20, cardio:15, hidratacao:15, peso:30, weight:30};
+const PTS = {treino:50, cafe:20, lanche:20, almoco:20, jantar:20, cardio:15, hidratacao:15, frutas:20};
 
 let currentUserData = null;
 let isAdmin = false;
@@ -1172,10 +1165,10 @@ async function toggleCheck(type) {
       currentUserData.lastHydrationDate = today;
     }
     // Count weight day
-    if(type === 'peso' && currentUserData.lastWeightBadgeDate !== today) {
-      updates.totalWeightDays = increment(1);
-      updates.lastWeightBadgeDate = today;
-      currentUserData.lastWeightBadgeDate = today;
+    if(type === 'frutas' && currentUserData.lastFrutasDate !== today) {
+      updates.totalFrutasDays = increment(1);
+      updates.lastFrutasDate = today;
+      currentUserData.lastFrutasDate = today;
     }
     // Count app day (any checkin = app used today)
     if(currentUserData.lastAppDay !== today) {
@@ -1305,11 +1298,11 @@ async function registerWeight() {
   if(!val||val<20||val>300){showToast('Peso inválido');return;}
   const userRef=doc(db,'users',currentUserData.uid);
   const hist=[...(currentUserData.weightHistory||[]),{date:getTodayKey(),weight:val}];
-  await updateDoc(userRef,{weightHistory:hist,points:increment(PTS.weight),monthlyPoints:increment(PTS.weight)});
+  await updateDoc(userRef,{weightHistory:hist});
   const snap=await getDoc(userRef);
   currentUserData=snap.data();
   document.getElementById('weight-input').value='';
-  showToast('+30 pontos por registrar o peso! ⚖️');
+  showToast('Peso registrado! ⚖️');
   postToFeed(currentUserData.name, 'weight');
   renderProfile();
 }
@@ -1372,7 +1365,7 @@ async function renderDashboard() {
     const cSnap=await getDoc(doc(db,'checkins',currentUserData.uid+'_'+today2));
     if(cSnap.exists()) {
       const c=cSnap.data();
-      ['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','peso'].forEach(t=>{
+      ['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','frutas'].forEach(t=>{
         if(c[t]) document.getElementById('check-'+t).classList.add('done');
       });
     }
@@ -2651,7 +2644,7 @@ async function postToFeed(name, type, extra='') {
     jantar: ['fechou o dia com chave de ouro! Missão cumprida 🌙'],
     cardio: ['concluiu mais um cardio! Resistência elevada 🏃'],
     hidratacao: ['garantiu a hidratação do dia! Corpo em alta performance 💧'],
-    peso: ['monitorou sua evolução! Quem acompanha, evolui ⚖️'],
+    frutas: ['caprichou na alimentação saudável! 🍎'],
     mission: [`concluiu a missão: ${extra} ⚡`],
     badge: [`desbloqueou a conquista: ${extra} 🎖️`],
     levelup: [`subiu para o nível ${extra}! 🏆`],
@@ -3163,59 +3156,7 @@ async function loadAdminChat() {
 window.loadAdminChat = loadAdminChat;
 
 // ===== REGISTRO DE PESO NO CHECK-IN =====
-async function registrarPeso() {
-  const val = parseFloat(document.getElementById('peso-checkin-input').value);
-  if(!val || val < 20 || val > 300) { showToast('Peso inválido!'); return; }
-  const today = getTodayKey();
-  const checkinRef = doc(db,'checkins',currentUserData.uid+'_'+today);
-  const checkinSnap = await getDoc(checkinRef);
-  const checkins = checkinSnap.exists() ? checkinSnap.data() : {};
-  if(checkins['peso']) { showToast('Peso já registrado hoje!'); return; }
-  checkins['peso'] = true;
-  await setDoc(checkinRef, checkins, {merge:true});
-  const userRef = doc(db,'users',currentUserData.uid);
-  const hist = [...(currentUserData.weightHistory||[]), {date:today, weight:val}];
-  const weightUpdates = { points: increment(20), monthlyPoints: increment(20), weightHistory: hist };
-  if(!currentUserData.lastResetMonth) {
-    weightUpdates.lastResetMonth = getMonthKey();
-  }
-  // Track weight badge day
-  if(currentUserData.lastWeightBadgeDate !== today) {
-    weightUpdates.totalWeightDays = increment(1);
-    weightUpdates.lastWeightBadgeDate = today;
-  }
-  // Track app day
-  if(currentUserData.lastAppDay !== today) {
-    weightUpdates.totalAppDays = increment(1);
-    weightUpdates.lastAppDay = today;
-  }
-  await updateDoc(userRef, weightUpdates);
-  // Check badges after weight registration
-  const wSnap = await getDoc(userRef);
-  currentUserData = wSnap.data();
-  const wNewBadges = [];
-  for(const b of BADGES_DEF) {
-    if(!(currentUserData.unlockedBadges||[]).includes(b.id) && b.check(currentUserData)) {
-      wNewBadges.push(b);
-      currentUserData.unlockedBadges = [...(currentUserData.unlockedBadges||[]), b.id];
-    }
-  }
-  if(wNewBadges.length) {
-    await updateDoc(userRef, {unlockedBadges: currentUserData.unlockedBadges});
-    setTimeout(()=>showCelebration(wNewBadges[0].emoji, 'Nova Conquista!', wNewBadges[0].name, false), 800);
-    postToFeed(currentUserData.name, 'badge', wNewBadges[0].name);
-  }
-  const snap = await getDoc(userRef);
-  currentUserData = snap.data();
-  document.getElementById('check-peso').classList.add('done');
-  document.getElementById('peso-input-row').style.display = 'none';
-  document.getElementById('btn-peso').style.background = 'var(--gold)';
-  showPtsPopup(20, document.getElementById('check-peso'));
-  showToast('+20 pontos! Peso registrado ⚖️');
-  postToFeed(currentUserData.name, 'weight');
-  renderDashboard();
-}
-window.registrarPeso = registrarPeso;
+// registrarPeso removed - replaced by frutas check-in via toggleCheck
 
 // ===== CONFIGURAÇÕES DA CONTA =====
 async function saveCfgName() {
