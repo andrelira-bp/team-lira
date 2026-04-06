@@ -1364,17 +1364,22 @@ async function renderDashboard() {
     document.getElementById('stat-rank').textContent='#'+pos;
   } catch(e){}
 
-  // today checkins
+  // today checkins — bloqueia botões até o Firestore responder (evita clique duplo)
   const today2=getTodayKey();
+  const checkTypes=['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','frutas'];
+  checkTypes.forEach(t=>{ document.getElementById('check-'+t)?.classList.add('loading-check'); });
   try {
     const cSnap=await getDoc(doc(db,'checkins',currentUserData.uid+'_'+today2));
-    if(cSnap.exists()) {
-      const c=cSnap.data();
-      ['treino','cardio','cafe','lanche','almoco','jantar','hidratacao','frutas'].forEach(t=>{
-        if(c[t]) document.getElementById('check-'+t).classList.add('done');
-      });
-    }
-  } catch(e){}
+    const c=cSnap.exists()?cSnap.data():{};
+    checkTypes.forEach(t=>{
+      const el=document.getElementById('check-'+t);
+      if(!el) return;
+      el.classList.remove('loading-check');
+      if(c[t]) el.classList.add('done');
+    });
+  } catch(e){
+    checkTypes.forEach(t=>{ document.getElementById('check-'+t)?.classList.remove('loading-check'); });
+  }
 }
 
 // ===== MONTHLY RANKING & HALL OF FAME =====
@@ -2669,6 +2674,14 @@ async function postToFeed(name, type, extra='') {
     const feedRef = doc(db,'feed','global');
     const snap = await getDoc(feedRef);
     const items = snap.exists() ? (snap.data().items||[]) : [];
+    // Evita duplicata no feed: mesmo usuário + mesmo tipo + mesmo dia
+    const today = getTodayKey();
+    const alreadyPosted = items.some(i =>
+      i.name === name &&
+      i.type === type &&
+      new Date(i.timestamp).toISOString().slice(0,10) === today
+    );
+    if(alreadyPosted) return;
     items.unshift(feedItem);
     await setDoc(feedRef, {items: items.slice(0,50)});
   } catch(e){}
