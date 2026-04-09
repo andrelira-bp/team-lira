@@ -1131,17 +1131,28 @@ window.doLogin=doLogin; window.doRegister=doRegister;
 window.doAdminLogin=doAdminLogin; window.doLogout=doLogout;
 
 // ===== CHECK-IN =====
+const _checkinLock = {}; // Evita race condition: bloqueia por tipo enquanto processa
 async function toggleCheck(type) {
   if(!currentUserData) return;
+  if(_checkinLock[type]) return; // Já está processando esse tipo
   const el=document.getElementById('check-'+type);
+  if(!el) return;
   if(el.classList.contains('done')||el.classList.contains('loading-check')) return;
+
+  // Bloqueia imediatamente antes de qualquer await
+  _checkinLock[type] = true;
+  el.classList.add('loading-check');
+
   const today=getTodayKey();
   const checkinRef=doc(db,'checkins',currentUserData.uid+'_'+today);
   const checkinSnap=await getDoc(checkinRef);
   const checkins=checkinSnap.exists()?checkinSnap.data():{};
-  if(checkins[type]) { el.classList.add('done'); return; }
-
-  el.classList.add('loading-check');
+  if(checkins[type]) {
+    el.classList.remove('loading-check');
+    el.classList.add('done');
+    _checkinLock[type] = false;
+    return;
+  }
   try {
     checkins[type]=true;
     await setDoc(checkinRef,checkins,{merge:true});
@@ -1294,8 +1305,10 @@ async function toggleCheck(type) {
       postToFeed(currentUserData.name, 'badge', newBadges[0].name);
     }
     renderDashboard();
+    _checkinLock[type] = false; // Libera o lock após sucesso
   } catch(e) {
     el.classList.remove('loading-check');
+    _checkinLock[type] = false; // Libera o lock após erro
     showToast('Erro ao registrar. Tente novamente.');
   }
 }
@@ -2576,6 +2589,16 @@ async function completeMission() {
 
   const today = getTodayKey();
   const checkinRef = doc(db,'checkins',currentUserData.uid+'_'+today);
+
+  // Verifica no Firestore se missão já foi feita (evita duplicata por cache/reload)
+  const checkinSnap = await getDoc(checkinRef);
+  const checkins = checkinSnap.exists() ? checkinSnap.data() : {};
+  if(checkins['mission_'+mission.id]) {
+    btn.textContent = '✅ Missão concluída!';
+    btn.classList.add('done');
+    return;
+  }
+
   await setDoc(checkinRef, {['mission_'+mission.id]: true}, {merge:true});
 
   const userRef = doc(db,'users',currentUserData.uid);
