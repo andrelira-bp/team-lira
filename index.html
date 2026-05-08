@@ -895,7 +895,9 @@ const db = getFirestore(app);
 
 // ===== CONSTANTS =====
 const INVITE_CODE = 'TEAMLIRA';
-const ADMIN_PASS = 'lira2025';
+// Senha do professor armazenada como hash SHA-256 (não exposta em texto claro)
+const ADMIN_PASS_HASH = 'ac89bfff35c23dc8e127ef834c50e0ac4a2b90ea06469ad12f283ec061c18bc7';
+async function _hashPass(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 const LEVELS = [
   {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
   {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
@@ -1016,8 +1018,9 @@ window.showToast=showToast;
 
 // ===== AUTH =====
 onAuthStateChanged(auth, async user => {
-  // Restore admin session from localStorage on page reload
-  if(localStorage.getItem('tl_admin_session') === '1') {
+  // Restore admin session from localStorage on page reload (with token validation)
+  const savedToken = localStorage.getItem('tl_admin_token');
+  if(savedToken && savedToken === ADMIN_PASS_HASH) {
     isAdmin = true;
     showScreen('screen-admin');
     loadAdminData();
@@ -1103,13 +1106,14 @@ async function doRegister() {
   }
 }
 
-function doAdminLogin() {
+async function doAdminLogin() {
   const pass=document.getElementById('a-pass').value;
   const err=document.getElementById('a-err');
-  if(pass!==ADMIN_PASS){err.style.display='block';return;}
+  const hash = await _hashPass(pass);
+  if(hash !== ADMIN_PASS_HASH){err.style.display='block';return;}
   err.style.display='none';
   isAdmin=true;
-  localStorage.setItem('tl_admin_session', '1');
+  localStorage.setItem('tl_admin_token', ADMIN_PASS_HASH);
   showScreen('screen-admin');
   loadAdminData();
   // Auto-refresh every 30 seconds
@@ -1122,7 +1126,8 @@ function doAdminLogin() {
 
 async function doLogout() {
   isAdmin=false; currentUserData=null;
-  localStorage.removeItem('tl_admin_session');
+  localStorage.removeItem('tl_admin_token');
+  localStorage.removeItem('tl_admin_session'); // limpa chave antiga se existir
   if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
   await signOut(auth);
   showScreen('screen-login');
@@ -1196,51 +1201,20 @@ async function toggleCheck(type) {
       currentUserData.lastAppDay = today;
     }
 
-    // Sequência based on meals (2+ meals = valid day)
+    // Sequência baseada em refeições (2+ refeições = dia válido)
     const mealTypes = ['cafe','almoco','jantar'];
     const mealCount = mealTypes.filter(m => checkins[m]).length;
     const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-    
-    // Only update sequência on meal checkins
-    if(mealTypes.includes(type)) {
-      if(mealCount >= 2 && currentUserData.lastCheckinDate !== today) {
-        // Valid day - increment sequência
-        let newStreak = 1;
-        if(currentUserData.lastCheckinDate === yesterday) {
-          newStreak = (currentUserData.streak||0) + 1;
-        } else if(currentUserData.sequenciaRecovery && currentUserData.lastCheckinDate === yesterday) {
-          newStreak = (currentUserData.streak||0) + 1;
-        }
-        const bestStreak = Math.max(currentUserData.bestStreak||0, newStreak);
-        updates.streak = newStreak;
-        updates.bestStreak = bestStreak;
-        updates.lastCheckinDate = today;
-        updates.sequenciaRecovery = false;
-      } else if(mealCount >= 2 && currentUserData.lastCheckinDate === today) {
-        // Already counted today, keep current
+
+    if(mealTypes.includes(type) && mealCount >= 2 && currentUserData.lastCheckinDate !== today) {
+      let newStreak = 1;
+      if(currentUserData.lastCheckinDate === yesterday) {
+        newStreak = (currentUserData.streak||0) + 1;
       }
-      
-      // Check if sequência was broken and recovery is possible
-      const twoDaysAgo = new Date(Date.now()-172800000).toISOString().slice(0,10);
-      if(currentUserData.lastCheckinDate === twoDaysAgo && !currentUserData.sequenciaRecovery) {
-        // Broken yesterday - start recovery mode
-        updates.sequenciaRecovery = true;
-        updates.recoveryMealCount = mealCount;
-      } else if(currentUserData.sequenciaRecovery) {
-        // In recovery mode - need 3 meals to recover
-        const recoveryCount = mealCount;
-        if(recoveryCount >= 3) {
-          // Recovery successful!
-          updates.streak = (currentUserData.streak||0) + 1;
-          updates.bestStreak = Math.max(currentUserData.bestStreak||0, updates.streak);
-          updates.lastCheckinDate = today;
-          updates.sequenciaRecovery = false;
-          updates.recoveryMealCount = 0;
-          setTimeout(()=>showToast('🔥 Sequência recuperada!'), 1000);
-        } else {
-          updates.recoveryMealCount = recoveryCount;
-        }
-      }
+      const bestStreak = Math.max(currentUserData.bestStreak||0, newStreak);
+      updates.streak = newStreak;
+      updates.bestStreak = bestStreak;
+      updates.lastCheckinDate = today;
     }
 
     await updateDoc(userRef, updates);
