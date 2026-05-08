@@ -312,9 +312,10 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
 
     <div id="tab-admin" class="hidden">
+      <div class="form-group"><label>Email do professor</label><input type="email" id="a-email" placeholder="seu@email.com"></div>
       <div class="form-group"><label>Senha do professor</label><input type="password" id="a-pass" placeholder="••••••••"></div>
       <button class="btn-primary" onclick="doAdminLogin()">Acessar painel</button>
-      <div class="form-error" id="a-err">Senha incorreta</div>
+      <div class="form-error" id="a-err">Email ou senha incorretos</div>
     </div>
   </div>
 </div>
@@ -895,9 +896,8 @@ const db = getFirestore(app);
 
 // ===== CONSTANTS =====
 const INVITE_CODE = 'TEAMLIRA';
-// Senha do professor armazenada como hash SHA-256 (não exposta em texto claro)
-const ADMIN_PASS_HASH = 'ac89bfff35c23dc8e127ef834c50e0ac4a2b90ea06469ad12f283ec061c18bc7';
-async function _hashPass(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+// Senha do professor
+const ADMIN_PASS = 'lira2025';
 const LEVELS = [
   {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
   {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
@@ -1018,13 +1018,19 @@ window.showToast=showToast;
 
 // ===== AUTH =====
 onAuthStateChanged(auth, async user => {
-  // Restore admin session from localStorage on page reload (with token validation)
-  const savedToken = localStorage.getItem('tl_admin_token');
-  if(savedToken && savedToken === ADMIN_PASS_HASH) {
-    isAdmin = true;
-    showScreen('screen-admin');
-    loadAdminData();
-    return;
+  // Restore admin session from localStorage on page reload
+  if(localStorage.getItem('tl_admin_session') === '1' && user) {
+    // Verifica se ainda é admin no Firestore
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if(snap.exists() && snap.data().role === 'admin') {
+      isAdmin = true;
+      showScreen('screen-admin');
+      loadAdminData();
+      return;
+    } else {
+      // Sessão inválida - limpa
+      localStorage.removeItem('tl_admin_session');
+    }
   }
   if(user) {
     try {
@@ -1107,27 +1113,45 @@ async function doRegister() {
 }
 
 async function doAdminLogin() {
-  const pass=document.getElementById('a-pass').value;
-  const err=document.getElementById('a-err');
-  const hash = await _hashPass(pass);
-  if(hash !== ADMIN_PASS_HASH){err.style.display='block';return;}
-  err.style.display='none';
-  isAdmin=true;
-  localStorage.setItem('tl_admin_token', ADMIN_PASS_HASH);
-  showScreen('screen-admin');
-  loadAdminData();
-  // Auto-refresh every 30 seconds
-  if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
-  window.adminRefreshInterval = setInterval(() => {
-    if(isAdmin) loadAdminData();
-    else clearInterval(window.adminRefreshInterval);
-  }, 30000);
+  const email = document.getElementById('a-email').value.trim();
+  const pass = document.getElementById('a-pass').value;
+  const err = document.getElementById('a-err');
+  const btn = document.querySelector('#tab-admin .btn-primary');
+  err.style.display = 'none';
+  if(!email || !pass) { err.textContent='Preencha email e senha'; err.style.display='block'; return; }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    // 1. Autentica no Firebase Auth para ter permissão de leitura no Firestore
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    // 2. Verifica se esse usuário é realmente admin no Firestore
+    const snap = await getDoc(doc(db,'users',cred.user.uid));
+    if(!snap.exists() || snap.data().role !== 'admin') {
+      await signOut(auth);
+      err.textContent = 'Acesso negado. Conta sem permissão de professor.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Acessar painel';
+      return;
+    }
+    isAdmin = true;
+    localStorage.setItem('tl_admin_session', '1');
+    err.style.display = 'none';
+    showScreen('screen-admin');
+    loadAdminData();
+    if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
+    window.adminRefreshInterval = setInterval(() => {
+      if(isAdmin) loadAdminData();
+      else clearInterval(window.adminRefreshInterval);
+    }, 30000);
+  } catch(e) {
+    err.textContent = 'Email ou senha incorretos';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Acessar painel';
+  }
 }
 
 async function doLogout() {
   isAdmin=false; currentUserData=null;
-  localStorage.removeItem('tl_admin_token');
-  localStorage.removeItem('tl_admin_session'); // limpa chave antiga se existir
+  localStorage.removeItem('tl_admin_session');
   if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
   await signOut(auth);
   showScreen('screen-login');
@@ -2674,13 +2698,12 @@ async function postToFeed(name, type, extra='') {
     const feedRef = doc(db,'feed','global');
     const snap = await getDoc(feedRef);
     const items = snap.exists() ? (snap.data().items||[]) : [];
-    // Evita duplicata no feed: mesmo usuário + mesmo tipo + mesmo dia
+    // Evita duplicata no feed: mesmo usuário + mesmo tipo + mesmo dia (UTC-3 Brasília)
     const today = getTodayKey();
-    const alreadyPosted = items.some(i =>
-      i.name === name &&
-      i.type === type &&
-      new Date(i.timestamp).toISOString().slice(0,10) === today
-    );
+    const alreadyPosted = items.some(i => {
+      const d = new Date(i.timestamp - 3 * 60 * 60 * 1000);
+      return i.name === name && i.type === type && d.toISOString().slice(0,10) === today;
+    });
     if(alreadyPosted) return;
     items.unshift(feedItem);
     await setDoc(feedRef, {items: items.slice(0,50)});
