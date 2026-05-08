@@ -1962,7 +1962,7 @@ async function loadAdminData() {
       const isPending = u.status === 'pending';
       const isBlocked = u.status === 'blocked';
       const actionBtn = isPending
-        ? `<button onclick="approveUser('${u.uid}'" style="background:var(--success);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">✓ Aprovar</button>`
+        ? `<button onclick="approveUser('${u.uid}')" style="background:var(--success);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">✓ Aprovar</button>`
         : isBlocked
         ? `<button onclick="toggleBlock('${u.uid}', false)" style="background:#555;color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Desbloquear</button>`
         : `<button onclick="toggleBlock('${u.uid}', true)" style="background:var(--danger);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Bloquear</button>`;
