@@ -314,6 +314,10 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div id="tab-admin" class="hidden">
       <div class="form-group"><label>Senha do professor</label><input type="password" id="a-pass" placeholder="••••••••"></div>
       <button class="btn-primary" onclick="doAdminLogin()">Acessar painel</button>
+      <div style="text-align:center;margin:12px 0;color:var(--gray);font-size:13px">— ou —</div>
+      <button class="btn-primary" onclick="doAdminGoogleLogin()" style="background:#fff;color:#222;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px"> Entrar com Google
+      </button>
       <div class="form-error" id="a-err">Senha incorreta</div>
     </div>
   </div>
@@ -875,7 +879,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential }
+  updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential, GoogleAuthProvider, signInWithPopup }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
@@ -897,6 +901,7 @@ const db = getFirestore(app);
 const INVITE_CODE = 'TEAMLIRA';
 // Senha do professor
 const ADMIN_PASS = 'lira2025';
+const ADMIN_EMAIL = 'andrevirtuation@gmail.com';
 const LEVELS = [
   {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
   {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
@@ -1119,6 +1124,33 @@ function doAdminLogin() {
   }, 30000);
 }
 
+async function doAdminGoogleLogin() {
+  const err = document.getElementById('a-err');
+  err.style.display = 'none';
+  try {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+    if(cred.user.email !== ADMIN_EMAIL) {
+      await signOut(auth);
+      err.textContent = 'Acesso negado. Use a conta do professor.';
+      err.style.display = 'block';
+      return;
+    }
+    isAdmin = true;
+    localStorage.setItem('tl_admin_session', '1');
+    showScreen('screen-admin');
+    loadAdminData();
+    if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
+    window.adminRefreshInterval = setInterval(() => {
+      if(isAdmin) loadAdminData();
+      else clearInterval(window.adminRefreshInterval);
+    }, 30000);
+  } catch(e) {
+    err.textContent = 'Erro ao entrar com Google.';
+    err.style.display = 'block';
+  }
+}
+
 async function doLogout() {
   isAdmin=false; currentUserData=null;
   localStorage.removeItem('tl_admin_session');
@@ -1127,7 +1159,7 @@ async function doLogout() {
   showScreen('screen-login');
 }
 window.doLogin=doLogin; window.doRegister=doRegister;
-window.doAdminLogin=doAdminLogin; window.doLogout=doLogout;
+window.doAdminLogin=doAdminLogin; window.doAdminGoogleLogin=doAdminGoogleLogin; window.doLogout=doLogout;
 
 // ===== CHECK-IN =====
 const _checkinLock = {}; // Evita race condition: bloqueia por tipo enquanto processa
