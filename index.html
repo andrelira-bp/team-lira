@@ -816,7 +816,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse at top,#1a1500 0%,#0f0f0f 60%)">
     <div style="font-size:64px;margin-bottom:24px">⏳</div>
     <div style="font-size:22px;font-weight:800;color:var(--gold);margin-bottom:12px">Cadastro enviado!</div>
-    <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px" data-i18n="pendingMsg">Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.</div>
+    <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px" data-i18n="pendingMsg" data-i18n-html>Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.</div>
     <button class="btn-primary" style="margin-top:32px;max-width:280px" onclick="doLogout()">Voltar ao início</button>
   </div>
 </div>
@@ -993,6 +993,7 @@ function showToast(msg) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (typeof applyTranslations === 'function') applyTranslations();
 }
 function showPage(page) {
   ['home','ranking','badges','feed','chat','profile'].forEach(p=>{
@@ -1335,9 +1336,9 @@ async function renderDashboard() {
   document.getElementById('stat-treinos').textContent=currentUserData.totalTreinos||0;
 
   const today=new Date();
-  const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  document.getElementById('dash-date').textContent=days[today.getDay()]+', '+today.getDate()+' de '+months[today.getMonth()];
+  const days=typeof t==='function'?[t('sun'),t('mon'),t('tue'),t('wed'),t('thu'),t('fri'),t('sat')]:['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const months=typeof t==='function'?[t('jan'),t('feb'),t('mar'),t('apr'),t('may'),t('jun'),t('jul'),t('aug'),t('sep'),t('oct'),t('nov'),t('dec')]:['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('dash-date').textContent=days[today.getDay()]+', '+today.getDate()+' '+t('of')+' '+months[today.getMonth()];
   const phraseEl = document.getElementById('daily-phrase');
   if(phraseEl) phraseEl.textContent = getDailyPhrase();
   loadStories();
@@ -1395,7 +1396,9 @@ function getMonthKey() {
 }
 
 function getMonthName(key) {
-  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const months = typeof t === 'function'
+    ? [t('jan'),t('feb'),t('mar'),t('apr'),t('may'),t('jun'),t('jul'),t('aug'),t('sep'),t('oct'),t('nov'),t('dec')]
+    : ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const [year, month] = key.split('-');
   return months[parseInt(month) - 1] + ' ' + year;
 }
@@ -1960,6 +1963,7 @@ async function loadAdminData() {
     }).join('');
     document.getElementById('admin-loading').style.display='none';
     document.getElementById('admin-table').classList.remove('hidden');
+    if (typeof applyTranslations === 'function') applyTranslations();
   } catch(e){
     document.getElementById('admin-loading').textContent=t('errLoadData');
   }
