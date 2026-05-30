@@ -821,13 +821,18 @@ function applyTranslations() {
 function renderLanguageSelector() {
   const flags = { pt: '🇧🇷', en: '🇺🇸', es: '🇪🇸' };
   const names = { pt: 'PT', en: 'EN', es: 'ES' };
-  let html = '<div id="lang-selector" style="display:flex;gap:6px;align-items:center;">';
+  const container = document.createElement('div');
+  container.id = 'lang-selector';
+  container.style.cssText = 'display:flex;gap:6px;align-items:center;';
   for (const [lang, flag] of Object.entries(flags)) {
+    const btn = document.createElement('button');
     const active = lang === currentLang ? 'background:var(--gold);color:var(--black);' : 'background:var(--dark2);color:var(--gray);';
-    html += `<button onclick="setLang('${lang}')" style="${active}border:1px solid #444;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:700;cursor:pointer;">${flag} ${names[lang]}</button>`;
+    btn.style.cssText = active + 'border:1px solid #444;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:700;cursor:pointer;';
+    btn.textContent = flag + ' ' + names[lang];
+    btn.addEventListener('click', () => setLang(lang));
+    container.appendChild(btn);
   }
-  html += '</div>';
-  return html;
+  return container;
 }
 
 // Injeta o seletor no header assim que o DOM estiver pronto
@@ -836,15 +841,21 @@ function injectLangSelector() {
   document.querySelectorAll('.top-bar').forEach(bar => {
     // Evita duplicar
     if (bar.querySelector('#lang-selector')) return;
-    const div = document.createElement('div');
-    div.innerHTML = renderLanguageSelector();
-    bar.appendChild(div.firstChild);
+    bar.appendChild(renderLanguageSelector());
   });
 }
 
-// Aplica ao carregar
+// Aplica ao carregar e reinjecta o seletor periodicamente
 document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
-  setTimeout(injectLangSelector, 500); // aguarda o app renderizar o header
+  // Tenta injetar a cada 1 segundo até encontrar as top-bars
+  const interval = setInterval(() => {
+    const bars = document.querySelectorAll('.top-bar');
+    if (bars.length > 0) {
+      injectLangSelector();
+    }
+  }, 1000);
+  // Para após 30 segundos para não rodar eternamente
+  setTimeout(() => clearInterval(interval), 30000);
 });
 
