@@ -974,6 +974,8 @@ function applyTranslations() {
   // Atualiza loading text
   const loadingEl = document.querySelector('.loading-text');
   if (loadingEl) loadingEl.textContent = t('loading');
+  // Reinjecta o seletor de idioma nas top-bars (textContent destrói filhos DOM)
+  injectLangSelector();
 }
 
 // ===== SELETOR DE IDIOMA =====
@@ -998,16 +1000,18 @@ function renderLanguageSelector() {
 function injectLangSelector() {
   // Injeta nas top-bars do aluno e do admin
   document.querySelectorAll('.top-bar').forEach(bar => {
-    // Evita duplicar
-    if (bar.querySelector('#lang-selector')) return;
+    // Remove seletor existente antes de reinjetar (evita duplicação mas permite atualização)
+    const existing = bar.querySelector('#lang-selector');
+    if (existing) existing.remove();
     bar.appendChild(renderLanguageSelector());
   });
 }
 
-// Aplica ao carregar e reinjecta o seletor periodicamente
+// Aplica ao carregar
 document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
-  // Tenta injetar a cada 1 segundo até encontrar as top-bars
+  // injectLangSelector já é chamado dentro de applyTranslations
+  // Mantém retry para top-bars que ainda não existem no DOM no carregamento inicial
   const interval = setInterval(() => {
     const bars = document.querySelectorAll('.top-bar');
     if (bars.length > 0) {
