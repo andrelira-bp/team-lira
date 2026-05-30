@@ -572,4 +572,279 @@ const BADGES_TRANSLATIONS = {
     streak_7:   { name: 'Pegando Fogo',       desc: '7 dias de sequência' },
     streak_30:  { name: 'Imparável',          desc: '30 dias de sequência' },
     streak_60:  { name: 'Modo Berserk',       desc: '60 dias de sequência' },
-    streak_100: { name: 'Inabalável',         desc: '100
+    streak_100: { name: 'Inabalável',         desc: '100 dias de sequência' },
+    streak_180: { name: 'Lenda Viva',         desc: '180 dias de sequência' },
+    meal_1:     { name: 'Primeira Dieta',     desc: '1 dia com 3 refeições' },
+    meal_15:    { name: 'Consistência',       desc: '15 dias com 3 refeições' },
+    meal_45:    { name: 'Disciplina Total',   desc: '45 dias com 3 refeições' },
+    meal_90:    { name: 'Nutri Aprovaria',    desc: '90 dias com 3 refeições' },
+    meal_180:   { name: 'Alimentação Campeão',desc: '180 dias com 3 refeições' },
+    weight_1:   { name: 'Primeiro Registro',  desc: 'Registre seu peso pela 1° vez' },
+    weight_15:  { name: 'Acompanhando',       desc: '15 registros de peso' },
+    weight_45:  { name: 'Evolução Constante', desc: '45 registros de peso' },
+    weight_90:  { name: 'Meta Atingida',      desc: '90 registros de peso' },
+    pts_500:    { name: 'Começando',          desc: 'Alcance 500 pts' },
+    pts_2000:   { name: 'Aquecendo',          desc: 'Alcance 2.000 pts' },
+    pts_5000:   { name: 'Em Chamas',          desc: 'Alcance 5.000 pts' },
+    pts_10000:  { name: 'Alto Nível',         desc: 'Alcance 10.000 pts' },
+    pts_20000:  { name: 'Elite',              desc: 'Alcance 20.000 pts' },
+    pts_50000:  { name: 'Lenda',              desc: 'Alcance 50.000 pts' },
+    rank_top3:  { name: 'Destaque do Mês',    desc: 'Termine um mês no top 3' },
+    rank_1st:   { name: 'Campeão',            desc: 'Termine um mês em 1° lugar' },
+    rank_3x:    { name: 'Dinastia',           desc: '3 meses consecutivos em 1°' },
+    hydra_15:   { name: 'Hidratado',          desc: '15 dias seguidos de hidratação' },
+    hydra_30:   { name: 'Sempre Hidratado',   desc: '30 dias seguidos de hidratação' },
+    hydra_60:   { name: 'Hidratação de Elite',desc: '60 dias seguidos de hidratação' },
+    story_1:    { name: 'Na Mídia',           desc: 'Poste seu 1° story de treino' },
+    chat_30:    { name: 'Voz do Time',        desc: '30 dias interagindo no chat' },
+    app_60:     { name: 'Pilar do Time',      desc: '60 dias de uso do app' },
+    app_90:     { name: 'Veterano',           desc: '90 dias de uso do app' },
+    app_180:    { name: 'Comprometido',       desc: '180 dias de uso do app' },
+  },
+  en: {
+    train_1:    { name: 'First Sweat',          desc: 'Complete your 1st workout' },
+    train_10:   { name: 'Routine Started',      desc: '10 workouts completed' },
+    train_50:   { name: 'No Excuses',           desc: '50 workouts completed' },
+    train_100:  { name: 'War Machine',          desc: '100 workouts completed' },
+    train_200:  { name: 'Elite Athlete',        desc: '200 workouts completed' },
+    train_365:  { name: 'Workout Legend',       desc: '365 workouts completed' },
+    streak_3:   { name: 'First Steps',          desc: '3-day streak' },
+    streak_7:   { name: 'On Fire',              desc: '7-day streak' },
+    streak_30:  { name: 'Unstoppable',          desc: '30-day streak' },
+    streak_60:  { name: 'Berserk Mode',         desc: '60-day streak' },
+    streak_100: { name: 'Unshakeable',          desc: '100-day streak' },
+    streak_180: { name: 'Living Legend',        desc: '180-day streak' },
+    meal_1:     { name: 'First Diet Day',       desc: '1 day with 3 meals' },
+    meal_15:    { name: 'Consistency',          desc: '15 days with 3 meals' },
+    meal_45:    { name: 'Total Discipline',     desc: '45 days with 3 meals' },
+    meal_90:    { name: 'Nutritionist Approved',desc: '90 days with 3 meals' },
+    meal_180:   { name: 'Champion Nutrition',   desc: '180 days with 3 meals' },
+    weight_1:   { name: 'First Log',            desc: 'Log your weight for the 1st time' },
+    weight_15:  { name: 'Tracking',             desc: '15 weight logs' },
+    weight_45:  { name: 'Steady Progress',      desc: '45 weight logs' },
+    weight_90:  { name: 'Goal Reached',         desc: '90 weight logs' },
+    pts_500:    { name: 'Starting Out',         desc: 'Reach 500 pts' },
+    pts_2000:   { name: 'Warming Up',           desc: 'Reach 2,000 pts' },
+    pts_5000:   { name: 'On Fire',              desc: 'Reach 5,000 pts' },
+    pts_10000:  { name: 'High Level',           desc: 'Reach 10,000 pts' },
+    pts_20000:  { name: 'Elite',                desc: 'Reach 20,000 pts' },
+    pts_50000:  { name: 'Legend',               desc: 'Reach 50,000 pts' },
+    rank_top3:  { name: 'Monthly Standout',     desc: 'Finish a month in the top 3' },
+    rank_1st:   { name: 'Champion',             desc: 'Finish a month in 1st place' },
+    rank_3x:    { name: 'Dynasty',              desc: '3 consecutive months in 1st' },
+    hydra_15:   { name: 'Hydrated',             desc: '15 consecutive hydration days' },
+    hydra_30:   { name: 'Always Hydrated',      desc: '30 consecutive hydration days' },
+    hydra_60:   { name: 'Elite Hydration',      desc: '60 consecutive hydration days' },
+    story_1:    { name: 'In the Spotlight',     desc: 'Post your 1st workout story' },
+    chat_30:    { name: 'Team Voice',           desc: '30 days engaging in chat' },
+    app_60:     { name: 'Team Pillar',          desc: '60 days using the app' },
+    app_90:     { name: 'Veteran',              desc: '90 days using the app' },
+    app_180:    { name: 'Committed',            desc: '180 days using the app' },
+  },
+  es: {
+    train_1:    { name: 'Primer Sudor',          desc: 'Completa tu 1° entrenamiento' },
+    train_10:   { name: 'Rutina Iniciada',       desc: '10 entrenamientos realizados' },
+    train_50:   { name: 'Sin Excusas',           desc: '50 entrenamientos realizados' },
+    train_100:  { name: 'Máquina de Guerra',     desc: '100 entrenamientos realizados' },
+    train_200:  { name: 'Atleta de Élite',       desc: '200 entrenamientos realizados' },
+    train_365:  { name: 'Leyenda del Entreno',   desc: '365 entrenamientos realizados' },
+    streak_3:   { name: 'Primeros Pasos',        desc: 'Racha de 3 días' },
+    streak_7:   { name: 'En Llamas',             desc: 'Racha de 7 días' },
+    streak_30:  { name: 'Imparable',             desc: 'Racha de 30 días' },
+    streak_60:  { name: 'Modo Berserker',        desc: 'Racha de 60 días' },
+    streak_100: { name: 'Inquebrantable',        desc: 'Racha de 100 días' },
+    streak_180: { name: 'Leyenda Viva',          desc: 'Racha de 180 días' },
+    meal_1:     { name: 'Primera Dieta',         desc: '1 día con 3 comidas' },
+    meal_15:    { name: 'Consistencia',          desc: '15 días con 3 comidas' },
+    meal_45:    { name: 'Disciplina Total',      desc: '45 días con 3 comidas' },
+    meal_90:    { name: 'Nutricionista Aprueba', desc: '90 días con 3 comidas' },
+    meal_180:   { name: 'Campeón Nutricional',   desc: '180 días con 3 comidas' },
+    weight_1:   { name: 'Primer Registro',       desc: 'Registra tu peso por 1° vez' },
+    weight_15:  { name: 'Siguiendo el Progreso', desc: '15 registros de peso' },
+    weight_45:  { name: 'Evolución Constante',   desc: '45 registros de peso' },
+    weight_90:  { name: 'Meta Alcanzada',        desc: '90 registros de peso' },
+    pts_500:    { name: 'Comenzando',            desc: 'Alcanza 500 pts' },
+    pts_2000:   { name: 'Calentando',            desc: 'Alcanza 2.000 pts' },
+    pts_5000:   { name: 'En Llamas',             desc: 'Alcanza 5.000 pts' },
+    pts_10000:  { name: 'Alto Nivel',            desc: 'Alcanza 10.000 pts' },
+    pts_20000:  { name: 'Élite',                 desc: 'Alcanza 20.000 pts' },
+    pts_50000:  { name: 'Leyenda',               desc: 'Alcanza 50.000 pts' },
+    rank_top3:  { name: 'Destacado del Mes',     desc: 'Termina un mes en el top 3' },
+    rank_1st:   { name: 'Campeón',               desc: 'Termina un mes en 1° lugar' },
+    rank_3x:    { name: 'Dinastía',              desc: '3 meses consecutivos en 1°' },
+    hydra_15:   { name: 'Hidratado',             desc: '15 días consecutivos de hidratación' },
+    hydra_30:   { name: 'Siempre Hidratado',     desc: '30 días consecutivos de hidratación' },
+    hydra_60:   { name: 'Hidratación de Élite',  desc: '60 días consecutivos de hidratación' },
+    story_1:    { name: 'En los Medios',         desc: 'Publica tu 1° story de entrenamiento' },
+    chat_30:    { name: 'Voz del Equipo',        desc: '30 días interactuando en el chat' },
+    app_60:     { name: 'Pilar del Equipo',      desc: '60 días usando la app' },
+    app_90:     { name: 'Veterano',              desc: '90 días usando la app' },
+    app_180:    { name: 'Comprometido',          desc: '180 días usando la app' },
+  }
+};
+
+// ===== LEVELS TRADUZIDOS =====
+const LEVELS_TRANSLATIONS = {
+  pt: [
+    {name:'Iniciante',badge:'🥉 Iniciante'},
+    {name:'Imparável',badge:'⚡ Imparável'},
+    {name:'Determinado',badge:'💪 Determinado'},
+    {name:'Resistente',badge:'🛡️ Resistente'},
+    {name:'Focado',badge:'🎯 Focado'},
+    {name:'Veloz',badge:'🏃 Veloz'},
+    {name:'Forte',badge:'🦾 Forte'},
+    {name:'Guerreiro',badge:'⚔️ Guerreiro'},
+    {name:'Combatente',badge:'💥 Combatente'},
+    {name:'Campeão',badge:'🥈 Campeão'},
+    {name:'Destaque',badge:'🌟 Destaque'},
+    {name:'Veterano',badge:'🎖️ Veterano'},
+    {name:'Especialista',badge:'🏅 Especialista'},
+    {name:'Elite',badge:'🥇 Elite'},
+    {name:'Mestre',badge:'🔱 Mestre'},
+    {name:'Grão Mestre',badge:'👑 Grão Mestre'},
+    {name:'Dominante',badge:'🌙 Dominante'},
+    {name:'Lendário',badge:'💎 Lendário'},
+    {name:'Extraordinário',badge:'💎 Extraordinário'},
+    {name:'Lenda Viva',badge:'🌟 Lenda Viva'},
+  ],
+  en: [
+    {name:'Beginner',badge:'🥉 Beginner'},
+    {name:'Unstoppable',badge:'⚡ Unstoppable'},
+    {name:'Determined',badge:'💪 Determined'},
+    {name:'Resilient',badge:'🛡️ Resilient'},
+    {name:'Focused',badge:'🎯 Focused'},
+    {name:'Swift',badge:'🏃 Swift'},
+    {name:'Strong',badge:'🦾 Strong'},
+    {name:'Warrior',badge:'⚔️ Warrior'},
+    {name:'Fighter',badge:'💥 Fighter'},
+    {name:'Champion',badge:'🥈 Champion'},
+    {name:'Standout',badge:'🌟 Standout'},
+    {name:'Veteran',badge:'🎖️ Veteran'},
+    {name:'Specialist',badge:'🏅 Specialist'},
+    {name:'Elite',badge:'🥇 Elite'},
+    {name:'Master',badge:'🔱 Master'},
+    {name:'Grand Master',badge:'👑 Grand Master'},
+    {name:'Dominant',badge:'🌙 Dominant'},
+    {name:'Legendary',badge:'💎 Legendary'},
+    {name:'Extraordinary',badge:'💎 Extraordinary'},
+    {name:'Living Legend',badge:'🌟 Living Legend'},
+  ],
+  es: [
+    {name:'Principiante',badge:'🥉 Principiante'},
+    {name:'Imparable',badge:'⚡ Imparable'},
+    {name:'Determinado',badge:'💪 Determinado'},
+    {name:'Resistente',badge:'🛡️ Resistente'},
+    {name:'Enfocado',badge:'🎯 Enfocado'},
+    {name:'Veloz',badge:'🏃 Veloz'},
+    {name:'Fuerte',badge:'🦾 Fuerte'},
+    {name:'Guerrero',badge:'⚔️ Guerrero'},
+    {name:'Combatiente',badge:'💥 Combatiente'},
+    {name:'Campeón',badge:'🥈 Campeón'},
+    {name:'Destacado',badge:'🌟 Destacado'},
+    {name:'Veterano',badge:'🎖️ Veterano'},
+    {name:'Especialista',badge:'🏅 Especialista'},
+    {name:'Élite',badge:'🥇 Élite'},
+    {name:'Maestro',badge:'🔱 Maestro'},
+    {name:'Gran Maestro',badge:'👑 Gran Maestro'},
+    {name:'Dominante',badge:'🌙 Dominante'},
+    {name:'Legendario',badge:'💎 Legendario'},
+    {name:'Extraordinario',badge:'💎 Extraordinario'},
+    {name:'Leyenda Viva',badge:'🌟 Leyenda Viva'},
+  ]
+};
+
+// ===== ENGINE DE i18n =====
+let currentLang = localStorage.getItem('tl_lang') || 'pt';
+
+function setLang(lang) {
+  if (!TRANSLATIONS[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('tl_lang', lang);
+  applyTranslations();
+  // Atualiza badges e levels no app
+  if (typeof updateBadgesLanguage === 'function') updateBadgesLanguage();
+  if (typeof updateLevelsLanguage === 'function') updateLevelsLanguage();
+  // Re-renderiza se já logado
+  if (typeof currentUserData !== 'undefined' && currentUserData) {
+    if (typeof renderDashboard === 'function') renderDashboard();
+  }
+}
+
+function t(key, vars) {
+  const parts = key.split('.');
+  let val = TRANSLATIONS[currentLang];
+  for (const p of parts) {
+    if (!val) return key;
+    val = val[p];
+  }
+  if (!val) {
+    // fallback para PT
+    val = TRANSLATIONS['pt'];
+    for (const p of parts) { if (!val) return key; val = val[p]; }
+  }
+  if (typeof val !== 'string') return key;
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) {
+      val = val.replace('{' + k + '}', v);
+    }
+  }
+  return val || key;
+}
+
+function tBadge(id) {
+  const badges = BADGES_TRANSLATIONS[currentLang] || BADGES_TRANSLATIONS['pt'];
+  return badges[id] || BADGES_TRANSLATIONS['pt'][id] || { name: id, desc: '' };
+}
+
+function tLevel(index) {
+  const levels = LEVELS_TRANSLATIONS[currentLang] || LEVELS_TRANSLATIONS['pt'];
+  return levels[index] || LEVELS_TRANSLATIONS['pt'][index];
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const attr = el.getAttribute('data-i18n-attr');
+    const translated = t(key);
+    if (attr) {
+      el.setAttribute(attr, translated);
+    } else {
+      el.textContent = translated;
+    }
+  });
+  // Atualiza loading text
+  const loadingEl = document.querySelector('.loading-text');
+  if (loadingEl) loadingEl.textContent = t('loading');
+}
+
+// ===== SELETOR DE IDIOMA =====
+function renderLanguageSelector() {
+  const flags = { pt: '🇧🇷', en: '🇺🇸', es: '🇪🇸' };
+  const names = { pt: 'PT', en: 'EN', es: 'ES' };
+  let html = '<div id="lang-selector" style="display:flex;gap:6px;align-items:center;">';
+  for (const [lang, flag] of Object.entries(flags)) {
+    const active = lang === currentLang ? 'background:var(--gold);color:var(--black);' : 'background:var(--dark2);color:var(--gray);';
+    html += `<button onclick="setLang('${lang}')" style="${active}border:1px solid #444;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:700;cursor:pointer;">${flag} ${names[lang]}</button>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// Injeta o seletor no header assim que o DOM estiver pronto
+function injectLangSelector() {
+  // Injeta nas top-bars do aluno e do admin
+  document.querySelectorAll('.top-bar').forEach(bar => {
+    // Evita duplicar
+    if (bar.querySelector('#lang-selector')) return;
+    const div = document.createElement('div');
+    div.innerHTML = renderLanguageSelector();
+    bar.appendChild(div.firstChild);
+  });
+}
+
+// Aplica ao carregar
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+  setTimeout(injectLangSelector, 500); // aguarda o app renderizar o header
+});
+
