@@ -185,7 +185,7 @@ const TRANSLATIONS = {
     errorNetwork: 'Erro de conexão.',
     errorLogin: 'Código inválido ou nome não encontrado.',
     errorPending: 'Conta pendente de aprovação.',
-    errorBlocked: 'Conta bloqueada. Contate o professor.',,
+    errorBlocked: 'Conta bloqueada. Contate o professor.',
     // --- UI completa ---
     navHome:'Início', navRanking:'Ranking', navBadges:'Conquistas', navFeed:'Feed', navProfile:'Perfil',
     statStreak:'🔥 Sequência', statTrainings:'💪 Treinos', statRanking:'🏆 Ranking',
@@ -238,6 +238,7 @@ const TRANSLATIONS = {
     cancel:'Cancelar', save:'Salvar',
     pendingMsg:'Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.',
     accessBlocked:'Acesso bloqueado', weightRegister:'Registre seu peso para ver a evolução aqui!',
+  },
 
   en: {
     // ===== GENERAL =====
@@ -421,7 +422,7 @@ const TRANSLATIONS = {
     errorNetwork: 'Connection error.',
     errorLogin: 'Invalid code or name not found.',
     errorPending: 'Account pending approval.',
-    errorBlocked: 'Account blocked. Contact your coach.',,
+    errorBlocked: 'Account blocked. Contact your coach.',
     // --- UI completa ---
     navHome:'Home', navRanking:'Ranking', navBadges:'Achievements', navFeed:'Feed', navProfile:'Profile',
     statStreak:'🔥 Streak', statTrainings:'💪 Workouts', statRanking:'🏆 Ranking',
@@ -474,6 +475,7 @@ const TRANSLATIONS = {
     cancel:'Cancel', save:'Save',
     pendingMsg:'Your registration is awaiting teacher approval.<br><br>You will receive access soon. Please try again later.',
     accessBlocked:'Access blocked', weightRegister:'Log your weight to see progress here!',
+  },
 
   es: {
     // ===== GENERAL =====
@@ -657,7 +659,7 @@ const TRANSLATIONS = {
     errorNetwork: 'Error de conexión.',
     errorLogin: 'Código inválido o nombre no encontrado.',
     errorPending: 'Cuenta pendiente de aprobación.',
-    errorBlocked: 'Cuenta bloqueada. Contacta a tu profesor.',,
+    errorBlocked: 'Cuenta bloqueada. Contacta a tu profesor.',
     // --- UI completa ---
     navHome:'Inicio', navRanking:'Ranking', navBadges:'Logros', navFeed:'Feed', navProfile:'Perfil',
     statStreak:'🔥 Racha', statTrainings:'💪 Entrenos', statRanking:'🏆 Ranking',
