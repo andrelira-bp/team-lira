@@ -806,9 +806,12 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const attr = el.getAttribute('data-i18n-attr');
+    const useHtml = el.hasAttribute('data-i18n-html');
     const translated = t(key);
     if (attr) {
       el.setAttribute(attr, translated);
+    } else if (useHtml) {
+      el.innerHTML = translated;
     } else {
       el.textContent = translated;
     }
@@ -860,6 +863,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => clearInterval(interval), 30000);
 });
 
+
+  // Dias da semana e meses
+  sun:'Domingo', mon:'Segunda', tue:'Terça', wed:'Quarta', thu:'Quinta', fri:'Sexta', sat:'Sábado',
+  jan:'Janeiro', feb:'Fevereiro', mar:'Março', apr:'Abril', may:'Maio', jun:'Junho',
+  jul:'Julho', aug:'Agosto', sep:'Setembro', oct:'Outubro', nov:'Novembro', dec:'Dezembro',
+  of:'de',
   // --- Strings de UI (adicionadas na tradução completa) ---
   btnLoggingIn: 'Entrando...',
   btnLogin: 'Entrar',
@@ -920,6 +929,11 @@ document.addEventListener('DOMContentLoaded', () => {
   accessBlocked: 'Acesso bloqueado',
   weightRegister: 'Registre seu peso para ver a evolução aqui!',
 ,
+  // Days and months
+  sun:'Sunday', mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday', sat:'Saturday',
+  jan:'January', feb:'February', mar:'March', apr:'April', may:'May', jun:'June',
+  jul:'July', aug:'August', sep:'September', oct:'October', nov:'November', dec:'December',
+  of:'of',
   // --- Strings de UI ---
   btnLoggingIn: 'Logging in...',
   btnLogin: 'Log In',
@@ -980,6 +994,11 @@ document.addEventListener('DOMContentLoaded', () => {
   accessBlocked: 'Access blocked',
   weightRegister: 'Log your weight to see progress here!'
 ,
+  // Días y meses
+  sun:'Domingo', mon:'Lunes', tue:'Martes', wed:'Miércoles', thu:'Jueves', fri:'Viernes', sat:'Sábado',
+  jan:'Enero', feb:'Febrero', mar:'Marzo', apr:'Abril', may:'Mayo', jun:'Junio',
+  jul:'Julio', aug:'Agosto', sep:'Septiembre', oct:'Octubre', nov:'Noviembre', dec:'Diciembre',
+  of:'de',
   // --- Strings de UI ---
   btnLoggingIn: 'Iniciando sesión...',
   btnLogin: 'Iniciar sesión',
