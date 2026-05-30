@@ -530,7 +530,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="card">
       <div class="card-title">⚖️ Evolução do peso</div>
       <div id="weight-chart-content">
-        <div style="color:var(--gray);font-size:13px;text-align:center;padding:16px">Registre seu peso para ver a evolução aqui!</div>
+        <div style="color:var(--gray);font-size:13px;text-align:center;padding:16px" data-i18n="weightRegister">Registre seu peso para ver a evolução aqui!</div>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <input type="number" id="weight-input" placeholder="Ex: 72.5" step="0.1"
@@ -544,7 +544,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
         <div id="weight-goal-set" style="display:flex;gap:8px;margin-top:8px">
           <input type="number" id="weight-goal-input" placeholder="Meta em kg (ex: 70)" step="0.1"
             style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none">
-          <button onclick="saveWeightGoal()" style="padding:10px 16px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Salvar</button>
+          <button onclick="saveWeightGoal()" data-i18n="save" style="padding:10px 16px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Salvar</button>
         </div>
       </div>
     </div>
@@ -577,7 +577,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
           <div style="display:flex;gap:8px">
             <input id="cfg-name" type="text" placeholder="Seu nome"
               style="flex:1;padding:10px;background:var(--dark3);border:1px solid #444;border-radius:8px;color:var(--white);font-size:14px;outline:none">
-            <button onclick="saveCfgName()" style="padding:10px 14px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Salvar</button>
+            <button onclick="saveCfgName()" data-i18n="save" style="padding:10px 14px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer">Salvar</button>
           </div>
         </div>
 
@@ -687,9 +687,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     </div>
     <div class="admin-grid">
       <div class="admin-stat"><div class="admin-stat-num" id="a-total">—</div><div class="admin-stat-label">Total alunos</div></div>
-      <div class="admin-stat"><div class="admin-stat-num" id="a-active">—</div><div class="admin-stat-label">Ativos hoje</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-active">—</div><div class="admin-stat-label" data-i18n="activeToday">Ativos hoje</div></div>
       <div class="admin-stat"><div class="admin-stat-num" id="a-avg">—</div><div class="admin-stat-label">Média pontos</div></div>
-      <div class="admin-stat"><div class="admin-stat-num" id="a-treinos">—</div><div class="admin-stat-label" id="a-treinos-label">Treinos hoje</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-treinos">—</div><div class="admin-stat-label" id="a-treinos-label" data-i18n="workoutsToday">Treinos hoje</div></div>
     </div>
     <div class="card" id="admin-ranking-card">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
@@ -697,19 +697,19 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
         <div style="display:flex;gap:8px;align-items:center">
           <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminData()">↻ Atualizar</span>
           <button onclick="adminForceMonthlyReset()" style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🔄 Zerar Mês</button>
-          <button onclick="adminFixHallOfFame()" style="background:#8e44ad;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🏆 Corrigir Hall</button>
-          <button onclick="adminSetRankOrder()" style="background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">🔢 Desempate</button>
+          <button onclick="adminFixHallOfFame()" style="background:#8e44ad;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer" data-i18n="fixHallBtn">🏆 Corrigir Hall</button>
+          <button onclick="adminSetRankOrder()" style="background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer" data-i18n="tiebreakBtn">🔢 Desempate</button>
         </div>
       </div>
       <div class="search-bar">
         <input class="search-input" id="admin-search" placeholder="🔍 Buscar aluno..." oninput="filterAdminTable()">
       </div>
       <div class="filter-tabs">
-        <div class="filter-tab active" onclick="setAdminFilter('all')" id="filt-all">Todos</div>
-        <div class="filter-tab" onclick="setAdminFilter('active')" id="filt-active">✅ Ativos</div>
-        <div class="filter-tab" onclick="setAdminFilter('pending')" id="filt-pending">⏳ Pendentes</div>
-        <div class="filter-tab" onclick="setAdminFilter('blocked')" id="filt-blocked">🚫 Bloqueados</div>
-        <div class="filter-tab" onclick="setAdminFilter('inactive')" id="filt-inactive">😴 Sumidos</div>
+        <div class="filter-tab active" onclick="setAdminFilter('all')" id="filt-all" data-i18n="filterAll">Todos</div>
+        <div class="filter-tab" onclick="setAdminFilter('active')" id="filt-active" data-i18n="filterActive">✅ Ativos</div>
+        <div class="filter-tab" onclick="setAdminFilter('pending')" id="filt-pending" data-i18n="filterPending">⏳ Pendentes</div>
+        <div class="filter-tab" onclick="setAdminFilter('blocked')" id="filt-blocked" data-i18n="filterBlocked">🚫 Bloqueados</div>
+        <div class="filter-tab" onclick="setAdminFilter('inactive')" id="filt-inactive" data-i18n="filterInactive">😴 Sumidos</div>
       </div>
       <div id="admin-loading" style="text-align:center;padding:20px;color:var(--gray)">Carregando...</div>
       <table class="admin-table hidden" id="admin-table">
@@ -816,7 +816,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse at top,#1a1500 0%,#0f0f0f 60%)">
     <div style="font-size:64px;margin-bottom:24px">⏳</div>
     <div style="font-size:22px;font-weight:800;color:var(--gold);margin-bottom:12px">Cadastro enviado!</div>
-    <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px">Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.</div>
+    <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px" data-i18n="pendingMsg">Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.</div>
     <button class="btn-primary" style="margin-top:32px;max-width:280px" onclick="doLogout()">Voltar ao início</button>
   </div>
 </div>
@@ -825,7 +825,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 <div class="screen" id="screen-blocked">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse at top,#1a0000 0%,#0f0f0f 60%)">
     <div style="font-size:64px;margin-bottom:24px">🚫</div>
-    <div style="font-size:22px;font-weight:800;color:#e53935;margin-bottom:12px">Acesso bloqueado</div>
+    <div style="font-size:22px;font-weight:800;color:#e53935;margin-bottom:12px" data-i18n="accessBlocked">Acesso bloqueado</div>
     <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px">Sua conta foi bloqueada pelo professor.<br><br>Entre em contato para mais informações.</div>
     <button class="btn-primary" style="margin-top:32px;max-width:280px;background:#e53935" onclick="doLogout()">Voltar ao início</button>
   </div>
@@ -841,7 +841,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div id="modal-student-content"></div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
       <button class="btn-success" id="modal-approve-btn" onclick="modalApprove()" style="display:none">✓ Aprovar aluno</button>
-      <button class="btn-danger" id="modal-block-btn" onclick="modalToggleBlock()">🚫 Bloquear aluno</button>
+      <button class="btn-danger" id="modal-block-btn" onclick="modalToggleBlock()" data-i18n="blockStudent">🚫 Bloquear aluno</button>
       <button onclick="modalSendMsg()" style="background:var(--dark3);color:var(--white);border:1px solid #444;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;width:100%">✉️ Enviar mensagem</button>
 
     </div>
@@ -1062,12 +1062,12 @@ async function doLogin() {
   const btn=document.getElementById('btn-login');
   const err=document.getElementById('l-err');
   err.style.display='none';
-  btn.disabled=true; btn.textContent='Entrando...';
+  btn.disabled=true; btn.textContent=t('btnLoggingIn');
   try {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch(e) {
     err.style.display='block';
-    btn.disabled=false; btn.textContent='Entrar';
+    btn.disabled=false; btn.textContent=t('btnLogin');
   }
 }
 
@@ -1079,11 +1079,11 @@ async function doRegister() {
   const err=document.getElementById('r-err');
   const btn=document.getElementById('btn-register');
   err.style.display='none';
-  if(!name||!email||!pass||!code){err.textContent='Preencha todos os campos';err.style.display='block';return;}
+  if(!name||!email||!pass||!code){err.textContent=t('errFillAll');err.style.display='block';return;}
   const dynamicCode = localStorage.getItem('tl_invite_code') || INVITE_CODE;
-  if(code!==dynamicCode){err.textContent='Código de convite inválido';err.style.display='block';return;}
-  if(pass.length<6){err.textContent='Senha: mínimo 6 caracteres';err.style.display='block';return;}
-  btn.disabled=true; btn.textContent='Criando conta...';
+  if(code!==dynamicCode){err.textContent=t('errInvalidCode');err.style.display='block';return;}
+  if(pass.length<6){err.textContent=t('errPasswordMin');err.style.display='block';return;}
+  btn.disabled=true; btn.textContent=t('btnCreatingAccount');
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     const userData = {
@@ -1101,7 +1101,7 @@ async function doRegister() {
   } catch(e) {
     err.textContent = e.code==='auth/email-already-in-use'?'Email já cadastrado':'Erro ao criar conta';
     err.style.display='block';
-    btn.disabled=false; btn.textContent='Criar conta';
+    btn.disabled=false; btn.textContent=t('btnCreateAccount');
   }
 }
 
@@ -1406,13 +1406,13 @@ async function renderMonthlyRanking() {
   const labelEl = document.getElementById('rank-month-label');
   if(!podiumEl || !listEl) return;
 
-  podiumEl.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  podiumEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:20px">${t('loading')}</div>`;
   listEl.innerHTML = '';
 
   try {
     const snap = await getDocs(collection(db, 'users'));
     const monthKey = getMonthKey();
-    if(labelEl) labelEl.textContent = 'Top alunos do Team Lira · ' + getMonthName(monthKey);
+    if(labelEl) labelEl.textContent = t('rankingLabel') + ' · ' + getMonthName(monthKey);
 
     const all = snap.docs.map(d => d.data())
       .filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked')
@@ -1457,7 +1457,7 @@ async function renderMonthlyRanking() {
         + '</div>';
     }).join('');
   } catch(e) {
-    podiumEl.innerHTML = '<div style="color:var(--danger);text-align:center">Erro ao carregar</div>';
+    podiumEl.innerHTML = `<div style="color:var(--danger);text-align:center">${t('errLoad')}</div>`;
   }
 }
 
@@ -1466,7 +1466,7 @@ async function renderTotalRanking() {
   const listEl = document.getElementById('rank-list-total');
   if(!podiumEl || !listEl) return;
 
-  podiumEl.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  podiumEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:20px">${t('loading')}</div>`;
   listEl.innerHTML = '';
 
   try {
@@ -1510,14 +1510,14 @@ async function renderTotalRanking() {
         + '</div>';
     }).join('');
   } catch(e) {
-    podiumEl.innerHTML = '<div style="color:var(--danger);text-align:center">Erro ao carregar</div>';
+    podiumEl.innerHTML = `<div style="color:var(--danger);text-align:center">${t('errLoad')}</div>`;
   }
 }
 
 async function renderHallOfFame() {
   const container = document.getElementById('hall-of-fame-list');
   if(!container) return;
-  container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div>';
+  container.innerHTML = `<div style="text-align:center;color:var(--gray);padding:20px">${t('loading')}</div>`;
   try {
     const snap = await getDocs(collection(db, 'hallOfFame'));
     if(snap.empty) {
@@ -1550,7 +1550,7 @@ async function renderHallOfFame() {
         + '</div>';
     }).join('');
   } catch(e) {
-    container.innerHTML = '<div style="color:var(--danger);text-align:center;padding:20px">Erro ao carregar</div>';
+    container.innerHTML = `<div style="color:var(--danger);text-align:center;padding:20px">${t('errLoad')}</div>`;
   }
 }
 
@@ -1643,7 +1643,7 @@ async function checkMonthlyReset() {
 async function renderRanking() {
   const podium=document.getElementById('podium-area');
   const list=document.getElementById('ranking-list');
-  podium.innerHTML='<div style="color:var(--gray);font-size:13px">Carregando...</div>';
+  podium.innerHTML=`<div style="color:var(--gray);font-size:13px">${t('loading')}</div>`;
   list.innerHTML='';
   try {
     const snap=await getDocs(collection(db,'users'));
@@ -1675,7 +1675,7 @@ async function renderRanking() {
         <div class="rank-pts">${(u.points||0).toLocaleString()} pts</div>
       </div>`;
     }).join('');
-  } catch(e){ podium.innerHTML='<div style="color:var(--danger)">Erro ao carregar ranking</div>'; }
+  } catch(e){ podium.innerHTML=`<div style="color:var(--danger)">${t('errLoadRanking')}</div>`; }
 }
 
 function renderBadges() {
@@ -1760,10 +1760,10 @@ function renderProfile() {
     const progress = ((pts - level.min) / (nextLevel.min - level.min)) * 100;
     if(fillEl) fillEl.style.width = Math.min(100, Math.max(0, progress)) + '%';
     if(nextLevelEl) nextLevelEl.textContent = nextLevel.badge;
-    if(ptsNextEl) ptsNextEl.textContent = 'Faltam ' + (nextLevel.min - pts).toLocaleString() + ' pts';
+    if(ptsNextEl) ptsNextEl.textContent = t('ptsNeeded') + ' ' + (nextLevel.min - pts).toLocaleString() + ' pts';
   } else {
     if(fillEl) fillEl.style.width = '100%';
-    if(nextLevelEl) nextLevelEl.textContent = '🏆 Nível máximo!';
+    if(nextLevelEl) nextLevelEl.textContent = t('maxLevel');
     if(ptsNextEl) ptsNextEl.textContent = '';
   }
 
@@ -1822,7 +1822,7 @@ function renderWeightChart() {
   if(!container || !currentUserData) return;
   const hist = (currentUserData.weightHistory || []).slice(-14);
   if(hist.length < 2) {
-    container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:16px">Registre seu peso nos check-ins para ver a evolução aqui!</div>';
+    container.innerHTML = `<div style="color:var(--gray);font-size:13px;text-align:center;padding:16px">${t('weightNoData')}</div>`;
     return;
   }
   const weights = hist.map(h => h.weight);
@@ -1859,7 +1859,7 @@ function renderWeightGoal() {
   const current = hist.length > 0 ? hist[hist.length-1].weight : null;
   const start = hist.length > 0 ? hist[0].weight : null;
   if(!goal) {
-    goalEl.innerHTML = '<div style="font-size:13px;color:var(--gray)">Defina uma meta de peso para acompanhar seu progresso!</div>';
+    goalEl.innerHTML = `<div style="font-size:13px;color:var(--gray)">${t('weightSetGoal')}</div>`;
     if(setEl) setEl.style.display = 'flex';
     return;
   }
@@ -1922,20 +1922,20 @@ async function loadAdminData() {
     document.getElementById('a-active').textContent=activeToday;
     document.getElementById('a-avg').textContent=avg;
     document.getElementById('a-treinos').textContent=pending > 0 ? pending : treinosHoje;
-    document.getElementById('a-treinos-label').textContent=pending > 0 ? 'Aguard. aprovação' : 'Treinos hoje';
+    document.getElementById('a-treinos-label').textContent=pending > 0 ? t('awaitingApproval') : t('workoutsToday');
     document.getElementById('admin-tbody').innerHTML=all.map((u,i)=>{
       const c=checkinMap[u.uid];
       const checks=Object.keys(c).length;
       const sc=checks>=3?'active':checks>0?'idle':'inactive';
-      const sl=checks>=3?'Ativo':checks>0?'Parcial':'Inativo';
+      const sl=checks>=3?t('statusActive'):checks>0?t('statusPartial'):t('statusInactive');
       if(u.status==='deleted') return '';
       const isPending = u.status === 'pending';
       const isBlocked = u.status === 'blocked';
       const actionBtn = isPending
         ? `<button onclick="approveUser('${u.uid}')" style="background:var(--success);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">✓ Aprovar</button>`
         : isBlocked
-        ? `<button onclick="toggleBlock('${u.uid}', false)" style="background:#555;color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Desbloquear</button>`
-        : `<button onclick="toggleBlock('${u.uid}', true)" style="background:var(--danger);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Bloquear</button>`;
+        ? `<button onclick="toggleBlock('${u.uid}', false)" style="background:#555;color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">${t('unblock')}</button>`
+        : `<button onclick="toggleBlock('${u.uid}', true)" style="background:var(--danger);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">${t('block')}</button>`;
       const rowStyle = isPending ? 'background:#1a1000;' : isBlocked ? 'background:#1a0000;opacity:0.7;' : '';
       // Calculate last seen
       const lastSeen = u.lastCheckinDate ? getDaysAgo(u.lastCheckinDate) : 999;
@@ -1961,7 +1961,7 @@ async function loadAdminData() {
     document.getElementById('admin-loading').style.display='none';
     document.getElementById('admin-table').classList.remove('hidden');
   } catch(e){
-    document.getElementById('admin-loading').textContent='Erro ao carregar dados.';
+    document.getElementById('admin-loading').textContent=t('errLoadData');
   }
 }
 window.loadAdminData=loadAdminData;
@@ -2031,29 +2031,30 @@ async function adminFixHallOfFame() {
   modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
   modal.innerHTML = `
     <div style="background:#1a1a1a;border:1px solid #444;border-radius:16px;padding:20px;width:100%;max-width:360px">
-      <div style="font-size:16px;font-weight:800;margin-bottom:4px">🏆 Corrigir Hall of Fame</div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:4px" data-i18n="fixHallOfFame">🏆 Corrigir Hall of Fame</div>
       <div style="font-size:12px;color:#aaa;margin-bottom:16px">${monthName}</div>
       <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:6px">🥇 1° Lugar</div>
+        <div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:6px" data-i18n="firstPlace">🥇 1° Lugar</div>
         <select id="hof-uid-1" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;margin-bottom:6px;box-sizing:border-box">${buildOptions()}</select>
         <input id="hof-pts-1" placeholder="Pontos" type="number" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;box-sizing:border-box">
       </div>
       <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:#aaa;font-weight:700;margin-bottom:6px">🥈 2° Lugar</div>
+        <div style="font-size:12px;color:#aaa;font-weight:700;margin-bottom:6px" data-i18n="secondPlace">🥈 2° Lugar</div>
         <select id="hof-uid-2" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;margin-bottom:6px;box-sizing:border-box">${buildOptions()}</select>
         <input id="hof-pts-2" placeholder="Pontos" type="number" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;box-sizing:border-box">
       </div>
       <div style="margin-bottom:16px">
-        <div style="font-size:12px;color:#cd7f32;font-weight:700;margin-bottom:6px">🥉 3° Lugar</div>
+        <div style="font-size:12px;color:#cd7f32;font-weight:700;margin-bottom:6px" data-i18n="thirdPlace">🥉 3° Lugar</div>
         <select id="hof-uid-3" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;margin-bottom:6px;box-sizing:border-box">${buildOptions()}</select>
         <input id="hof-pts-3" placeholder="Pontos" type="number" style="width:100%;padding:8px;background:#333;border:none;border-radius:6px;color:#fff;font-size:13px;box-sizing:border-box">
       </div>
       <div style="display:flex;gap:8px">
-        <button id="hof-cancel" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
-        <button id="hof-save" style="flex:1;padding:10px;background:#8e44ad;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Salvar</button>
+        <button id="hof-cancel" data-i18n="cancel" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button id="hof-save" data-i18n="save" style="flex:1;padding:10px;background:#8e44ad;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Salvar</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
+  applyTranslations();
   document.getElementById('hof-cancel').onclick = () => modal.remove();
   document.getElementById('hof-save').onclick = async () => {
     const winners = [];
@@ -2099,23 +2100,24 @@ async function adminSetRankOrder() {
       </div>
       <div style="flex:1">
         <div style="font-weight:700;font-size:13px">${u.name.split(' ')[0]}</div>
-        <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} pts mensais</div>
+        <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} ${t('monthlyPts')}</div>
       </div>
       <div style="font-size:18px;color:var(--gold);font-weight:800">#${i+1}</div>
     </div>`).join('');
 
   modal.innerHTML = `
     <div style="background:#1a1a1a;border:1px solid #444;border-radius:16px;padding:20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto">
-      <div style="font-size:16px;font-weight:800;margin-bottom:4px">🔢 Ordem do Ranking</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:16px">Use ▲▼ para reordenar em caso de empate</div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:4px" data-i18n="rankOrder">🔢 Ordem do Ranking</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:16px" data-i18n="rankOrderHelp">Use ▲▼ para reordenar em caso de empate</div>
       <div id="rank-order-list">${rows}</div>
       <div style="display:flex;gap:8px;margin-top:16px">
-        <button id="rank-cancel" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
-        <button id="rank-save" style="flex:1;padding:10px;background:#2980b9;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Salvar</button>
+        <button id="rank-cancel" data-i18n="cancel" style="flex:1;padding:10px;background:#333;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button id="rank-save" data-i18n="save" style="flex:1;padding:10px;background:#2980b9;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Salvar</button>
       </div>
     </div>`;
 
   document.body.appendChild(modal);
+  applyTranslations();
   
   // Store order
   window._rankOrderUsers = [...users];
@@ -2139,7 +2141,7 @@ async function adminSetRankOrder() {
         </div>
         <div style="flex:1">
           <div style="font-weight:700;font-size:13px">${u.name.split(' ')[0]}</div>
-          <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} pts mensais</div>
+          <div style="font-size:11px;color:#aaa">${(u.monthlyPoints||0)} ${t('monthlyPts')}</div>
         </div>
         <div style="font-size:18px;color:var(--gold);font-weight:800">#${i+1}</div>
       </div>`).join('');
@@ -2213,11 +2215,11 @@ window.filterAdminTable = filterAdminTable;
 async function loadAdminFeed() {
   const container = document.getElementById('admin-feed-list');
   if(!container) return;
-  container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>';
+  container.innerHTML = `<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">${t('loading')}</div>`;
   try {
     const snap = await getDoc(doc(db,'feed','global'));
     if(!snap.exists()||!snap.data().items||snap.data().items.length===0) {
-      container.innerHTML='<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Nenhuma atividade ainda.</div>';
+      container.innerHTML=`<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">${t('noActivityYet')}</div>`;
       return;
     }
     const items = snap.data().items.filter(i=>i.name&&i.name!=='[Excluído]');
@@ -2237,7 +2239,7 @@ async function loadAdminFeed() {
         + '</div>';
     }).join('');
   } catch(e) {
-    container.innerHTML='<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">Erro ao carregar feed.</div>';
+    container.innerHTML=`<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">${t('errLoadFeed')}</div>`;
   }
 }
 window.loadAdminFeed = loadAdminFeed;
@@ -2270,7 +2272,7 @@ async function approveUser(uid) {
 }
 
 async function toggleBlock(uid, block) {
-  const msg = block ? 'Bloquear esse aluno?' : 'Desbloquear esse aluno?';
+  const msg = block ? t('confirmBlock') : t('confirmUnblock');
   if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',uid), {status: block ? 'blocked' : 'approved'});
   showToast(block ? t('toastStudentBlocked') : t('toastStudentUnblocked'));
@@ -2320,17 +2322,17 @@ async function openStudentModal(uid) {
     + '<div class="modal-stat"><span class="modal-stat-label">Check-ins hoje</span><span class="modal-stat-value">' + checkCount + '/4</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo check-in</span><span class="modal-stat-value">' + (u.lastCheckinDate ? getDaysAgoText(u.lastCheckinDate) : 'Nunca') + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo peso</span><span class="modal-stat-value">' + (u.weightHistory&&u.weightHistory.length>0 ? u.weightHistory[u.weightHistory.length-1].weight+'kg' : '-') + '</span></div>'
-    + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>';
+    + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?t('statusPending'):isBlocked?t('statusBlocked'):t('statusActive')) + '</span></div>';
 
   // Show/hide approve button based on status
   const approveBtn = document.getElementById('modal-approve-btn');
   const blockBtn = document.getElementById('modal-block-btn');
   if(isPending) {
     approveBtn.style.display = 'block';
-    blockBtn.textContent = '🗑️ Rejeitar aluno';
+    blockBtn.textContent = '🗑️ ' + t('rejectStudent');
   } else {
     approveBtn.style.display = 'none';
-    blockBtn.textContent = isBlocked ? '✅ Desbloquear aluno' : '🚫 Bloquear aluno';
+    blockBtn.textContent = isBlocked ? '✅ ' + t('unblockStudent') : '🚫 ' + t('blockStudent');
   }
 
   document.getElementById('modal-student').classList.remove('hidden');
@@ -2347,7 +2349,7 @@ async function modalApprove() {
 async function modalToggleBlock() {
   if(!currentModalUid||!currentModalUser) return;
   const isBlocked = currentModalUser.status === 'blocked';
-  const msg = isBlocked ? 'Desbloquear esse aluno?' : 'Bloquear esse aluno?';
+  const msg = isBlocked ? t('confirmUnblock') : t('confirmBlock');
   if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',currentModalUid), {status: isBlocked ? 'approved' : 'blocked'});
   showToast(isBlocked ? t('toastStudentUnblocked') : t('toastStudentBlocked'));
@@ -2428,7 +2430,7 @@ window.showAdminTab=showAdminTab;
 // ===== WEEKLY REPORT =====
 async function renderWeeklyReport() {
   const container = document.getElementById('weekly-content');
-  container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Calculando...</div>';
+  container.innerHTML = `<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">${t('calculating')}</div>`;
 
   const snap = await getDocs(collection(db,'users'));
   const all = snap.docs.map(d=>d.data()).filter(u=>u.status!=='deleted'&&u.status!=='pending');
@@ -2461,7 +2463,7 @@ async function renderWeeklyReport() {
 
 
   // Build HTML safely without nested template literals
-  let weekHtml = '<div style="font-size:13px;color:#888;margin-bottom:12px">Ultimos 7 dias - ' + all.length + ' alunos ativos</div>';
+  let weekHtml = '<div style="font-size:13px;color:#888;margin-bottom:12px">' + t('last7Days') + ' - ' + all.length + ' ' + t('activeStudents') + '</div>';
   
   weekHtml += '<div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px">Mais engajados</div>';
   const medals = ['🥇','🥈','🥉'];
@@ -2500,7 +2502,7 @@ function renderAdminMsgs() {
   const msgs = JSON.parse(localStorage.getItem('tl_admin_msgs')||'[]');
   const container = document.getElementById('msgs-content');
   if(msgs.length===0) {
-    container.innerHTML='<div style="color:var(--gray);font-size:13px">Nenhuma mensagem enviada ainda.</div>';
+    container.innerHTML=`<div style="color:var(--gray);font-size:13px">${t('noMsgsYet')}</div>`;
     return;
   }
   container.innerHTML = msgs.map(m=>`
@@ -2687,7 +2689,7 @@ async function renderFeed() {
   try {
     const snap = await getDoc(doc(db,'feed','global'));
     if(!snap.exists()||!snap.data().items||snap.data().items.length===0) {
-      container.innerHTML='<div style="text-align:center;color:var(--gray);padding:40px">Nenhuma atividade ainda.<br>Seja o primeiro! 💪</div>';
+      container.innerHTML=`<div style="text-align:center;color:var(--gray);padding:40px">${t('noActivityFirst')}</div>`;
       return;
     }
     const items = snap.data().items.filter(i=>i.name && i.name!=='[Excluído]');
@@ -2704,7 +2706,7 @@ async function renderFeed() {
       </div>`;
     }).join('');
   } catch(e){
-    container.innerHTML='<div style="text-align:center;color:var(--gray);padding:20px">Erro ao carregar feed.</div>';
+    container.innerHTML=`<div style="text-align:center;color:var(--gray);padding:20px">${t('errLoadFeed')}</div>`;
   }
 }
 
@@ -3046,7 +3048,7 @@ async function loadChatMessages() {
   try {
     const snap = await getDoc(doc(db, 'chat', 'group'));
     if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
-      container.innerHTML = '<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">Nenhuma mensagem ainda. Seja o primeiro! 💬</div>';
+      container.innerHTML = `<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">${t('noMsgsFirst')}</div>`;
       return;
     }
     const msgs = snap.data().messages || [];
@@ -3138,11 +3140,11 @@ window.adminDeleteChatMsg = adminDeleteChatMsg;
 async function loadAdminChat() {
   const container = document.getElementById('admin-chat-list');
   if(!container) return;
-  container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>';
+  container.innerHTML = `<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">${t('loading')}</div>`;
   try {
     const snap = await getDoc(doc(db, 'chat', 'group'));
     if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
-      container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Nenhuma mensagem ainda.</div>';
+      container.innerHTML = `<div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">${t('noMsgsYet')}</div>`;
       return;
     }
     const msgs = [...snap.data().messages].reverse();
@@ -3163,7 +3165,7 @@ async function loadAdminChat() {
         + '</div></div>';
     }).join('');
   } catch(e) {
-    container.innerHTML = '<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">Erro ao carregar.</div>';
+    container.innerHTML = `<div style="color:var(--danger);font-size:13px;text-align:center;padding:20px">${t('errLoad')}</div>`;
   }
 }
 window.loadAdminChat = loadAdminChat;
