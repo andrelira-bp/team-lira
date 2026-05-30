@@ -314,10 +314,6 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div id="tab-admin" class="hidden">
       <div class="form-group"><label>Senha do professor</label><input type="password" id="a-pass" placeholder="••••••••"></div>
       <button class="btn-primary" onclick="doAdminLogin()">Acessar painel</button>
-      <div style="text-align:center;margin:12px 0;color:var(--gray);font-size:13px">— ou —</div>
-      <button class="btn-primary" onclick="doAdminGoogleLogin()" style="background:#fff;color:#222;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px"> Entrar com Google
-      </button>
       <div class="form-error" id="a-err">Senha incorreta</div>
     </div>
   </div>
@@ -757,7 +753,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="card-title">⚙️ Código de convite</div>
       <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
         <div style="flex:1;background:var(--dark3);border-radius:8px;padding:12px;font-size:18px;font-weight:800;letter-spacing:3px;color:var(--gold)">TEAMLIRA</div>
-        <button class="btn-gold" onclick="navigator.clipboard.writeText('TEAMLIRA').then(()=>showToast('Código copiado! 📋'))">Copiar</button>
+        <button class="btn-gold" onclick="navigator.clipboard.writeText('TEAMLIRA').then(()=>showToast(t('toastCodeCopied')))">Copiar</button>
       </div>
       <div style="font-size:12px;color:var(--gray);margin-top:8px">Compartilhe com novos alunos</div>
     </div>
@@ -879,7 +875,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-  updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential, GoogleAuthProvider, signInWithPopup }
+  updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
@@ -901,7 +897,6 @@ const db = getFirestore(app);
 const INVITE_CODE = 'TEAMLIRA';
 // Senha do professor
 const ADMIN_PASS = 'lira2025';
-const ADMIN_EMAIL = 'andrevirtuation@gmail.com';
 const LEVELS = [
   {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
   {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
@@ -1124,33 +1119,6 @@ function doAdminLogin() {
   }, 30000);
 }
 
-async function doAdminGoogleLogin() {
-  const err = document.getElementById('a-err');
-  err.style.display = 'none';
-  try {
-    const provider = new GoogleAuthProvider();
-    const cred = await signInWithPopup(auth, provider);
-    if(cred.user.email !== ADMIN_EMAIL) {
-      await signOut(auth);
-      err.textContent = 'Acesso negado. Use a conta do professor.';
-      err.style.display = 'block';
-      return;
-    }
-    isAdmin = true;
-    localStorage.setItem('tl_admin_session', '1');
-    showScreen('screen-admin');
-    loadAdminData();
-    if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
-    window.adminRefreshInterval = setInterval(() => {
-      if(isAdmin) loadAdminData();
-      else clearInterval(window.adminRefreshInterval);
-    }, 30000);
-  } catch(e) {
-    err.textContent = 'Erro ao entrar com Google.';
-    err.style.display = 'block';
-  }
-}
-
 async function doLogout() {
   isAdmin=false; currentUserData=null;
   localStorage.removeItem('tl_admin_session');
@@ -1159,7 +1127,7 @@ async function doLogout() {
   showScreen('screen-login');
 }
 window.doLogin=doLogin; window.doRegister=doRegister;
-window.doAdminLogin=doAdminLogin; window.doAdminGoogleLogin=doAdminGoogleLogin; window.doLogout=doLogout;
+window.doAdminLogin=doAdminLogin; window.doLogout=doLogout;
 
 // ===== CHECK-IN =====
 const _checkinLock = {}; // Evita race condition: bloqueia por tipo enquanto processa
@@ -1289,7 +1257,7 @@ async function toggleCheck(type) {
     } else if(type==='treino') {
       setTimeout(()=>showCelebration('💪', 'Treino Concluído!', '+'+pts+' pontos! Continue assim!', false), 400);
     } else {
-      showToast('+'+pts+' pontos! 🔥');
+      showToast(t('toastCheckinDone', {pts}));
     }
 
     // Post to feed
@@ -1309,21 +1277,21 @@ async function toggleCheck(type) {
   } catch(e) {
     el.classList.remove('loading-check');
     _checkinLock[type] = false; // Libera o lock após erro
-    showToast('Erro ao registrar. Tente novamente.');
+    showToast(t('toastCheckinError'));
   }
 }
 window.toggleCheck=toggleCheck;
 
 async function registerWeight() {
   const val=parseFloat(document.getElementById('weight-input').value);
-  if(!val||val<20||val>300){showToast('Peso inválido');return;}
+  if(!val||val<20||val>300){showToast(t('toastWeightInvalid'));return;}
   const userRef=doc(db,'users',currentUserData.uid);
   const hist=[...(currentUserData.weightHistory||[]),{date:getTodayKey(),weight:val}];
   await updateDoc(userRef,{weightHistory:hist});
   const snap=await getDoc(userRef);
   currentUserData=snap.data();
   document.getElementById('weight-input').value='';
-  showToast('Peso registrado! ⚖️');
+  showToast(t('toastWeightSaved'));
   postToFeed(currentUserData.name, 'weight');
   renderProfile();
 }
@@ -1911,9 +1879,9 @@ function renderWeightGoal() {
 
 function saveWeightGoal() {
   const val = parseFloat(document.getElementById('weight-goal-input').value);
-  if(!val || val < 20 || val > 300) { showToast('Peso inválido!'); return; }
+  if(!val || val < 20 || val > 300) { showToast(t('toastWeightInvalid')); return; }
   localStorage.setItem('tl_wg_' + currentUserData.uid, val);
-  showToast('Meta salva! 🎯');
+  showToast(t('toastGoalSaved'));
   renderWeightGoal();
 }
 function clearWeightGoal() {
@@ -2030,10 +1998,10 @@ async function adminForceMonthlyReset() {
     // Update appConfig so auto-reset knows it's done
     await setDoc(doc(db, 'appConfig', 'monthlyReset'), { lastResetMonth: monthKey, doneAt: Date.now() });
 
-    showToast('✅ Mês zerado com sucesso!');
+    showToast(t('toastMonthReset'));
     loadAdminData();
   } catch(e) {
-    showToast('Erro ao zerar mês: ' + e.message);
+    showToast(t('toastMonthResetError') + e.message);
     console.error(e);
   }
 }
@@ -2095,12 +2063,12 @@ async function adminFixHallOfFame() {
         if(u) winners.push({ uid: u.uid, name: u.name, photoURL: u.photoURL || null, points: pts });
       }
     }
-    if(winners.length === 0) { showToast('Selecione pelo menos 1 aluno'); return; }
+    if(winners.length === 0) { showToast(t('toastSelectStudents')); return; }
     try {
       await setDoc(doc(db, 'hallOfFame', prevMonth), { winners, createdAt: Date.now() });
-      showToast('✅ Hall of Fame salvo com fotos!');
+      showToast(t('toastHallSaved'));
       modal.remove();
-    } catch(e) { showToast('Erro: ' + e.message); }
+    } catch(e) { showToast(t('toastHallError') + e.message); }
   };
 }
 window.adminFixHallOfFame = adminFixHallOfFame;
@@ -2182,10 +2150,10 @@ async function adminSetRankOrder() {
         updateDoc(doc(db, 'users', u.uid), { rankOrder: i + 1 })
       );
       await Promise.all(batch);
-      showToast('✅ Ordem salva!');
+      showToast(t('toastOrderSaved'));
       modal.remove();
     } catch(e) {
-      showToast('Erro: ' + e.message);
+      showToast(t('toastOrderError') + e.message);
     }
   };
 }
@@ -2282,11 +2250,11 @@ function editInviteCode() {
 
 function saveInviteCode() {
   const newCode = document.getElementById('invite-code-input').value.trim().toUpperCase();
-  if(!newCode || newCode.length < 4) { showToast('Código muito curto!'); return; }
+  if(!newCode || newCode.length < 4) { showToast(t('toastCodeTooShort')); return; }
   localStorage.setItem('tl_invite_code', newCode);
   document.getElementById('invite-code-display').textContent = newCode;
   document.getElementById('invite-edit-area').classList.add('hidden');
-  showToast('Código atualizado! ✅');
+  showToast(t('toastCodeUpdated'));
 }
 window.editInviteCode = editInviteCode;
 window.saveInviteCode = saveInviteCode;
@@ -2295,7 +2263,7 @@ window.saveInviteCode = saveInviteCode;
 async function approveUser(uid) {
   if(!confirm('Aprovar esse aluno?')) return;
   await updateDoc(doc(db,'users',uid), {status: 'approved'});
-  showToast('Aluno aprovado! ✅');
+  showToast(t('toastStudentApproved'));
   loadAdminData();
 }
 
@@ -2303,7 +2271,7 @@ async function toggleBlock(uid, block) {
   const msg = block ? 'Bloquear esse aluno?' : 'Desbloquear esse aluno?';
   if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',uid), {status: block ? 'blocked' : 'approved'});
-  showToast(block ? 'Aluno bloqueado 🚫' : 'Aluno desbloqueado ✅');
+  showToast(block ? t('toastStudentBlocked') : t('toastStudentUnblocked'));
   loadAdminData();
 }
 window.approveUser=approveUser;
@@ -2369,7 +2337,7 @@ async function openStudentModal(uid) {
 async function modalApprove() {
   if(!currentModalUid) return;
   await updateDoc(doc(db,'users',currentModalUid), {status:'approved'});
-  showToast('Aluno aprovado! ✅');
+  showToast(t('toastStudentApproved'));
   closeModal('modal-student');
   loadAdminData();
 }
@@ -2380,7 +2348,7 @@ async function modalToggleBlock() {
   const msg = isBlocked ? 'Desbloquear esse aluno?' : 'Bloquear esse aluno?';
   if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',currentModalUid), {status: isBlocked ? 'approved' : 'blocked'});
-  showToast(isBlocked ? 'Aluno desbloqueado ✅' : 'Aluno bloqueado 🚫');
+  showToast(isBlocked ? t('toastStudentUnblocked') : t('toastStudentBlocked'));
   closeModal('modal-student');
   loadAdminData();
 }
@@ -2393,7 +2361,7 @@ function modalSendMsg() {
 
 async function confirmSendMsg() {
   const text = document.getElementById('msg-text').value.trim();
-  if(!text) { showToast('Digite uma mensagem!'); return; }
+  if(!text) { showToast(t('toastMsgEmpty')); return; }
   const msgData = {
     toUid: currentModalUid,
     toName: currentModalUser.name,
@@ -2411,7 +2379,7 @@ async function confirmSendMsg() {
   existingMsgs.unshift({text, sentAt: new Date().toISOString()});
   await setDoc(msgRef, {msgs: existingMsgs.slice(0,10)});
 
-  showToast('Mensagem enviada! ✉️');
+  showToast(t('toastMsgSent'));
   closeModal('modal-msg');
   closeModal('modal-student');
   renderAdminMsgs();
@@ -2790,7 +2758,7 @@ async function uploadPhoto(event) {
   // Reset input so the same file can be selected again later
   event.target.value = '';
   if(!file) return;
-  if(file.size > 10 * 1024 * 1024) { showToast('Foto muito grande! Maximo 10MB'); return; }
+  if(file.size > 10 * 1024 * 1024) { showToast(t('toastPhotoTooBig')); return; }
   document.getElementById('photo-loading').style.display = 'flex';
   try {
     // Resize and convert to base64
@@ -2799,12 +2767,12 @@ async function uploadPhoto(event) {
     // Update only the photoURL field, preserving uid and all other local data
     currentUserData.photoURL = base64;
     document.getElementById('photo-loading').style.display = 'none';
-    showToast('Foto atualizada! 📸');
+    showToast(t('toastPhotoUpdated'));
     renderProfile();
     renderDashboard();
   } catch(e) {
     document.getElementById('photo-loading').style.display = 'none';
-    showToast('Erro ao enviar foto. Tente novamente.');
+    showToast(t('toastPhotoError'));
     console.error(e);
   }
 }
@@ -2922,7 +2890,7 @@ async function checkStudentMessages() {
       if(lastSeen !== lastMsg.sentAt) {
         localStorage.setItem('tl_last_msg_'+currentUserData.uid, lastMsg.sentAt);
         setTimeout(()=>{
-          showToast('✉️ Mensagem do professor!');
+          showToast(t('feedAdmin'));
           setTimeout(()=>alert('📩 Mensagem do Professor:\n\n' + lastMsg.text), 500);
         }, 2000);
       }
@@ -2978,8 +2946,8 @@ function getDailyPhrase() {
 async function uploadStory(event) {
   const file = event.target.files[0];
   if(!file) return;
-  if(file.size > 10 * 1024 * 1024) { showToast('Foto muito grande! Máximo 10MB'); return; }
-  showToast('Enviando foto... ⏳');
+  if(file.size > 10 * 1024 * 1024) { showToast(t('toastPhotoTooBig')); return; }
+  showToast(t('toastSending'));
   try {
     const base64 = await imageToBase64(file, 800);
     const storyData = {
@@ -2990,11 +2958,11 @@ async function uploadStory(event) {
       timestamp: Date.now()
     };
     await setDoc(doc(db, 'stories', currentUserData.uid), storyData);
-    showToast('Treino postado! 💪🔥');
+    showToast(t('toastStoryPosted'));
     loadStories();
     postToFeed(currentUserData.name, 'treino_foto');
   } catch(e) {
-    showToast('Erro ao postar. Tente novamente.');
+    showToast(t('toastStoryError'));
   }
   event.target.value = '';
 }
@@ -3135,7 +3103,7 @@ async function sendChatMsg() {
       }
     }
     loadChatMessages();
-  } catch(e) { showToast('Erro ao enviar.'); }
+  } catch(e) { showToast(t('toastMsgError')); }
 }
 window.sendChatMsg = sendChatMsg;
 
@@ -3146,9 +3114,9 @@ async function deleteChatMsg(idx) {
     const msgs = snap.data().messages || [];
     msgs.splice(idx, 1);
     await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
-    showToast('Mensagem apagada!');
+    showToast(t('toastMsgDeleted'));
     loadChatMessages();
-  } catch(e) { showToast('Erro ao apagar.'); }
+  } catch(e) { showToast(t('toastMsgError')); }
 }
 window.deleteChatMsg = deleteChatMsg;
 
@@ -3159,9 +3127,9 @@ async function adminDeleteChatMsg(idx) {
     const msgs = snap.data().messages || [];
     msgs.splice(idx, 1);
     await setDoc(doc(db, 'chat', 'group'), {messages: msgs});
-    showToast('Mensagem apagada! 🗑️');
+    showToast(t('toastMsgDeleted'));
     loadAdminChat();
-  } catch(e) { showToast('Erro ao apagar.'); }
+  } catch(e) { showToast(t('toastMsgError')); }
 }
 window.adminDeleteChatMsg = adminDeleteChatMsg;
 
@@ -3204,23 +3172,23 @@ window.loadAdminChat = loadAdminChat;
 // ===== CONFIGURAÇÕES DA CONTA =====
 async function saveCfgName() {
   const val = document.getElementById('cfg-name').value.trim();
-  if(!val || val.length < 2) { showToast('Nome muito curto!'); return; }
+  if(!val || val.length < 2) { showToast(t('toastNameTooShort')); return; }
   try {
     await updateDoc(doc(db,'users',currentUserData.uid), {name: val});
     currentUserData.name = val;
     document.getElementById('prof-name').textContent = val;
     document.getElementById('cfg-name').value = '';
-    showToast('Nome atualizado! ✅');
+    showToast(t('toastNameUpdated'));
     renderDashboard();
-  } catch(e) { showToast('Erro ao atualizar nome.'); }
+  } catch(e) { showToast(t('toastNameError')); }
 }
 window.saveCfgName = saveCfgName;
 
 async function saveCfgEmail() {
   const newEmail = document.getElementById('cfg-email').value.trim();
   const pass = document.getElementById('cfg-email-pass').value;
-  if(!newEmail) { showToast('Digite o novo e-mail!'); return; }
-  if(!pass) { showToast('Digite sua senha atual!'); return; }
+  if(!newEmail) { showToast(t('toastEmailEmpty')); return; }
+  if(!pass) { showToast(t('toastPasswordRequired')); return; }
   try {
     const user = auth.currentUser;
     const credential = EmailAuthProvider.credential(user.email, pass);
@@ -3230,12 +3198,12 @@ async function saveCfgEmail() {
     currentUserData.email = newEmail;
     document.getElementById('cfg-email').value = '';
     document.getElementById('cfg-email-pass').value = '';
-    showToast('E-mail atualizado! ✅');
+    showToast(t('toastEmailUpdated'));
   } catch(e) {
-    if(e.code === 'auth/wrong-password') showToast('Senha incorreta!');
-    else if(e.code === 'auth/email-already-in-use') showToast('E-mail já em uso!');
-    else if(e.code === 'auth/invalid-email') showToast('E-mail inválido!');
-    else showToast('Erro ao atualizar e-mail.');
+    if(e.code === 'auth/wrong-password') showToast(t('toastPasswordWrong'));
+    else if(e.code === 'auth/email-already-in-use') showToast(t('toastEmailInUse'));
+    else if(e.code === 'auth/invalid-email') showToast(t('toastEmailInvalid'));
+    else showToast(t('toastEmailError'));
   }
 }
 window.saveCfgEmail = saveCfgEmail;
@@ -3243,8 +3211,8 @@ window.saveCfgEmail = saveCfgEmail;
 async function saveCfgPassword() {
   const current = document.getElementById('cfg-pass-current').value;
   const newPass = document.getElementById('cfg-pass-new').value;
-  if(!current) { showToast('Digite sua senha atual!'); return; }
-  if(!newPass || newPass.length < 6) { showToast('Nova senha precisa ter mínimo 6 caracteres!'); return; }
+  if(!current) { showToast(t('toastPasswordRequired')); return; }
+  if(!newPass || newPass.length < 6) { showToast(t('toastPasswordTooShort')); return; }
   try {
     const user = auth.currentUser;
     const credential = EmailAuthProvider.credential(user.email, current);
@@ -3252,10 +3220,10 @@ async function saveCfgPassword() {
     await updatePassword(user, newPass);
     document.getElementById('cfg-pass-current').value = '';
     document.getElementById('cfg-pass-new').value = '';
-    showToast('Senha atualizada! ✅');
+    showToast(t('toastPasswordUpdated'));
   } catch(e) {
-    if(e.code === 'auth/wrong-password') showToast('Senha atual incorreta!');
-    else showToast('Erro ao atualizar senha.');
+    if(e.code === 'auth/wrong-password') showToast(t('toastPasswordWrong'));
+    else showToast(t('toastPasswordError'));
   }
 }
 window.saveCfgPassword = saveCfgPassword;
@@ -3266,10 +3234,10 @@ function saveCustomPhrase() {
   const todayKey = getTodayKey();
   if(text) {
     localStorage.setItem('tl_custom_phrase_' + todayKey, text);
-    showToast('Frase do dia atualizada! 💬');
+    showToast(t('toastPhraseUpdated'));
   } else {
     localStorage.removeItem('tl_custom_phrase_' + todayKey);
-    showToast('Usando frase automática!');
+    showToast(t('toastPhraseAuto'));
   }
 }
 window.saveCustomPhrase = saveCustomPhrase;
