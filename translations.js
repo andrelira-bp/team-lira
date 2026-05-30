@@ -980,7 +980,11 @@ function applyTranslations() {
 
 // ===== SELETOR DE IDIOMA =====
 function renderLanguageSelector() {
-  const flags = { pt: '🇧🇷', en: '🇺🇸', es: '🇪🇸' };
+  const flags = {
+    pt: '\uD83C\uDDE7\uD83C\uDDF7',
+    en: '\uD83C\uDDFA\uD83C\uDDF8',
+    es: '\uD83C\uDDEA\uD83C\uDDF8'
+  };
   const names = { pt: 'PT', en: 'EN', es: 'ES' };
   const container = document.createElement('div');
   container.id = 'lang-selector';
@@ -988,8 +992,8 @@ function renderLanguageSelector() {
   for (const [lang, flag] of Object.entries(flags)) {
     const btn = document.createElement('button');
     const active = lang === currentLang ? 'background:var(--gold);color:var(--black);' : 'background:var(--dark2);color:var(--gray);';
-    btn.style.cssText = active + 'border:1px solid #444;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:700;cursor:pointer;';
-    btn.textContent = flag + ' ' + names[lang];
+    btn.style.cssText = active + 'border:1px solid #444;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.4;';
+    btn.innerHTML = '<span style="font-family:Twemoji,NotoColorEmoji,EmojiOne,Apple Color Emoji,Segoe UI Emoji,sans-serif;">' + flag + '</span> ' + names[lang];
     btn.addEventListener('click', () => setLang(lang));
     container.appendChild(btn);
   }
