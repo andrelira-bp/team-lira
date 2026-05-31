@@ -121,6 +121,8 @@ const TRANSLATIONS = {
     navRanking: 'Ranking',
     navBadges: 'Conquistas',
     navFeed: 'Feed',
+    navChat: 'Chat',
+    navChat: 'Chat',
     navProfile: 'Perfil',
 
     // ADMIN
@@ -362,6 +364,7 @@ const TRANSLATIONS = {
     navRanking: 'Ranking',
     navBadges: 'Achievements',
     navFeed: 'Feed',
+    navChat: 'Chat',
     navProfile: 'Profile',
 
     // ADMIN
@@ -603,6 +606,8 @@ const TRANSLATIONS = {
     navRanking: 'Ranking',
     navBadges: 'Logros',
     navFeed: 'Feed',
+    navChat: 'Chat',
+    navChat: 'Chat',
     navProfile: 'Perfil',
 
     // ADMIN
@@ -991,20 +996,11 @@ function applyTranslations() {
 
 // Inicializa seletor e traduções quando DOM pronto
 document.addEventListener('DOMContentLoaded', () => {
-  // Injeta seletor de idioma em todas as top-bars
-  document.querySelectorAll('.top-bar').forEach(bar => {
-    const sel = document.createElement('div');
-    sel.style.cssText = 'display:flex;gap:4px;align-items:center;flex-shrink:0;';
-    ['pt','en','es'].forEach(lang => {
-      const btn = document.createElement('button');
-      btn.textContent = lang.toUpperCase();
-      btn.setAttribute('data-lang-btn', lang);
-      btn.style.cssText = 'border:none;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;' +
-        (lang === currentLang ? 'background:var(--gold);color:var(--black);' : 'background:rgba(255,255,255,0.1);color:#ccc;');
-      btn.addEventListener('click', () => setLang(lang));
-      sel.appendChild(btn);
-    });
-    bar.appendChild(sel);
+  // Atualizar estilo dos botões já existentes no HTML
+  document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+    const l = btn.getAttribute('data-lang-btn');
+    btn.style.background = l === currentLang ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+    btn.style.color      = l === currentLang ? 'var(--black)' : '#ccc';
   });
   applyTranslations();
 });
