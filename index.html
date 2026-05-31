@@ -335,7 +335,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <!-- HOME -->
   <div class="page-content" id="page-home">
     <div style="padding:20px 0 8px">
-      <h2 style="font-size:22px;font-weight:700">Olá, <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
+      <h2 style="font-size:22px;font-weight:700"><span id="dash-greeting" data-i18n="dashGreeting">Olá,</span> <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
       <p style="font-size:13px;color:var(--gray);margin-top:4px" id="dash-date"></p>
     </div>
     <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:14px">
@@ -370,7 +370,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <!-- SEQUENCIA RECOVERY BANNER -->
     <div id="recovery-banner" style="display:none;background:linear-gradient(135deg,#1a0a00,#2a1500);border:1px solid #f5a623;border-radius:12px;padding:14px 16px;margin-bottom:14px">
       <div style="font-size:14px;font-weight:800;color:#f5a623;margin-bottom:4px" data-i18n="dashStreakBroken">😢 Sequência quebrada!</div>
-      <div style="font-size:13px;color:var(--gray)">Faça <strong style="color:var(--white)" id="recovery-meals-needed">3 refeições</strong> hoje para recuperar sua sequência!</div>
+      <div style="font-size:13px;color:var(--gray)" id="recovery-msg-div" data-i18n-html="recoveryMsg">Faça <strong style="color:var(--white)" id="recovery-meals-needed">3 refeições</strong> hoje para recuperar sua sequência!</div>
       <div style="margin-top:8px;background:#333;border-radius:99px;height:6px;overflow:hidden">
         <div id="recovery-progress" style="background:#f5a623;height:100%;border-radius:99px;transition:width .3s;width:0%"></div>
       </div>
@@ -681,7 +681,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <div class="page-content">
     <div style="padding:12px 0 8px;display:flex;justify-content:space-between;align-items:center">
       <div>
-        <div style="font-size:22px;font-weight:900">Olá, <span style="color:var(--gold)">André Lira!</span></div>
+        <div style="font-size:22px;font-weight:900"><span data-i18n="dashGreeting">Olá,</span> <span style="color:var(--gold)">André Lira!</span></div>
         <div style="font-size:13px;color:var(--gray);letter-spacing:1px" data-i18n="adminSub">Body Performance</div>
       </div>
       <div id="notif-bell" style="display:none;cursor:pointer;font-size:24px;position:relative" onclick="showAdminTab('ranking')">
@@ -780,7 +780,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="welcome-quote" id="welcome-quote">Carregando...</div>
     <div class="welcome-streak">
       <div class="welcome-streak-num" id="welcome-streak">0</div>
-      <div class="welcome-streak-label">🔥 dias de sequência</div>
+      <div class="welcome-streak-label" data-i18n="welcomeStreakLabel">🔥 dias de sequência</div>
     </div>
     <button class="welcome-btn" onclick="enterApp()" data-i18n="goTrain">BORA TREINAR 💪</button>
   </div>
@@ -881,7 +881,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   </div>
 </div>
 
-<script src="translations.js?v=2"></script>
+<script src="translations.js?v=3"></script>
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -1090,10 +1090,10 @@ async function doRegister() {
   const err=document.getElementById('r-err');
   const btn=document.getElementById('btn-register');
   err.style.display='none';
-  if(!name||!email||!pass||!code){err.textContent='Preencha todos os campos';err.style.display='block';return;}
+  if(!name||!email||!pass||!code){err.textContent=t('formFillAll');err.style.display='block';return;}
   const dynamicCode = localStorage.getItem('tl_invite_code') || INVITE_CODE;
-  if(code!==dynamicCode){err.textContent='Código de convite inválido';err.style.display='block';return;}
-  if(pass.length<6){err.textContent='Senha: mínimo 6 caracteres';err.style.display='block';return;}
+  if(code!==dynamicCode){err.textContent=t('formInvalidCode');err.style.display='block';return;}
+  if(pass.length<6){err.textContent=t('formPassMin');err.style.display='block';return;}
   btn.disabled=true; btn.textContent=t('loginCreating');
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
@@ -1349,9 +1349,13 @@ async function renderDashboard() {
   const today=new Date();
   const days=t('dateWeekdays');
   const months=t('dateMonths');
-  document.getElementById('dash-date').textContent=days[today.getDay()]+', '+today.getDate()+' de '+months[today.getMonth()];
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'pt';
+  const dateStr = lang === 'en'
+    ? days[today.getDay()] + ', ' + months[today.getMonth()] + ' ' + today.getDate()
+    : days[today.getDay()] + ', ' + today.getDate() + ' de ' + months[today.getMonth()];
+  document.getElementById('dash-date').textContent = dateStr;
   const phraseEl = document.getElementById('daily-phrase');
-  if(phraseEl) phraseEl.textContent = getDailyPhrase();
+  if(phraseEl) phraseEl.textContent = getDailyPhrase(); // usa getPhrases() internamente
   loadStories();
 
   // ranking position
@@ -1463,7 +1467,7 @@ async function renderMonthlyRanking() {
         + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="rank-info">'
         + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
-        + '<div class="rank-sub">' + level.name + ' · 🔥' + (u.streak||0) + ' dias seq.</div>'
+        + '<div class="rank-sub">' + level.name + t('rankSub') + (u.streak||0) + t('rankSeq') + '</div>'
         + '</div>'
         + '<div class="rank-pts">' + (u.monthlyPoints||0).toLocaleString() + ' pts</div>'
         + '</div>';
@@ -1693,14 +1697,14 @@ async function renderRanking() {
 function renderBadges() {
   if(!currentUserData) return;
   const categories = [
-    { title: '🏋️ Treino',      ids: ['train_1','train_10','train_50','train_100','train_200','train_365'] },
-    { title: '🔥 Sequência',    ids: ['streak_3','streak_7','streak_30','streak_60','streak_100','streak_180'] },
-    { title: '🍽️ Alimentação', ids: ['meal_1','meal_15','meal_45','meal_90','meal_180'] },
-    { title: '⚖️ Peso',         ids: ['weight_1','weight_15','weight_45','weight_90'] },
-    { title: '👑 Pontuação',    ids: ['pts_500','pts_2000','pts_5000','pts_10000','pts_20000','pts_50000'] },
-    { title: '🏆 Ranking',      ids: ['rank_top3','rank_1st','rank_3x'] },
-    { title: '💧 Hidratação',   ids: ['hydra_15','hydra_30','hydra_60'] },
-    { title: '📸 Engajamento',  ids: ['story_1','chat_30','app_60','app_90','app_180'] },
+    { title: t('catTreino'),      ids: ['train_1','train_10','train_50','train_100','train_200','train_365'] },
+    { title: t('catSequencia'),    ids: ['streak_3','streak_7','streak_30','streak_60','streak_100','streak_180'] },
+    { title: t('catAlimentacao'), ids: ['meal_1','meal_15','meal_45','meal_90','meal_180'] },
+    { title: t('catPeso'),         ids: ['weight_1','weight_15','weight_45','weight_90'] },
+    { title: t('catPontuacao'),    ids: ['pts_500','pts_2000','pts_5000','pts_10000','pts_20000','pts_50000'] },
+    { title: t('catRanking'),      ids: ['rank_top3','rank_1st','rank_3x'] },
+    { title: t('catHidratacao'),   ids: ['hydra_15','hydra_30','hydra_60'] },
+    { title: t('catEngajamento'),  ids: ['story_1','chat_30','app_60','app_90','app_180'] },
   ];
   const unlocked = currentUserData.unlockedBadges || [];
   const total = BADGES_DEF.length; const _bd = id => getBadgeById(id) || BADGES_DEF.find(x=>x.id===id) || {};
@@ -1708,7 +1712,7 @@ function renderBadges() {
   const pct = Math.round(done/total*100);
 
   let html = `<div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:13px;color:var(--gray)">Conquistas desbloqueadas</div>
+    <div style="font-size:13px;color:var(--gray)">${t('badgesUnlockedLabel')}</div>
     <div style="font-size:22px;font-weight:800;color:var(--gold)">${done} <span style="color:var(--gray);font-size:14px">/ ${total}</span></div>
     <div style="background:#2a2a2a;border-radius:99px;height:6px;margin:8px 0">
       <div style="background:var(--gold);height:6px;border-radius:99px;width:${pct}%;transition:width .5s"></div>
@@ -1725,7 +1729,7 @@ function renderBadges() {
         <div style="font-size:30px;margin-bottom:6px">${b.emoji}</div>
         <div style="font-size:11px;font-weight:700;text-align:center;line-height:1.3;color:${ok?'#F5C518':'var(--white)'}">${(getBadgeById(b.id)||b).name}</div>
         <div style="font-size:10px;color:var(--gray);margin-top:3px;text-align:center;line-height:1.3">${(getBadgeById(b.id)||b).desc}</div>
-        ${ok ? '<div style="font-size:9px;color:var(--gold);margin-top:5px;font-weight:800;letter-spacing:1px">✓ DESBLOQUEADO</div>' : ''}
+        ${ok ? '<div style="font-size:9px;color:var(--gold);margin-top:5px;font-weight:800;letter-spacing:1px">' + t('badgeUnlocked') + '</div>' : ''}
       </div>`;
     }).join('');
     html += `</div>`;
@@ -2326,11 +2330,11 @@ async function openStudentModal(uid) {
     + '</div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Total de pontos</span><span class="modal-stat-value gold">' + (u.points||0).toLocaleString() + ' pts</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Treinos realizados</span><span class="modal-stat-value">' + (u.totalTreinos||0) + '</span></div>'
-    + '<div class="modal-stat"><span class="modal-stat-label">Sequência atual</span><span class="modal-stat-value">🔥 ' + (u.streak||0) + ' dias</span></div>'
-    + '<div class="modal-stat"><span class="modal-stat-label">Melhor sequência</span><span class="modal-stat-value">' + (u.bestStreak||0) + ' dias</span></div>'
+    + '<div class="modal-stat"><span class="modal-stat-label">' + t('modalCurrentStreak') + '</span><span class="modal-stat-value">🔥 ' + (u.streak||0) + ' ' + t('days') + '</span></div>'
+    + '<div class="modal-stat"><span class="modal-stat-label">' + t('modalBestStreak') + '</span><span class="modal-stat-value">' + (u.bestStreak||0) + ' ' + t('days') + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Conquistas</span><span class="modal-stat-value">' + (u.unlockedBadges||[]).length + '/9</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Check-ins hoje</span><span class="modal-stat-value">' + checkCount + '/4</span></div>'
-    + '<div class="modal-stat"><span class="modal-stat-label">Ultimo check-in</span><span class="modal-stat-value">' + (u.lastCheckinDate ? getDaysAgoText(u.lastCheckinDate) : 'Nunca') + '</span></div>'
+    + '<div class="modal-stat"><span class="modal-stat-label">' + t('modalLastCheckin') + '</span><span class="modal-stat-value">' + (u.lastCheckinDate ? getDaysAgoText(u.lastCheckinDate) : t('modalNever')) + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo peso</span><span class="modal-stat-value">' + (u.weightHistory&&u.weightHistory.length>0 ? u.weightHistory[u.weightHistory.length-1].weight+'kg' : '-') + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>';
 
@@ -2499,7 +2503,7 @@ async function renderWeeklyReport() {
         + 'onclick="quickMsg(this.dataset.uid,this.dataset.name)" '
         + 'style="background:var(--gold);color:var(--black);border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Cobrar</button>'
         + '</div>'
-        + '<div style="font-size:12px;color:#888;margin-top:4px">Sequência: ' + (u.streak||0) + ' dias - ' + (u.points||0) + ' pts</div>'
+        + '<div style="font-size:12px;color:#888;margin-top:4px">' + t('weeklySeq', {streak: u.streak||0, pts: (u.points||0).toLocaleString()}) + '</div>'
         + '</div>';
     });
   }
@@ -2542,29 +2546,30 @@ const MISSIONS = [
 
 function getTodayMission() {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-  return MISSIONS[dayOfYear % MISSIONS.length];
+  const mList = typeof getMissions === 'function' ? getMissions() : MISSIONS;
+  return mList[dayOfYear % mList.length];
 }
 
 async function renderMission() {
-  const mission = getTodayMission();
+  const mission = typeof getMissions === 'function' ? getMissions()[Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000) % getMissions().length] : getTodayMission();
   document.getElementById('mission-title').textContent = mission.emoji + '  ' + mission.title;
   document.getElementById('mission-desc').textContent = mission.desc;
   const btn = document.getElementById('mission-btn');
-  btn.textContent = `Completar (+${mission.pts} pts)`;
+  btn.textContent = t('missionComplete', {pts: mission.pts});
 
   // Check if already done today
   const today = getTodayKey();
   const cSnap = await getDoc(doc(db,'checkins',currentUserData.uid+'_'+today));
   const checkins = cSnap.exists() ? cSnap.data() : {};
   if(checkins['mission_'+mission.id]) {
-    btn.textContent = '✅ Missão concluída!';
+    btn.textContent = t('missionDone');
     btn.classList.add('done');
     btn.disabled = true;
   }
 }
 
 async function completeMission() {
-  const mission = getTodayMission();
+  const mission = typeof getMissions === 'function' ? getMissions()[Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000) % getMissions().length] : getTodayMission();
   const btn = document.getElementById('mission-btn');
   if(btn.disabled) return;
   btn.disabled = true;
@@ -2576,7 +2581,7 @@ async function completeMission() {
   const checkinSnap = await getDoc(checkinRef);
   const checkins = checkinSnap.exists() ? checkinSnap.data() : {};
   if(checkins['mission_'+mission.id]) {
-    btn.textContent = '✅ Missão concluída!';
+    btn.textContent = t('missionDone');
     btn.classList.add('done');
     return;
   }
@@ -2588,7 +2593,7 @@ async function completeMission() {
   const snap = await getDoc(userRef);
   currentUserData = snap.data();
 
-  btn.textContent = '✅ Missão concluída!';
+  btn.textContent = t('missionDone');
   btn.classList.add('done');
 
   showCelebration('⚡', t('celebMission'), `+${mission.pts}${t('celebMissionMsg')}${mission.emoji}`, false);
@@ -2822,7 +2827,7 @@ function openLevelsModal() {
       + '<div style="font-size:22px;width:32px;text-align:center;opacity:' + (isUnlocked ? '1' : '0.35') + '">' + lvl.badge.split(' ')[0] + '</div>'
       + '<div style="flex:1">'
       + '<div style="font-size:14px;font-weight:800;color:' + (isCurrent ? 'var(--gold)' : (isUnlocked ? 'var(--white)' : 'var(--gray)')) + '">' + lvl.badge.split(' ').slice(1).join(' ') + (isCurrent ? ' <span style="font-size:11px;background:var(--gold);color:#000;padding:2px 8px;border-radius:99px;margin-left:6px">Seu nível</span>' : '') + '</div>'
-      + '<div style="font-size:12px;color:var(--gray);margin-top:2px">' + (i === 0 ? 'Nível inicial' : 'A partir de ' + lvl.min.toLocaleString('pt-BR') + ' pts') + '</div>'
+      + '<div style="font-size:12px;color:var(--gray);margin-top:2px">' + (i === 0 ? t('levelInitial') : t('levelFrom', {pts: lvl.min.toLocaleString()})) + '</div>'
       + '</div>'
       + '<div style="font-size:18px">' + (isUnlocked ? '✅' : '🔒') + '</div>'
       + '</div>';
@@ -2953,7 +2958,8 @@ function getDailyPhrase() {
   const custom = localStorage.getItem('tl_custom_phrase_' + todayKey);
   if(custom) return custom;
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-  return PHRASES[dayOfYear % PHRASES.length];
+  const phrases = typeof getPhrases === 'function' ? getPhrases() : PHRASES;
+  return phrases[dayOfYear % phrases.length];
 }
 
 // ===== STORIES =====

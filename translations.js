@@ -243,6 +243,60 @@ const TRANSLATIONS = {
     diasText: ' dias',
     maxLevel: '🏆 Nível máximo!',
     confirmReset: 'Zerar pontos do mês atual de TODOS os alunos? Esta ação não pode ser desfeita.',
+    // DATA - formato
+    dateOf: ' de ',
+    dateFormat: '{weekday}, {day} de {month}',
+
+    // MISSÕES
+    missionComplete: 'Completar (+{pts} pts)',
+    missionDone: '✅ Missão concluída!',
+
+    // BADGES - categorias
+    catTreino: '🏋️ Treino',
+    catSequencia: '🔥 Sequência',
+    catAlimentacao: '🍽️ Alimentação',
+    catPeso: '⚖️ Peso',
+    catPontuacao: '👑 Pontuação',
+    catRanking: '🏆 Ranking',
+    catHidratacao: '💧 Hidratação',
+    catEngajamento: '📸 Engajamento',
+    badgesUnlockedLabel: 'Conquistas desbloqueadas',
+    badgeUnlocked: '✓ DESBLOQUEADO',
+
+    // RANKING inline
+    rankSeq: ' dias seq.',
+    rankSub: ' · 🔥',
+
+    // MODAL ADMIN
+    modalLastCheckin: 'Ultimo check-in',
+    modalNever: 'Nunca',
+    modalCurrentStreak: 'Sequência atual',
+    modalBestStreak: 'Melhor sequência',
+
+    // FORMULÁRIO LOGIN
+    formFillAll: 'Preencha todos os campos',
+    formInvalidCode: 'Código de convite inválido',
+    formPassMin: 'Senha: mínimo 6 caracteres',
+
+    // SAUDAÇÃO
+    dashGreeting: 'Olá,',
+
+    // WELCOME
+    welcomeStreakLabel: '🔥 dias de sequência',
+
+    // NÍVEIS inline
+    levelInitial: 'Nível inicial',
+    levelFrom: 'A partir de {pts} pts',
+
+    // RANKING subtítulo
+    rankMonthSub: 'Top alunos do Team Lira · ',
+
+    // WEEKLY
+    weeklySeq: 'Sequência: {streak} dias - {pts} pts',
+
+    // RECOVERY
+    recoveryMsg: 'Faça <strong style="color:var(--white)" id="recovery-meals-needed">3 refeições</strong> hoje para recuperar sua sequência!',
+
   },
 
   en: {
@@ -485,6 +539,60 @@ const TRANSLATIONS = {
     diasText: ' days',
     maxLevel: '🏆 Max level!',
     confirmReset: 'Reset points for the current month for ALL students? This action cannot be undone.',
+    // DATE FORMAT
+    dateOf: ' ',
+    dateFormat: '{weekday}, {month} {day}',
+
+    // MISSIONS
+    missionComplete: 'Complete (+{pts} pts)',
+    missionDone: '✅ Mission done!',
+
+    // BADGE CATEGORIES
+    catTreino: '🏋️ Workout',
+    catSequencia: '🔥 Streak',
+    catAlimentacao: '🍽️ Nutrition',
+    catPeso: '⚖️ Weight',
+    catPontuacao: '👑 Points',
+    catRanking: '🏆 Ranking',
+    catHidratacao: '💧 Hydration',
+    catEngajamento: '📸 Engagement',
+    badgesUnlockedLabel: 'Unlocked achievements',
+    badgeUnlocked: '✓ UNLOCKED',
+
+    // RANKING inline
+    rankSeq: ' day streak',
+    rankSub: ' · 🔥',
+
+    // MODAL ADMIN
+    modalLastCheckin: 'Last check-in',
+    modalNever: 'Never',
+    modalCurrentStreak: 'Current streak',
+    modalBestStreak: 'Best streak',
+
+    // FORM
+    formFillAll: 'Fill in all fields',
+    formInvalidCode: 'Invalid invite code',
+    formPassMin: 'Password: minimum 6 characters',
+
+    // GREETING
+    dashGreeting: 'Hello,',
+
+    // WELCOME
+    welcomeStreakLabel: '🔥 day streak',
+
+    // LEVELS inline
+    levelInitial: 'Starting level',
+    levelFrom: 'From {pts} pts',
+
+    // RANKING subtitle
+    rankMonthSub: 'Top students of Team Lira · ',
+
+    // WEEKLY
+    weeklySeq: 'Streak: {streak} days - {pts} pts',
+
+    // RECOVERY
+    recoveryMsg: 'Complete <strong style="color:var(--white)" id="recovery-meals-needed">3 meals</strong> today to recover your streak!',
+
   },
 
   es: {
@@ -728,6 +836,60 @@ const TRANSLATIONS = {
     diasText: ' días',
     maxLevel: '🏆 ¡Nivel máximo!',
     confirmReset: '¿Reiniciar puntos del mes actual de TODOS los alumnos? Esta acción no se puede deshacer.',
+    // FORMATO DE FECHA
+    dateOf: ' de ',
+    dateFormat: '{weekday}, {day} de {month}',
+
+    // MISIONES
+    missionComplete: 'Completar (+{pts} pts)',
+    missionDone: '✅ ¡Misión completada!',
+
+    // CATEGORÍAS BADGES
+    catTreino: '🏋️ Entrenamiento',
+    catSequencia: '🔥 Racha',
+    catAlimentacao: '🍽️ Alimentación',
+    catPeso: '⚖️ Peso',
+    catPontuacao: '👑 Puntuación',
+    catRanking: '🏆 Ranking',
+    catHidratacao: '💧 Hidratación',
+    catEngajamento: '📸 Participación',
+    badgesUnlockedLabel: 'Logros desbloqueados',
+    badgeUnlocked: '✓ DESBLOQUEADO',
+
+    // RANKING inline
+    rankSeq: ' días de racha',
+    rankSub: ' · 🔥',
+
+    // MODAL ADMIN
+    modalLastCheckin: 'Último check-in',
+    modalNever: 'Nunca',
+    modalCurrentStreak: 'Racha actual',
+    modalBestStreak: 'Mejor racha',
+
+    // FORMULARIO
+    formFillAll: 'Completa todos los campos',
+    formInvalidCode: 'Código de invitación inválido',
+    formPassMin: 'Contraseña: mínimo 6 caracteres',
+
+    // SALUDO
+    dashGreeting: '¡Hola,',
+
+    // WELCOME
+    welcomeStreakLabel: '🔥 días de racha',
+
+    // NIVELES inline
+    levelInitial: 'Nivel inicial',
+    levelFrom: 'Desde {pts} pts',
+
+    // RANKING subtítulo
+    rankMonthSub: 'Top alumnos de Team Lira · ',
+
+    // WEEKLY
+    weeklySeq: 'Racha: {streak} días - {pts} pts',
+
+    // RECOVERY
+    recoveryMsg: 'Haz <strong style="color:var(--white)" id="recovery-meals-needed">3 comidas</strong> hoy para recuperar tu racha.',
+
   }
 };
 
@@ -925,6 +1087,145 @@ const BADGES_DATA = {
   ]
 };
 
+
+// ===== MISSÕES (traduzidas) =====
+const MISSIONS_DATA = {
+  pt: [
+    {id:'agua',     emoji:'💧', title:'Beba 2 litros de água',           desc:'Hidratação é fundamental para a performance!',              pts:25},
+    {id:'sono',     emoji:'😴', title:'Durma 8 horas esta noite',        desc:'O descanso é onde o corpo se reconstrói.',                  pts:25},
+    {id:'proteina', emoji:'🥩', title:'Bata sua meta de proteína',       desc:'Proteína é o combustível dos músculos!',                    pts:30},
+    {id:'passos',   emoji:'🚶', title:'Dê 8.000 passos hoje',            desc:'Movimento constante faz toda diferença.',                   pts:25},
+    {id:'alongar',  emoji:'🧘', title:'Faça 10 min de alongamento',      desc:'Flexibilidade previne lesões e melhora a performance.',      pts:20},
+    {id:'foto',     emoji:'📸', title:'Registre seu prato no diário',    desc:'Consciência alimentar é o primeiro passo!',                 pts:20},
+    {id:'motivar',  emoji:'🤝', title:'Motive um colega do Team Lira',   desc:'Times fortes se apoiam mutuamente.',                        pts:30},
+    {id:'descanso', emoji:'🛋️', title:'Respeite seu dia de descanso',   desc:'Recuperação é parte do treino!',                            pts:15},
+  ],
+  en: [
+    {id:'agua',     emoji:'💧', title:'Drink 2 liters of water',         desc:'Hydration is key to performance!',                          pts:25},
+    {id:'sono',     emoji:'😴', title:'Sleep 8 hours tonight',           desc:'Rest is where your body rebuilds.',                         pts:25},
+    {id:'proteina', emoji:'🥩', title:'Hit your protein goal',           desc:'Protein is the fuel for your muscles!',                     pts:30},
+    {id:'passos',   emoji:'🚶', title:'Take 8,000 steps today',          desc:'Constant movement makes all the difference.',               pts:25},
+    {id:'alongar',  emoji:'🧘', title:'Do 10 min of stretching',         desc:'Flexibility prevents injuries and boosts performance.',      pts:20},
+    {id:'foto',     emoji:'📸', title:'Log your meal in the journal',    desc:'Food awareness is the first step!',                         pts:20},
+    {id:'motivar',  emoji:'🤝', title:'Motivate a Team Lira teammate',   desc:'Strong teams support each other.',                          pts:30},
+    {id:'descanso', emoji:'🛋️', title:'Respect your rest day',          desc:'Recovery is part of the training!',                         pts:15},
+  ],
+  es: [
+    {id:'agua',     emoji:'💧', title:'Bebe 2 litros de agua',           desc:'¡La hidratación es clave para el rendimiento!',             pts:25},
+    {id:'sono',     emoji:'😴', title:'Duerme 8 horas esta noche',       desc:'El descanso es donde el cuerpo se reconstruye.',            pts:25},
+    {id:'proteina', emoji:'🥩', title:'Alcanza tu meta de proteína',     desc:'¡La proteína es el combustible de tus músculos!',           pts:30},
+    {id:'passos',   emoji:'🚶', title:'Da 8.000 pasos hoy',              desc:'El movimiento constante marca la diferencia.',               pts:25},
+    {id:'alongar',  emoji:'🧘', title:'Haz 10 min de estiramiento',      desc:'La flexibilidad previene lesiones y mejora el rendimiento.', pts:20},
+    {id:'foto',     emoji:'📸', title:'Registra tu plato en el diario',  desc:'¡La conciencia alimentaria es el primer paso!',             pts:20},
+    {id:'motivar',  emoji:'🤝', title:'Motiva a un compañero del Team',  desc:'Los equipos fuertes se apoyan mutuamente.',                  pts:30},
+    {id:'descanso', emoji:'🛋️', title:'Respeta tu día de descanso',     desc:'¡La recuperación es parte del entrenamiento!',              pts:15},
+  ]
+};
+
+function getMissions() { return MISSIONS_DATA[currentLang] || MISSIONS_DATA['pt']; }
+
+// ===== FRASES MOTIVACIONAIS (traduzidas) =====
+const PHRASES_DATA = {
+  pt: [
+    "A dor de hoje é a força de amanhã. 💪",
+    "Disciplina é a ponte entre metas e conquistas. 🏆",
+    "Seu corpo pode suportar quase tudo. É sua mente que você precisa convencer. 🧠",
+    "Não pare quando estiver cansado. Pare quando terminar. 🔥",
+    "Cada treino é um passo mais perto do seu objetivo. 👣",
+    "O sucesso é a soma de pequenos esforços repetidos dia após dia. ⚡",
+    "Seja mais forte do que suas desculpas. 💥",
+    "Transformação não acontece na zona de conforto. 🚀",
+    "Você não precisa ser perfeito, precisa ser consistente. 🎯",
+    "O único treino ruim é o que não foi feito. 💪",
+    "Sua maior competição é quem você era ontem. 🏅",
+    "Resultados não mentem. Continue. 📈",
+    "Foco, força e fé. Todo dia. 🙏",
+    "Um dia de cada vez. Um treino de cada vez. ✅",
+    "A mudança começa quando o desconforto supera o medo. 🔑",
+    "Invista em você. É o melhor investimento que existe. 💎",
+    "Corpos são construídos na academia, mas esculpidos na cozinha. 🥗",
+    "Não espere motivação. Crie disciplina. ⚙️",
+    "Cada escolha certa te aproxima do seu objetivo. 🎯",
+    "O segredo é começar. O resto vem com o tempo. ⏳",
+    "Consistência bate intensidade. Todo dia. 🔄",
+    "Sua versão futura está te agradecendo por cada treino de hoje. 🙌",
+    "LETS GO! Hoje é dia de evoluir. 🏆",
+    "Time Lira. Juntos somos mais fortes. ❤️",
+    "Acredite no processo. Os resultados vêm. 🌱",
+    "Mais um dia, mais uma chance de ser melhor. ☀️",
+    "A dieta de hoje é o corpo de amanhã. 🥩",
+    "Não existe atalho. Existe dedicação. 💪",
+    "Você chegou até aqui. Não pare agora. 🔥",
+    "Todo campeão já foi um iniciante. 🌟",
+  ],
+  en: [
+    "Today's pain is tomorrow's strength. 💪",
+    "Discipline is the bridge between goals and achievement. 🏆",
+    "Your body can handle almost anything. It's your mind you need to convince. 🧠",
+    "Don't stop when you're tired. Stop when you're done. 🔥",
+    "Every workout is one step closer to your goal. 👣",
+    "Success is the sum of small efforts repeated day after day. ⚡",
+    "Be stronger than your excuses. 💥",
+    "Transformation doesn't happen in the comfort zone. 🚀",
+    "You don't need to be perfect, you need to be consistent. 🎯",
+    "The only bad workout is the one that didn't happen. 💪",
+    "Your biggest competition is who you were yesterday. 🏅",
+    "Results don't lie. Keep going. 📈",
+    "Focus, strength and faith. Every day. 🙏",
+    "One day at a time. One workout at a time. ✅",
+    "Change begins when discomfort overcomes fear. 🔑",
+    "Invest in yourself. It's the best investment there is. 💎",
+    "Bodies are built in the gym, but sculpted in the kitchen. 🥗",
+    "Don't wait for motivation. Build discipline. ⚙️",
+    "Every right choice brings you closer to your goal. 🎯",
+    "The secret is to start. The rest comes with time. ⏳",
+    "Consistency beats intensity. Every day. 🔄",
+    "Your future self is thanking you for every workout today. 🙌",
+    "LET'S GO! Today is the day to evolve. 🏆",
+    "Team Lira. Together we are stronger. ❤️",
+    "Trust the process. Results will come. 🌱",
+    "One more day, one more chance to be better. ☀️",
+    "Today's diet is tomorrow's body. 🥩",
+    "There are no shortcuts. Only dedication. 💪",
+    "You've made it this far. Don't stop now. 🔥",
+    "Every champion was once a beginner. 🌟",
+  ],
+  es: [
+    "El dolor de hoy es la fuerza de mañana. 💪",
+    "La disciplina es el puente entre metas y logros. 🏆",
+    "Tu cuerpo puede soportar casi todo. Es tu mente la que necesitas convencer. 🧠",
+    "No pares cuando estés cansado. Para cuando hayas terminado. 🔥",
+    "Cada entrenamiento es un paso más cerca de tu objetivo. 👣",
+    "El éxito es la suma de pequeños esfuerzos repetidos día tras día. ⚡",
+    "Sé más fuerte que tus excusas. 💥",
+    "La transformación no ocurre en la zona de confort. 🚀",
+    "No necesitas ser perfecto, necesitas ser consistente. 🎯",
+    "El único entrenamiento malo es el que no se hizo. 💪",
+    "Tu mayor competencia es quien eras ayer. 🏅",
+    "Los resultados no mienten. Continúa. 📈",
+    "Foco, fuerza y fe. Todos los días. 🙏",
+    "Un día a la vez. Un entrenamiento a la vez. ✅",
+    "El cambio comienza cuando el malestar supera el miedo. 🔑",
+    "Invierte en ti. Es la mejor inversión que existe. 💎",
+    "Los cuerpos se construyen en el gym, pero se esculpen en la cocina. 🥗",
+    "No esperes motivación. Crea disciplina. ⚙️",
+    "Cada elección correcta te acerca a tu objetivo. 🎯",
+    "El secreto es comenzar. El resto viene con el tiempo. ⏳",
+    "La consistencia supera a la intensidad. Todos los días. 🔄",
+    "Tu yo futuro te agradece por cada entrenamiento de hoy. 🙌",
+    "¡VAMOS! Hoy es día de evolucionar. 🏆",
+    "Team Lira. Juntos somos más fuertes. ❤️",
+    "Confía en el proceso. Los resultados llegan. 🌱",
+    "Un día más, una oportunidad más de ser mejor. ☀️",
+    "La dieta de hoy es el cuerpo de mañana. 🥩",
+    "No hay atajos. Solo dedicación. 💪",
+    "Has llegado hasta aquí. No pares ahora. 🔥",
+    "Todo campeón fue alguna vez un principiante. 🌟",
+  ]
+};
+
+function getPhrases() { return PHRASES_DATA[currentLang] || PHRASES_DATA['pt']; }
+
 // ===== ENGINE i18n =====
 let currentLang = localStorage.getItem('tl_lang') || 'pt';
 
@@ -974,12 +1275,26 @@ function setLang(lang) {
   });
   applyTranslations();
   // Re-renderiza app se já logado
-  if (typeof renderDashboard === 'function' && typeof currentUserData !== 'undefined' && currentUserData) {
-    renderDashboard();
+  if (typeof currentUserData !== 'undefined' && currentUserData) {
+    if (typeof renderDashboard === 'function') renderDashboard();
+    if (typeof renderMission === 'function') renderMission();
+    if (typeof renderBadges === 'function') {
+      const page = document.querySelector('.nav-item.active');
+      if (page && page.getAttribute('data-page') === 'badges') renderBadges();
+    }
+    if (typeof renderProfile === 'function') {
+      const page = document.querySelector('.nav-item.active');
+      if (page && page.getAttribute('data-page') === 'profile') renderProfile();
+    }
+    if (typeof renderRanking === 'function') {
+      const page = document.querySelector('.nav-item.active');
+      if (page && page.getAttribute('data-page') === 'ranking') renderRanking();
+    }
   }
-  if (typeof loadAdminData === 'function' && typeof isAdmin !== 'undefined' && isAdmin) {
-    loadAdminData();
+  if (typeof isAdmin !== 'undefined' && isAdmin) {
+    if (typeof loadAdminData === 'function') loadAdminData();
   }
+  applyTranslations();
 }
 
 function applyTranslations() {
