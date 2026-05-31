@@ -296,6 +296,47 @@ const TRANSLATIONS = {
 
     // RECOVERY
     recoveryMsg: 'Faça <strong style="color:var(--white)" id="recovery-meals-needed">3 refeições</strong> hoje para recuperar sua sequência!',
+    // WELCOME SCREEN
+    welcomeGreeting: 'Bem-vindo de volta,',
+
+    // RANKING TABS
+    rankTabMonth: '📅 Mês atual',
+    rankTabTotal: '👑 Pontuação Geral',
+    rankTabHistory: '🏆 Meses anteriores',
+
+    // FEED - mensagens
+    feedTreino: 'concluiu mais um treino! O time não para 💪',
+    feedCafe: 'começou o dia com disciplina! Foco total ☀️',
+    feedLanche: 'não deixou passar o lanche! Consistência em ação 🥗',
+    feedAlmoco: 'seguiu firme no almoço! Alimentação é treino também 🍽️',
+    feedJantar: 'fechou o dia com chave de ouro! Missão cumprida 🌙',
+    feedCardio: 'concluiu mais um cardio! Resistência elevada 🏃',
+    feedHidratacao: 'garantiu a hidratação do dia! Corpo em alta performance 💧',
+    feedFrutas: 'caprichou na alimentação saudável! 🍎',
+    feedMission: 'concluiu a missão: {extra} ⚡',
+    feedBadge: 'desbloqueou a conquista: {extra} 🎖️',
+    feedLevelup: 'subiu para o nível {extra}! 🏆',
+    feedWeight: 'registrou o peso hoje ⚖️',
+    feedFoto1: 'postou o treino no feed 📸',
+    feedFoto2: 'compartilhou o treino de hoje 💪📸',
+    feedDefault: 'fez algo incrível!',
+    feedAgo: ' atrás',
+
+    // PERFIL - placeholders e labels
+    calBestLabel: 'Melhor:',
+    calCurrentLabel: 'Atual:',
+    placeholderEmail: 'seu@email.com',
+    placeholderName: 'Seu nome',
+    placeholderPassMin: 'Mínimo 6 caracteres',
+    placeholderWeightGoal: 'Meta em kg (ex: 70)',
+    placeholderCurrentPass: 'Senha atual',
+    placeholderNewPass: 'Nova senha (mínimo 6 caracteres)',
+    placeholderConfirmPass: 'Senha atual (para confirmar)',
+    placeholderNewEmail: 'Novo e-mail',
+    placeholderSearch: '🔍 Buscar aluno...',
+    placeholderMessage: 'Digite sua mensagem para o aluno...',
+    saveBtn: 'Salvar',
+
 
   },
 
@@ -592,6 +633,47 @@ const TRANSLATIONS = {
 
     // RECOVERY
     recoveryMsg: 'Complete <strong style="color:var(--white)" id="recovery-meals-needed">3 meals</strong> today to recover your streak!',
+    // WELCOME SCREEN
+    welcomeGreeting: 'Welcome back,',
+
+    // RANKING TABS
+    rankTabMonth: '📅 This month',
+    rankTabTotal: '👑 Overall Score',
+    rankTabHistory: '🏆 Previous months',
+
+    // FEED
+    feedTreino: 'completed another workout! The team never stops 💪',
+    feedCafe: 'started the day with discipline! Full focus ☀️',
+    feedLanche: 'didn\'t skip the snack! Consistency in action 🥗',
+    feedAlmoco: 'stayed on track at lunch! Nutrition is training too 🍽️',
+    feedJantar: 'closed the day perfectly! Mission accomplished 🌙',
+    feedCardio: 'completed another cardio session! Endurance rising 🏃',
+    feedHidratacao: 'nailed hydration today! Body at peak performance 💧',
+    feedFrutas: 'ate healthy today! 🍎',
+    feedMission: 'completed the mission: {extra} ⚡',
+    feedBadge: 'unlocked the achievement: {extra} 🎖️',
+    feedLevelup: 'leveled up to {extra}! 🏆',
+    feedWeight: 'logged weight today ⚖️',
+    feedFoto1: 'posted a workout on the feed 📸',
+    feedFoto2: 'shared today\'s workout 💪📸',
+    feedDefault: 'did something amazing!',
+    feedAgo: ' ago',
+
+    // PROFILE
+    calBestLabel: 'Best:',
+    calCurrentLabel: 'Current:',
+    placeholderEmail: 'your@email.com',
+    placeholderName: 'Your name',
+    placeholderPassMin: 'Minimum 6 characters',
+    placeholderWeightGoal: 'Goal in kg (e.g. 70)',
+    placeholderCurrentPass: 'Current password',
+    placeholderNewPass: 'New password (minimum 6 characters)',
+    placeholderConfirmPass: 'Current password (to confirm)',
+    placeholderNewEmail: 'New e-mail',
+    placeholderSearch: '🔍 Search student...',
+    placeholderMessage: 'Type your message to the student...',
+    saveBtn: 'Save',
+
 
   },
 
@@ -889,6 +971,47 @@ const TRANSLATIONS = {
 
     // RECOVERY
     recoveryMsg: 'Haz <strong style="color:var(--white)" id="recovery-meals-needed">3 comidas</strong> hoy para recuperar tu racha.',
+    // WELCOME SCREEN
+    welcomeGreeting: '¡Bienvenido de vuelta,',
+
+    // RANKING TABS
+    rankTabMonth: '📅 Este mes',
+    rankTabTotal: '👑 Puntuación General',
+    rankTabHistory: '🏆 Meses anteriores',
+
+    // FEED
+    feedTreino: '¡completó otro entrenamiento! El equipo no para 💪',
+    feedCafe: '¡empezó el día con disciplina! Foco total ☀️',
+    feedLanche: '¡no se saltó la merienda! Consistencia en acción 🥗',
+    feedAlmoco: '¡siguió firme en el almuerzo! La nutrición también es entrenamiento 🍽️',
+    feedJantar: '¡cerró el día perfectamente! Misión cumplida 🌙',
+    feedCardio: '¡completó otro cardio! Resistencia elevada 🏃',
+    feedHidratacao: '¡garantizó la hidratación del día! Cuerpo en alto rendimiento 💧',
+    feedFrutas: '¡se cuidó con la alimentación saludable! 🍎',
+    feedMission: 'completó la misión: {extra} ⚡',
+    feedBadge: 'desbloqueó el logro: {extra} 🎖️',
+    feedLevelup: 'subió al nivel {extra}! 🏆',
+    feedWeight: 'registró el peso hoy ⚖️',
+    feedFoto1: 'publicó el entrenamiento en el feed 📸',
+    feedFoto2: 'compartió el entrenamiento de hoy 💪📸',
+    feedDefault: '¡hizo algo increíble!',
+    feedAgo: ' atrás',
+
+    // PROFILE
+    calBestLabel: 'Mejor:',
+    calCurrentLabel: 'Actual:',
+    placeholderEmail: 'tu@email.com',
+    placeholderName: 'Tu nombre',
+    placeholderPassMin: 'Mínimo 6 caracteres',
+    placeholderWeightGoal: 'Meta en kg (ej: 70)',
+    placeholderCurrentPass: 'Contraseña actual',
+    placeholderNewPass: 'Nueva contraseña (mínimo 6 caracteres)',
+    placeholderConfirmPass: 'Contraseña actual (para confirmar)',
+    placeholderNewEmail: 'Nuevo e-mail',
+    placeholderSearch: '🔍 Buscar alumno...',
+    placeholderMessage: 'Escribe tu mensaje al alumno...',
+    saveBtn: 'Guardar',
+
 
   }
 };
