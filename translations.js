@@ -1401,6 +1401,9 @@ function setLang(lang) {
   if (typeof currentUserData !== 'undefined' && currentUserData) {
     if (typeof renderDashboard === 'function') renderDashboard();
     if (typeof renderMission === 'function') renderMission();
+    // Atualizar frase do welcome screen
+    const wQuote = document.getElementById('w-quote');
+    if (wQuote) wQuote.textContent = typeof getDailyPhrase === 'function' ? getDailyPhrase() : '';
     if (typeof renderBadges === 'function') {
       const page = document.querySelector('.nav-item.active');
       if (page && page.getAttribute('data-page') === 'badges') renderBadges();
