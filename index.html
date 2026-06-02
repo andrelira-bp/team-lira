@@ -881,7 +881,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   </div>
 </div>
 
-<script src="translations.js?v=5"></script>
+<script src="translations.js?v=6"></script>
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -1340,7 +1340,7 @@ async function renderDashboard() {
       const mealsDone = currentUserData.recoveryMealCount || 0;
       const mealsNeeded = Math.max(0, 3 - mealsDone);
       document.getElementById('recovery-meals-needed').textContent = 
-        mealsNeeded === 0 ? 'mais nenhuma refeição' : mealsNeeded + ' refeição' + (mealsNeeded > 1 ? 'ões' : '');
+        mealsNeeded === 0 ? t('recoveryMealsNone') : mealsNeeded + ' ' + (mealsNeeded > 1 ? t('recoveryMeals') : t('recoveryMeal'));
       document.getElementById('recovery-progress').style.width = Math.min(100, (mealsDone/3)*100) + '%';
     }
   }
@@ -1838,7 +1838,7 @@ function renderWeightChart() {
   if(!container || !currentUserData) return;
   const hist = (currentUserData.weightHistory || []).slice(-14);
   if(hist.length < 2) {
-    container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:16px" data-i18n="weightRegister">Registre seu peso nos check-ins para ver a evolução aqui!</div>';
+    container.innerHTML = '<div style="color:var(--gray);font-size:13px;text-align:center;padding:16px">' + t('weightRegisterCheckin') + '</div>';
     return;
   }
   const weights = hist.map(h => h.weight);
@@ -1849,10 +1849,10 @@ function renderWeightChart() {
   const last = hist[hist.length-1].weight;
   const diff = (last - first).toFixed(1);
   const diffColor = diff < 0 ? '#4caf50' : diff > 0 ? '#e53935' : 'var(--gray)';
-  const diffText = diff < 0 ? diff + 'kg ↓' : diff > 0 ? '+' + diff + 'kg ↑' : 'Estável';
+  const diffText = diff < 0 ? diff + 'kg ↓' : diff > 0 ? '+' + diff + 'kg ↑' : t('weightStable');
   container.innerHTML = '<div style="display:flex;justify-content:space-between;margin-bottom:8px">'
-    + '<div><div style="font-size:22px;font-weight:900;color:var(--white)">' + last + '<span style="font-size:14px">kg</span></div><div style="font-size:11px;color:var(--gray)">Peso atual</div></div>'
-    + '<div style="text-align:right"><div style="font-size:18px;font-weight:800;color:' + diffColor + '">' + diffText + '</div><div style="font-size:11px;color:var(--gray)">vs início</div></div>'
+    + '<div><div style="font-size:22px;font-weight:900;color:var(--white)">' + last + '<span style="font-size:14px">kg</span></div><div style="font-size:11px;color:var(--gray)">' + t('weightCurrent') + '</div></div>'
+    + '<div style="text-align:right"><div style="font-size:18px;font-weight:800;color:' + diffColor + '">' + diffText + '</div><div style="font-size:11px;color:var(--gray)">' + t('weightVsStart') + '</div></div>'
     + '</div>'
     + '<div style="height:80px;display:flex;align-items:flex-end;gap:3px;margin-top:10px">'
     + hist.map(h => {
@@ -1875,7 +1875,7 @@ function renderWeightGoal() {
   const current = hist.length > 0 ? hist[hist.length-1].weight : null;
   const start = hist.length > 0 ? hist[0].weight : null;
   if(!goal) {
-    goalEl.innerHTML = '<div style="font-size:13px;color:var(--gray)">Defina uma meta de peso para acompanhar seu progresso!</div>';
+    goalEl.innerHTML = '<div style="font-size:13px;color:var(--gray)">' + t('weightGoalDesc') + '</div>';
     if(setEl) setEl.style.display = 'flex';
     return;
   }

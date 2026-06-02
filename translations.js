@@ -336,6 +336,15 @@ const TRANSLATIONS = {
     placeholderSearch: '🔍 Buscar aluno...',
     placeholderMessage: 'Digite sua mensagem para o aluno...',
     saveBtn: 'Salvar',
+    weightRegisterCheckin: 'Registre seu peso nos check-ins para ver a evolução aqui!',
+    weightGoalDesc: 'Defina uma meta de peso para acompanhar seu progresso!',
+    weightCurrent: 'Peso atual',
+    weightVsStart: 'vs início',
+    weightStable: 'Estável',
+    recoveryMealsNone: 'mais nenhuma refeição',
+    recoveryMeal: 'refeição',
+    recoveryMeals: 'refeições',
+
 
 
   },
@@ -673,6 +682,15 @@ const TRANSLATIONS = {
     placeholderSearch: '🔍 Search student...',
     placeholderMessage: 'Type your message to the student...',
     saveBtn: 'Save',
+    weightRegisterCheckin: 'Log your weight in check-ins to see your progress here!',
+    weightGoalDesc: 'Set a weight goal to track your progress!',
+    weightCurrent: 'Current weight',
+    weightVsStart: 'vs start',
+    weightStable: 'Stable',
+    recoveryMealsNone: 'no more meals needed',
+    recoveryMeal: 'meal',
+    recoveryMeals: 'meals',
+
 
 
   },
@@ -1011,6 +1029,15 @@ const TRANSLATIONS = {
     placeholderSearch: '🔍 Buscar alumno...',
     placeholderMessage: 'Escribe tu mensaje al alumno...',
     saveBtn: 'Guardar',
+    weightRegisterCheckin: '¡Registra tu peso en los check-ins para ver tu evolución aquí!',
+    weightGoalDesc: '¡Define una meta de peso para acompañar tu progreso!',
+    weightCurrent: 'Peso actual',
+    weightVsStart: 'vs inicio',
+    weightStable: 'Estable',
+    recoveryMealsNone: 'ninguna comida más necesaria',
+    recoveryMeal: 'comida',
+    recoveryMeals: 'comidas',
+
 
 
   }
