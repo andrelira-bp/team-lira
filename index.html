@@ -2279,15 +2279,12 @@ window.saveInviteCode = saveInviteCode;
 
 
 async function approveUser(uid) {
-  if(!confirm('Aprovar esse aluno?')) return;
   await updateDoc(doc(db,'users',uid), {status: 'approved'});
   showToast(t('toastStudentApproved'));
   loadAdminData();
 }
 
 async function toggleBlock(uid, block) {
-  const msg = block ? 'Bloquear esse aluno?' : 'Desbloquear esse aluno?';
-  if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',uid), {status: block ? 'blocked' : 'approved'});
   showToast(block ? t('toastStudentBlocked') : t('toastStudentUnblocked'));
   loadAdminData();
@@ -2363,8 +2360,6 @@ async function modalApprove() {
 async function modalToggleBlock() {
   if(!currentModalUid||!currentModalUser) return;
   const isBlocked = currentModalUser.status === 'blocked';
-  const msg = isBlocked ? 'Desbloquear esse aluno?' : 'Bloquear esse aluno?';
-  if(!confirm(msg)) return;
   await updateDoc(doc(db,'users',currentModalUid), {status: isBlocked ? 'approved' : 'blocked'});
   showToast(isBlocked ? t('toastStudentUnblocked') : t('toastStudentBlocked'));
   closeModal('modal-student');
