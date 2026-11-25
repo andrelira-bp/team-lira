@@ -1,23 +1,15 @@
 {
-  "name": "Team Lira",
-  "short_name": "Team Lira",
-  "description": "App Team Lira",
+  "name": "L Body",
+  "short_name": "L Body",
+  "description": "GamificaÃ§Ã£o de treino e acompanhamento - L Body com AndrÃ© Lira",
   "start_url": "/team-lira/",
   "scope": "/team-lira/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#F5C518",
   "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#C9A45C",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

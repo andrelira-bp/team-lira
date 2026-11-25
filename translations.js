@@ -1,10 +1,10 @@
-// ===== TEAM LIRA — translations.js =====
+// ===== L BODY — translations.js =====
 // Suporte: Português (pt) · English (en) · Español (es)
 
 const TRANSLATIONS = {
   pt: {
     // GERAL
-    appName: 'Team Lira',
+    appName: 'L Body',
     loading: 'CARREGANDO...',
     save: 'Salvar',
     cancel: 'Cancelar',
@@ -71,7 +71,7 @@ const TRANSLATIONS = {
     rankTabMonth: '📅 Mês atual',
     rankTabTotal: '👑 Pontuação Geral',
     rankTabHistory: '🏆 Meses anteriores',
-    rankingMonthLabel: 'Top alunos do Team Lira · ',
+    rankingMonthLabel: 'Top alunos do L Body · ',
     rankingTotalTitle: '👑 Pontuação Geral',
     rankingTotalSub: 'Pontuação acumulada desde o início',
     rankingNoData: 'Nenhum dado ainda.',
@@ -109,11 +109,11 @@ const TRANSLATIONS = {
 
     // CHAT / FEED
     chatTitle: '💬 Chat do Time',
-    chatSubtitle: 'Grupo Team Lira',
+    chatSubtitle: 'Grupo L Body',
     chatPlaceholder: 'Mensagem...',
     chatLoading: 'Carregando mensagens...',
     feedTitle: '💬 Feed do Time',
-    feedSubtitle: 'O que está acontecendo no Team Lira',
+    feedSubtitle: 'O que está acontecendo no L Body',
     feedLoading: 'Carregando...',
 
     // NAV
@@ -289,7 +289,7 @@ const TRANSLATIONS = {
     levelFrom: 'A partir de {pts} pts',
 
     // RANKING subtítulo
-    rankMonthSub: 'Top alunos do Team Lira · ',
+    rankMonthSub: 'Top alunos do L Body · ',
 
     // WEEKLY
     weeklySeq: 'Sequência: {streak} dias - {pts} pts',
@@ -351,7 +351,7 @@ const TRANSLATIONS = {
 
   en: {
     // GENERAL
-    appName: 'Team Lira',
+    appName: 'L Body',
     loading: 'LOADING...',
     save: 'Save',
     cancel: 'Cancel',
@@ -418,7 +418,7 @@ const TRANSLATIONS = {
     rankTabMonth: '📅 This month',
     rankTabTotal: '👑 Overall Score',
     rankTabHistory: '🏆 Previous months',
-    rankingMonthLabel: 'Top students of Team Lira · ',
+    rankingMonthLabel: 'Top students of L Body · ',
     rankingTotalTitle: '👑 Overall Score',
     rankingTotalSub: 'Accumulated score since the beginning',
     rankingNoData: 'No data yet.',
@@ -456,11 +456,11 @@ const TRANSLATIONS = {
 
     // CHAT / FEED
     chatTitle: '💬 Team Chat',
-    chatSubtitle: 'Team Lira Group',
+    chatSubtitle: 'L Body Group',
     chatPlaceholder: 'Message...',
     chatLoading: 'Loading messages...',
     feedTitle: '💬 Team Feed',
-    feedSubtitle: "What's happening at Team Lira",
+    feedSubtitle: "What's happening at L Body",
     feedLoading: 'Loading...',
 
     // NAV
@@ -635,7 +635,7 @@ const TRANSLATIONS = {
     levelFrom: 'From {pts} pts',
 
     // RANKING subtitle
-    rankMonthSub: 'Top students of Team Lira · ',
+    rankMonthSub: 'Top students of L Body · ',
 
     // WEEKLY
     weeklySeq: 'Streak: {streak} days - {pts} pts',
@@ -697,7 +697,7 @@ const TRANSLATIONS = {
 
   es: {
     // GENERAL
-    appName: 'Team Lira',
+    appName: 'L Body',
     loading: 'CARGANDO...',
     save: 'Guardar',
     cancel: 'Cancelar',
@@ -764,7 +764,7 @@ const TRANSLATIONS = {
     rankTabMonth: '📅 Este mes',
     rankTabTotal: '👑 Puntuación General',
     rankTabHistory: '🏆 Meses anteriores',
-    rankingMonthLabel: 'Top alumnos de Team Lira · ',
+    rankingMonthLabel: 'Top alumnos de L Body · ',
     rankingTotalTitle: '👑 Puntuación General',
     rankingTotalSub: 'Puntuación acumulada desde el inicio',
     rankingNoData: 'Sin datos aún.',
@@ -802,11 +802,11 @@ const TRANSLATIONS = {
 
     // CHAT / FEED
     chatTitle: '💬 Chat del Equipo',
-    chatSubtitle: 'Grupo Team Lira',
+    chatSubtitle: 'Grupo L Body',
     chatPlaceholder: 'Mensaje...',
     chatLoading: 'Cargando mensajes...',
     feedTitle: '💬 Feed del Equipo',
-    feedSubtitle: 'Lo que está pasando en Team Lira',
+    feedSubtitle: 'Lo que está pasando en L Body',
     feedLoading: 'Cargando...',
 
     // NAV
@@ -982,7 +982,7 @@ const TRANSLATIONS = {
     levelFrom: 'Desde {pts} pts',
 
     // RANKING subtítulo
-    rankMonthSub: 'Top alumnos de Team Lira · ',
+    rankMonthSub: 'Top alumnos de L Body · ',
 
     // WEEKLY
     weeklySeq: 'Racha: {streak} días - {pts} pts',
@@ -1047,15 +1047,15 @@ const TRANSLATIONS = {
 const LEVELS_DATA = {
   pt: [
     {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
-    {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:4500},
-    {name:'Determinado',    badge:'💪 Determinado',    min:4500,  max:7500},
-    {name:'Resistente',     badge:'🛡️ Resistente',     min:7500,  max:11000},
-    {name:'Focado',         badge:'🎯 Focado',         min:11000, max:15000},
-    {name:'Veloz',          badge:'🏃 Veloz',          min:15000, max:19500},
-    {name:'Forte',          badge:'🦾 Forte',          min:19500, max:24500},
-    {name:'Guerreiro',      badge:'⚔️ Guerreiro',      min:24500, max:29500},
-    {name:'Combatente',     badge:'💥 Combatente',     min:29500, max:34500},
-    {name:'Campeão',        badge:'🥈 Campeão',        min:34500, max:38000},
+    {name:'Imparável',      badge:'⚡ Imparável',      min:500,   max:1500},
+    {name:'Determinado',    badge:'💪 Determinado',    min:1500,  max:3000},
+    {name:'Resistente',     badge:'🛡️ Resistente',     min:3000,  max:5000},
+    {name:'Focado',         badge:'🎯 Focado',         min:5000, max:8000},
+    {name:'Veloz',          badge:'🏃 Veloz',          min:8000, max:11500},
+    {name:'Forte',          badge:'🦾 Forte',          min:11500, max:15500},
+    {name:'Guerreiro',      badge:'⚔️ Guerreiro',      min:15500, max:20000},
+    {name:'Combatente',     badge:'💥 Combatente',     min:20000, max:26000},
+    {name:'Campeão',        badge:'🥈 Campeão',        min:26000, max:38000},
     {name:'Destaque',       badge:'🌟 Destaque',       min:38000, max:41000},
     {name:'Veterano',       badge:'🎖️ Veterano',       min:41000, max:43500},
     {name:'Especialista',   badge:'🏅 Especialista',   min:43500, max:45500},
@@ -1069,15 +1069,15 @@ const LEVELS_DATA = {
   ],
   en: [
     {name:'Beginner',       badge:'🥉 Beginner',       min:0,     max:500},
-    {name:'Unstoppable',    badge:'⚡ Unstoppable',    min:500,   max:4500},
-    {name:'Determined',     badge:'💪 Determined',     min:4500,  max:7500},
-    {name:'Resilient',      badge:'🛡️ Resilient',      min:7500,  max:11000},
-    {name:'Focused',        badge:'🎯 Focused',        min:11000, max:15000},
-    {name:'Swift',          badge:'🏃 Swift',          min:15000, max:19500},
-    {name:'Strong',         badge:'🦾 Strong',         min:19500, max:24500},
-    {name:'Warrior',        badge:'⚔️ Warrior',        min:24500, max:29500},
-    {name:'Fighter',        badge:'💥 Fighter',        min:29500, max:34500},
-    {name:'Champion',       badge:'🥈 Champion',       min:34500, max:38000},
+    {name:'Unstoppable',    badge:'⚡ Unstoppable',    min:500,   max:1500},
+    {name:'Determined',     badge:'💪 Determined',     min:1500,  max:3000},
+    {name:'Resilient',      badge:'🛡️ Resilient',      min:3000,  max:5000},
+    {name:'Focused',        badge:'🎯 Focused',        min:5000, max:8000},
+    {name:'Swift',          badge:'🏃 Swift',          min:8000, max:11500},
+    {name:'Strong',         badge:'🦾 Strong',         min:11500, max:15500},
+    {name:'Warrior',        badge:'⚔️ Warrior',        min:15500, max:20000},
+    {name:'Fighter',        badge:'💥 Fighter',        min:20000, max:26000},
+    {name:'Champion',       badge:'🥈 Champion',       min:26000, max:38000},
     {name:'Standout',       badge:'🌟 Standout',       min:38000, max:41000},
     {name:'Veteran',        badge:'🎖️ Veteran',        min:41000, max:43500},
     {name:'Specialist',     badge:'🏅 Specialist',     min:43500, max:45500},
@@ -1091,15 +1091,15 @@ const LEVELS_DATA = {
   ],
   es: [
     {name:'Principiante',   badge:'🥉 Principiante',   min:0,     max:500},
-    {name:'Imparable',      badge:'⚡ Imparable',      min:500,   max:4500},
-    {name:'Determinado',    badge:'💪 Determinado',    min:4500,  max:7500},
-    {name:'Resistente',     badge:'🛡️ Resistente',     min:7500,  max:11000},
-    {name:'Enfocado',       badge:'🎯 Enfocado',       min:11000, max:15000},
-    {name:'Veloz',          badge:'🏃 Veloz',          min:15000, max:19500},
-    {name:'Fuerte',         badge:'🦾 Fuerte',         min:19500, max:24500},
-    {name:'Guerrero',       badge:'⚔️ Guerrero',       min:24500, max:29500},
-    {name:'Combatiente',    badge:'💥 Combatiente',    min:29500, max:34500},
-    {name:'Campeón',        badge:'🥈 Campeón',        min:34500, max:38000},
+    {name:'Imparable',      badge:'⚡ Imparable',      min:500,   max:1500},
+    {name:'Determinado',    badge:'💪 Determinado',    min:1500,  max:3000},
+    {name:'Resistente',     badge:'🛡️ Resistente',     min:3000,  max:5000},
+    {name:'Enfocado',       badge:'🎯 Enfocado',       min:5000, max:8000},
+    {name:'Veloz',          badge:'🏃 Veloz',          min:8000, max:11500},
+    {name:'Fuerte',         badge:'🦾 Fuerte',         min:11500, max:15500},
+    {name:'Guerrero',       badge:'⚔️ Guerrero',       min:15500, max:20000},
+    {name:'Combatiente',    badge:'💥 Combatiente',    min:20000, max:26000},
+    {name:'Campeón',        badge:'🥈 Campeón',        min:26000, max:38000},
     {name:'Destacado',      badge:'🌟 Destacado',      min:38000, max:41000},
     {name:'Veterano',       badge:'🎖️ Veterano',       min:41000, max:43500},
     {name:'Especialista',   badge:'🏅 Especialista',   min:43500, max:45500},
@@ -1247,7 +1247,7 @@ const MISSIONS_DATA = {
     {id:'passos',   emoji:'🚶', title:'Dê 8.000 passos hoje',            desc:'Movimento constante faz toda diferença.',                   pts:25},
     {id:'alongar',  emoji:'🧘', title:'Faça 10 min de alongamento',      desc:'Flexibilidade previne lesões e melhora a performance.',      pts:20},
     {id:'foto',     emoji:'📸', title:'Registre seu prato no diário',    desc:'Consciência alimentar é o primeiro passo!',                 pts:20},
-    {id:'motivar',  emoji:'🤝', title:'Motive um colega do Team Lira',   desc:'Times fortes se apoiam mutuamente.',                        pts:30},
+    {id:'motivar',  emoji:'🤝', title:'Motive um colega do L Body',   desc:'Times fortes se apoiam mutuamente.',                        pts:30},
     {id:'descanso', emoji:'🛋️', title:'Respeite seu dia de descanso',   desc:'Recuperação é parte do treino!',                            pts:15},
   ],
   en: [
@@ -1257,7 +1257,7 @@ const MISSIONS_DATA = {
     {id:'passos',   emoji:'🚶', title:'Take 8,000 steps today',          desc:'Constant movement makes all the difference.',               pts:25},
     {id:'alongar',  emoji:'🧘', title:'Do 10 min of stretching',         desc:'Flexibility prevents injuries and boosts performance.',      pts:20},
     {id:'foto',     emoji:'📸', title:'Log your meal in the journal',    desc:'Food awareness is the first step!',                         pts:20},
-    {id:'motivar',  emoji:'🤝', title:'Motivate a Team Lira teammate',   desc:'Strong teams support each other.',                          pts:30},
+    {id:'motivar',  emoji:'🤝', title:'Motivate a L Body teammate',   desc:'Strong teams support each other.',                          pts:30},
     {id:'descanso', emoji:'🛋️', title:'Respect your rest day',          desc:'Recovery is part of the training!',                         pts:15},
   ],
   es: [
@@ -1332,7 +1332,7 @@ const PHRASES_DATA = {
     "Consistency beats intensity. Every day. 🔄",
     "Your future self is thanking you for every workout today. 🙌",
     "LET'S GO! Today is the day to evolve. 🏆",
-    "Team Lira. Together we are stronger. ❤️",
+    "L Body. Together we are stronger. ❤️",
     "Trust the process. Results will come. 🌱",
     "One more day, one more chance to be better. ☀️",
     "Today's diet is tomorrow's body. 🥩",
@@ -1364,7 +1364,7 @@ const PHRASES_DATA = {
     "La consistencia supera a la intensidad. Todos los días. 🔄",
     "Tu yo futuro te agradece por cada entrenamiento de hoy. 🙌",
     "¡VAMOS! Hoy es día de evolucionar. 🏆",
-    "Team Lira. Juntos somos más fuertes. ❤️",
+    "L Body. Juntos somos más fuertes. ❤️",
     "Confía en el proceso. Los resultados llegan. 🌱",
     "Un día más, una oportunidad más de ser mejor. ☀️",
     "La dieta de hoy es el cuerpo de mañana. 🥩",
