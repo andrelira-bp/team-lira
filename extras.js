@@ -89,10 +89,15 @@ async function home() {
   } else if (next) {
     h += `<div class="link-card" data-lbx="agenda"><div><b>Próximo compromisso</b><span>${esc(apptLine(next))} · ${esc(next.title || 'Treino presencial')}</span></div>${ic('chev-r').replace('class="ic"', 'class="ic chev"')}</div>`;
   }
+  try {
+    if (window.LBF && !(await LBF.anamStatus())) h = `<div class="exp-card" data-lbx="anam" style="cursor:pointer"><div class="exp-t">Complete sua anamnese</div><div class="exp-m">Seu cadastro completo ajuda o professor a montar o plano certo para você. Toque para preencher.</div></div>` + h;
+  } catch (e) {}
   h += `<div class="lbx-grid">
     <div class="link-card" data-lbx="agenda">${ic('calendar')}<div><b>Agenda</b><span>Seus compromissos</span></div></div>
     <div class="link-card" data-lbx="nutri">${ic('file')}<div><b>Nutrição</b><span>Protocolo em PDF</span></div></div>
     <div class="link-card" data-lbx="fbsem">${ic('check')}<div><b>Feedback</b><span>Da sua semana</span></div></div>
+    <div class="link-card" data-lbx="evo">${ic("pulse")}<div><b>Evolução</b><span>Medidas e fotos</span></div></div>
+    <div class="link-card" data-lbx="anam">${ic("list")}<div><b>Anamnese</b><span>Seu cadastro</span></div></div>
   </div>`;
   box.innerHTML = h;
   if (!box.dataset.bound) { box.dataset.bound = '1'; box.addEventListener('click', e => { const c = e.target.closest('[data-lbx]'); if (c) openStudent(c.dataset.lbx); }); }
@@ -103,6 +108,8 @@ function openStudent(w) {
   if (w === 'agenda') return studentAgenda();
   if (w === 'nutri') return studentNutri();
   if (w === 'fbsem') return studentWeekly();
+  if (w === 'evo') return window.LBF && LBF.evolucao();
+  if (w === 'anam') return window.LBF && LBF.anamnese();
   if (w === 'notifs') return openNotifs();
 }
 
@@ -153,6 +160,7 @@ async function buildNotifs() {
     const nu = await LB().get('nutrition', me.uid);
     if (nu && nu.updatedAt > since) add('nut-' + nu.updatedAt, 'file', 'Protocolo nutricional', 'Seu protocolo nutricional foi atualizado.', 'nutri');
   } catch (e) {}
+  try { if (window.LBF) (await LBF.notifs(me)).forEach(n => add(n.key, n.icon, n.title, n.text, n.go)); } catch (e) {}
   return out;
 }
 

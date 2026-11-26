@@ -772,6 +772,40 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 .stat-box::before,.admin-stat::before{border-radius:0 0 4px 4px;}
 .rank-item,.feed-item,.msg-item{overflow:hidden;}
 .table-wrap,.admin-table{border-radius:14px;overflow:hidden;}
+/* ---------- ficha do aluno ---------- */
+.lbx-grid{grid-template-columns:repeat(6,1fr)!important;}
+.lbx-grid .link-card:nth-child(-n+3){grid-column:span 2;}
+.lbx-grid .link-card:nth-child(n+4){grid-column:span 3;flex-direction:row;align-items:center;}
+.fi-prog{height:6px;border-radius:99px;background:#161616;margin:6px 0 14px;overflow:hidden;}
+.fi-prog i{display:block;height:100%;background:var(--gold-grad);border-radius:99px;}
+.fi-check{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--lx-edge);border-radius:14px;margin:12px 0;font-size:13px;cursor:pointer;}
+.fi-check input{width:20px;height:20px;accent-color:#C9A45C;flex-shrink:0;}
+.fi-sint{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.fi-sint select{width:130px;flex-shrink:0;padding:8px!important;font-size:12px;}
+.rt10{flex-wrap:wrap;}
+.rt10 .rt-b{flex:0 0 calc(20% - 7px);height:40px;font-size:17px;}
+.fi-row{padding:10px 0;border-bottom:1px solid var(--line);}
+.fi-row small{display:block;color:var(--gray);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px;}
+.fi-row div{font-size:13px;color:#e7dfcd;white-space:pre-wrap;line-height:1.5;}
+.fi-seg{margin-bottom:16px;}
+.fi-seg button{font-size:10px!important;letter-spacing:.1em!important;padding:11px 2px!important;}
+.chart{width:100%;height:auto;margin-bottom:14px;}
+.ch-v{fill:#E8CE92;font-size:11px;font-weight:600;font-family:var(--body);}
+.ch-d{fill:#8a8272;font-size:9px;font-family:var(--body);}
+.fi-meds{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+.fi-up{display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;}
+.fi-up .ic{width:18px;height:18px;}
+.fi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.fi-grid figure,.fi-cmp figure{margin:0;}
+.fi-grid img,.fi-cmp img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:1px solid var(--lx-edge);cursor:pointer;display:block;}
+.fi-cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;letter-spacing:.08em;}
+.fi-day{margin-bottom:16px;}
+.fi-day>b{display:block;font-size:12px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px;}
+.tr-box em.dn{color:#6fd08c;font-style:normal;}
+.tr-box em.up{color:#e0a96a;font-style:normal;}
+.gdone{opacity:.65;}
+.tr-modal img.big{border-radius:14px;}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
@@ -3140,7 +3174,8 @@ async function openStudentModal(uid) {
     + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>'
     + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">Vencimento do plano</span><span style="display:flex;gap:6px;align-items:center"><input type="date" id="plan-end-input" value="' + (u.planEnd||'') + '" class="lb-in"></span></div>'
     + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">WhatsApp</span><span style="display:flex;gap:6px;align-items:center"><input type="tel" id="phone-input" inputmode="tel" placeholder="(11) 99999-9999" value="' + (u.phone||'') + '" class="lb-in"></span></div>'
-    + '<div style="display:flex;gap:8px;margin-top:10px"><button onclick="savePlanEnd()" class="btn-gold" style="flex:1;padding:12px">Salvar dados</button><button onclick="LBX.waOpen(window.modalUser())" class="btn-gold wa" style="flex:1;padding:12px">WhatsApp</button></div>';
+    + '<div style="display:flex;gap:8px;margin-top:10px"><button onclick="savePlanEnd()" class="btn-gold" style="flex:1;padding:12px">Salvar dados</button><button onclick="LBX.waOpen(window.modalUser())" class="btn-gold wa" style="flex:1;padding:12px">WhatsApp</button></div>'
+    + '<button onclick="LBF.ficha(window.modalUser())" class="btn-gold" style="width:100%;margin-top:8px;padding:13px">Ficha completa (anamnese, avaliações, fotos, metas)</button>';
 
   // Show/hide approve button based on status
   const approveBtn = document.getElementById('modal-approve-btn');
@@ -4172,6 +4207,7 @@ window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
 <script type="module" src="treinos.js?v=2"></script>
-<script type="module" src="extras.js?v=2"></script>
+<script type="module" src="ficha.js?v=1"></script>
+<script type="module" src="extras.js?v=3"></script>
 </body>
 </html>
