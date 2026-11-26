@@ -21,7 +21,7 @@ const TRANSLATIONS = {
     points: 'pontos',
 
     // LOGIN
-    loginSlogan: 'Evolua. Compita. Vença.',
+    loginSlogan: '',
     loginTabSign: 'Entrar',
     loginTabCreate: 'Cadastrar',
     loginTabProf: 'Prof.',
@@ -369,7 +369,7 @@ const TRANSLATIONS = {
     points: 'points',
 
     // LOGIN
-    loginSlogan: 'Evolve. Compete. Win.',
+    loginSlogan: '',
     loginTabSign: 'Sign In',
     loginTabCreate: 'Register',
     loginTabProf: 'Coach',
@@ -716,7 +716,7 @@ const TRANSLATIONS = {
     points: 'puntos',
 
     // LOGIN
-    loginSlogan: 'Evoluciona. Compite. Gana.',
+    loginSlogan: '',
     loginTabSign: 'Entrar',
     loginTabCreate: 'Registrarse',
     loginTabProf: 'Prof.',
