@@ -567,6 +567,7 @@ h2{font-size:30px;}
       <div class="form-error" id="a-err" data-i18n="loginAdminError">Senha incorreta</div>
     </div>
   </div>
+  <button class="eng-btn ghost lb-install-link" style="display:none;margin:16px auto 0" onclick="lbInstall()">Instalar o app no celular</button>
 </div>
 
 <!-- APP ALUNO -->
@@ -905,6 +906,7 @@ h2{font-size:30px;}
       </div>
     </div>
 
+    <button class="btn-primary lb-install-link" style="display:none;margin-top:8px" onclick="lbInstall()">Instalar o app no celular</button>
     <button class="btn-primary" style="margin-top:8px;background:#222;border:1px solid #444;color:var(--gray)" onclick="doLogout()" data-i18n="profileLogout">Sair da conta</button>
   </div>
 
@@ -1190,6 +1192,14 @@ h2{font-size:30px;}
     else { btn.style.display='block'; }
     b.style.display='block';
   }
+  function links(){ if(isStandalone()) return; document.querySelectorAll('.lb-install-link').forEach(function(el){el.style.display='block';}); }
+  window.lbInstall=function(){
+    if(deferred){ deferred.prompt(); deferred.userChoice.finally(function(){deferred=null;}); return; }
+    var ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
+    alert(ios ? 'No iPhone (Safari): toque em Compartilhar (quadrado com seta) e depois em "Adicionar à Tela de Início".'
+              : 'No Android (Chrome): toque nos 3 pontinhos do navegador e depois em "Instalar app" ou "Adicionar à tela inicial".');
+  };
+  document.addEventListener('DOMContentLoaded',links);
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;show(false);});
   window.addEventListener('appinstalled',function(){var b=document.getElementById('install-banner'); if(b)b.style.display='none';});
   document.addEventListener('DOMContentLoaded',function(){
