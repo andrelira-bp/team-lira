@@ -458,6 +458,7 @@ h2{font-size:30px;}
 .soon .ic{width:40px;height:40px;color:var(--gold);margin-bottom:10px;}
 .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;cursor:pointer;margin-bottom:14px;}
 .back-link .ic{width:16px;height:16px;}
+#admin-treinos-section .seg button{letter-spacing:.06em;font-size:9px;padding:11px 2px;}
 #rank-tab-monthly,#rank-tab-total,#rank-tab-fame{border-radius:0!important;font-family:var(--body)!important;font-weight:500!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase;padding:12px 4px!important;background:transparent;border:1px solid var(--line)!important;}
 .feed-emoji{color:var(--gold);}
 #screen-admin .top-bar-title{font-size:11px;letter-spacing:.14em;}
@@ -748,14 +749,7 @@ h2{font-size:30px;}
 
   <!-- TREINOS (em construção: será a área de treinos com GIFs) -->
   <div class="page-content hidden" id="page-treinos">
-    <div class="lux-kicker">Seus treinos</div>
-    <div class="lux-title">Treino <em>de hoje</em></div>
-    <p class="lux-sub">Rotina montada pelo seu professor, com demonstração de cada exercício.</p>
-    <div class="soon">
-      <svg class="ic"><use href="#i-dumbbell"/></svg>
-      <div class="lux-title" style="font-size:24px">Em breve</div>
-      <p class="lux-sub" style="margin:0">Aqui você vai ver sua rotina, iniciar o treino, registrar a carga e enviar seu feedback.</p>
-    </div>
+    <div id="treinos-root"></div>
   </div>
 
   <!-- CONQUISTAS -->
@@ -987,6 +981,7 @@ h2{font-size:30px;}
     </div>
     <div class="admin-tabs">
       <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">Ranking</div>
+      <div class="admin-tab" onclick="showAdminTab('treinos')" id="atab-treinos">Treinos</div>
       <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">Semanal</div>
       <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">Feed</div>
       <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">Chat</div>
@@ -1051,6 +1046,7 @@ h2{font-size:30px;}
     </div>
 
     <!-- MESSAGES -->
+    <div class="card hidden" id="admin-treinos-section"></div>
     <div class="card hidden" id="admin-msgs-section">
       <div class="card-title" data-i18n="messagesTitle">✉️ Mensagens enviadas</div>
       <div id="msgs-content"><div style="color:var(--gray);font-size:13px" data-i18n="messagesEmpty">Nenhuma mensagem enviada ainda.</div></div>
@@ -1216,7 +1212,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,
   updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, serverTimestamp, increment }
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, getDocs, query, where, serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -1231,6 +1227,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// ===== PONTE PARA O MÓDULO DE TREINOS (treinos.js) =====
+window.LB = {
+  db,
+  me: () => currentUserData,
+  admin: () => isAdmin,
+  today: () => getTodayKey(),
+  toast: (m) => showToast(m),
+  checkTreino: () => toggleCheck('treino'),
+  get: async (c, id) => { const s = await getDoc(doc(db, c, id)); return s.exists() ? s.data() : null; },
+  set: (c, id, d) => setDoc(doc(db, c, id), d),
+  upd: (c, id, d) => updateDoc(doc(db, c, id), d),
+  del: (c, id) => deleteDoc(doc(db, c, id)),
+  list: async (c) => { const s = await getDocs(collection(db, c)); return s.docs.map(d => ({ id: d.id, ...d.data() })); },
+  listWhere: async (c, f, v) => { const s = await getDocs(query(collection(db, c), where(f, '==', v))); return s.docs.map(d => ({ id: d.id, ...d.data() })); }
+};
 
 // ===== CONSTANTS =====
 const INVITE_CODE = 'TEAMLIRA';
@@ -1370,6 +1382,7 @@ function showPage(page) {
   if(page==='profile') renderProfile();
   if(page==='feed') renderFeed();
   if(page==='chat') initChat();
+  if(page==='treinos' && window.LBT) window.LBT.student();
 }
 function switchTab(tab) {
   ['login','register','admin'].forEach((t,i)=>{
@@ -2839,18 +2852,20 @@ window.confirmSendMsg=confirmSendMsg;
 
 // ===== ADMIN TABS =====
 function showAdminTab(tab) {
-  ['ranking','weekly','feed','chat','msgs'].forEach(t => {
+  ['ranking','treinos','weekly','feed','chat','msgs'].forEach(t => {
     const el = document.getElementById('atab-'+t);
     if(el) el.classList.toggle('active', t===tab);
   });
   // Hide/show ranking card
   const rankingCard = document.getElementById('admin-ranking-card');
   if(rankingCard) rankingCard.classList.toggle('hidden', tab!=='ranking');
+  const trSec = document.getElementById('admin-treinos-section'); if(trSec) trSec.classList.toggle('hidden', tab!=='treinos');
   document.getElementById('admin-weekly-section').classList.toggle('hidden', tab!=='weekly');
   document.getElementById('admin-msgs-section').classList.toggle('hidden', tab!=='msgs');
   document.getElementById('admin-feed-section').classList.toggle('hidden', tab!=='feed');
   const chatSection = document.getElementById('admin-chat-section');
   if(chatSection) chatSection.classList.toggle('hidden', tab!=='chat');
+  if(tab==='treinos' && window.LBT) window.LBT.admin();
   if(tab==='weekly') renderWeeklyReport();
   if(tab==='msgs') renderAdminMsgs();
   if(tab==='feed') loadAdminFeed();
@@ -3680,5 +3695,6 @@ function saveCustomPhrase() {
 window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
+<script type="module" src="treinos.js?v=1"></script>
 </body>
 </html>

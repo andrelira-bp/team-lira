@@ -1,10 +1,11 @@
 // L Body — service worker
 // Estratégia: rede primeiro (sempre pega a versão nova do app) e, sem internet, usa o que está salvo.
-const CACHE_NAME = 'l-body-v3';
+const CACHE_NAME = 'l-body-v4';
 const CORE = [
   './',
   'index.html',
   'translations.js',
+  'treinos.js',
   'manifest.json',
   'icon-192.png',
   'icon-512.png',
