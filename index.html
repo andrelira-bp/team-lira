@@ -436,6 +436,7 @@ h2{font-size:30px;}
 .welcome-streak-label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;}
 
 /* ---------- modais, avisos ---------- */
+.modal-overlay{align-items:center;padding:12px}.modal-box{max-height:88vh}
 .modal-box,.rules-box{border-radius:0;background:#0c0b09;border:1px solid var(--gold-dim);border-top:2px solid var(--gold);}
 .rules-box h3,.modal-title{font-family:var(--head);font-style:italic;text-transform:uppercase;letter-spacing:.04em;font-size:24px;}
 .toast{background:var(--gold-grad);border-radius:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;}
@@ -1044,6 +1045,10 @@ h2{font-size:30px;}
       </div>
       <div id="admin-chat-list" style="max-height:400px;overflow-y:auto">
         <div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input type="text" id="admin-chat-input" placeholder="Escreva para o grupo..." maxlength="500" style="flex:1;min-width:0" onkeydown="if(event.key==='Enter')adminSendChat()">
+        <button class="btn-gold" onclick="adminSendChat()">Enviar</button>
       </div>
     </div>
 
@@ -2819,22 +2824,24 @@ function modalSendMsg() {
 async function confirmSendMsg() {
   const text = document.getElementById('msg-text').value.trim();
   if(!text) { showToast(t('toastMsgEmpty')); return; }
+  if(!currentModalUid || !currentModalUser) { showToast('Selecione um aluno primeiro'); return; }
   const msgData = {
     toUid: currentModalUid,
     toName: currentModalUser.name,
     text: text,
     sentAt: new Date().toISOString()
   };
+  try {
+    // Save to Firestore for student to read
+    const msgRef = doc(db,'messages',currentModalUid);
+    const existing = await getDoc(msgRef);
+    const existingMsgs = existing.exists() ? (existing.data().msgs||[]) : [];
+    existingMsgs.unshift({text, sentAt: msgData.sentAt});
+    await setDoc(msgRef, {msgs: existingMsgs.slice(0,10)});
+  } catch(e) { showToast('Erro ao enviar: ' + (e.code || e.message)); return; }
   const msgs = JSON.parse(localStorage.getItem('tl_admin_msgs')||'[]');
   msgs.unshift(msgData);
-  localStorage.setItem('tl_admin_msgs', JSON.stringify(msgs));
-
-  // Save to Firestore for student to read
-  const msgRef = doc(db,'messages',currentModalUid);
-  const existing = await getDoc(msgRef);
-  const existingMsgs = existing.exists() ? (existing.data().msgs||[]) : [];
-  existingMsgs.unshift({text, sentAt: new Date().toISOString()});
-  await setDoc(msgRef, {msgs: existingMsgs.slice(0,10)});
+  localStorage.setItem('tl_admin_msgs', JSON.stringify(msgs.slice(0,100)));
 
   showToast(t('toastMsgSent'));
   closeModal('modal-msg');
@@ -3627,6 +3634,22 @@ async function loadAdminChat() {
   }
 }
 window.loadAdminChat = loadAdminChat;
+
+async function adminSendChat() {
+  const input = document.getElementById('admin-chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  try {
+    const snap = await getDoc(doc(db, 'chat', 'group'));
+    const msgs = snap.exists() ? (snap.data().messages || []) : [];
+    msgs.push({ uid: 'professor', name: 'Professor Lira', photoURL: null, text: escapeHtml(text), timestamp: Date.now() });
+    await setDoc(doc(db, 'chat', 'group'), {messages: msgs.slice(-200)});
+    input.value = '';
+    showToast('Mensagem enviada ao grupo');
+    loadAdminChat();
+  } catch(e) { showToast('Erro ao enviar: ' + (e.code || e.message)); }
+}
+window.adminSendChat = adminSendChat;
 
 // ===== REGISTRO DE PESO NO CHECK-IN =====
 // registrarPeso removed - replaced by frutas check-in via toggleCheck
