@@ -281,7 +281,7 @@ function vWorkout() {
     if (exs[i].bi && i < exs.length - 1) {
       let j = i; const blk = [];
       while (j < exs.length) { blk.push(card(exs[j], j)); if (!exs[j].bi || j === exs.length - 1) break; j++; }
-      h += `<div class="tr-bi"><div class="tr-bi-tag">${blk.length > 2 ? 'Tri-set' : 'Bi-set'}</div>${blk.join('')}</div>`;
+      h += `<div class="tr-bi"><div class="tr-bi-tag">${blk.length === 2 ? 'Bi-set' : blk.length === 3 ? 'Tri-set' : 'Série combinada · ' + blk.length + ' exercícios'}</div>${blk.join('')}</div>`;
       i = j;
     } else h += card(exs[i], i);
   }
@@ -516,7 +516,7 @@ function vEditor() {
       <div class="tr-tec">${TECNICAS.map(t => `<button type="button" data-act="tec" data-w="${wi}" data-e="${ei}" data-t="${esc(t)}" class="${(ex.tec || []).includes(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div>
       <input class="tr-in" style="margin-top:8px;font-size:13px" data-bind="w.${wi}.e.${ei}.cad" value="${esc(ex.cad || '')}" placeholder="Cadência (ex.: 3-1-1) — opcional">
       <input class="tr-in" style="margin-top:8px;font-size:13px" data-bind="w.${wi}.e.${ei}.notas" value="${esc(ex.notas)}" placeholder="Observações e instruções (opcional)">
-      ${ei < (w.exercises || []).length - 1 ? `<button type="button" class="tr-btn sm bi-btn ${ex.bi ? 'on' : ''}" data-act="bi" data-w="${wi}" data-e="${ei}">${ex.bi ? 'Bi-set com o próximo exercício ✓' : 'Combinar com o próximo (bi-set)'}</button>` : ''}</div>`).join('')}
+      ${ei < (w.exercises || []).length - 1 ? `<button type="button" class="tr-btn sm bi-btn ${ex.bi ? 'on' : ''}" data-act="bi" data-w="${wi}" data-e="${ei}">${ex.bi ? 'Combinado com o próximo ✓' : 'Combinar com o próximo (bi-set, tri-set...)'}</button>` : ''}</div>`).join('')}
     <div class="tr-row"><button class="tr-btn sm solid" data-act="addEx" data-w="${wi}">Adicionar exercício</button><button class="tr-btn sm danger" data-act="rmW" data-w="${wi}">Remover treino</button></div></div>`).join('');
   h += `<button class="tr-btn tr-fin" data-act="addW" style="margin-bottom:10px">Adicionar treino</button>
     <button class="tr-btn solid tr-fin" data-act="saveR">Salvar rotina</button>`;
@@ -587,7 +587,7 @@ function adminClick(e) {
   }
   if (act === 'bi') {
     const l = A.edit.workouts[wi].exercises, ex = l[ei]; ex.bi = !ex.bi;
-    a.classList.toggle('on', ex.bi); a.textContent = ex.bi ? 'Bi-set com o próximo exercício ✓' : 'Combinar com o próximo (bi-set)';
+    a.classList.toggle('on', ex.bi); a.textContent = ex.bi ? 'Combinado com o próximo ✓' : 'Combinar com o próximo (bi-set, tri-set...)';
     const cards = a.closest('.tr-wk').querySelectorAll('.tr-ed-ex');
     cards.forEach((c, i) => c.classList.toggle('bi-link', !!(l[i] && l[i].bi) || !!(i > 0 && l[i - 1] && l[i - 1].bi)));
     return;
