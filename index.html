@@ -881,6 +881,37 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
 #screen-app .stat-box::before{height:3px;left:12%;right:12%;background:linear-gradient(90deg,#8C6A2B,#E8CE92,#8C6A2B);}
 #screen-app .rank-pts{font-size:22px;}
 #screen-app .rank-pts small,#screen-app .rank-pts span{color:#5a3f0e!important;-webkit-text-fill-color:#5a3f0e;}
+/* ---------- cartões marfim: dourado de ouro velho nos números, bronze escuro nos rótulos (mantém a fonte Barlow) ---------- */
+:root{--ouro-a:#B9821A;--ouro-b:#6A4509;--bronze:#6b4a12;--ink:#1c1812;}
+#screen-app .stat-num,#screen-app .rank-pts,#screen-app .tr-card b{
+  background:linear-gradient(180deg,var(--ouro-a) 10%,var(--ouro-b) 95%)!important;-webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;color:transparent!important;filter:drop-shadow(0 1px 0 rgba(255,255,255,.9));text-shadow:none;}
+#screen-app .stat-num{font-size:46px;font-weight:800;}
+#screen-app .stat-label{color:var(--bronze)!important;font-weight:700;font-size:10px;letter-spacing:.26em;}
+#screen-app .rank-pts{font-size:23px;font-weight:800;}
+#screen-app .rank-pos{color:var(--ouro-b)!important;font-weight:800;}
+#screen-app .tr-card b{font-size:25px;}
+#screen-app .card-title,#screen-app .check-pts,#screen-app .tr-status{color:var(--bronze)!important;}
+#screen-app .check-name,#screen-app .rank-name,#screen-app .tr-ex .tr-ex-name,#screen-app .tr-box h4,#screen-app .link-card b{color:var(--ink)!important;}
+/* ---------- opção A: número grafite, rótulos cinza neutro, fio dourado só no topo (sem bronze) ---------- */
+#screen-app .card,#screen-app .stat-box,#screen-app .check-item,#screen-app .link-card,#screen-app .rank-item,#screen-app .feed-item,#screen-app .tr-card,#screen-app .tr-box,#screen-app .badge-box.unlocked,#screen-app .tr-ex,#screen-app .seg{
+  --gold:#4a463e;--gold-lt:#1a1712;--gray:#6a665d;--gray2:#7a766d;--line:#e3d9c2;
+  background:linear-gradient(170deg,#fbf8f1,#f1ebdd)!important;border:1px solid #e3d9c2!important;}
+#screen-app .stat-num,#screen-app .rank-pts,#screen-app .tr-card b,#screen-app .rank-pos{background:none!important;-webkit-text-fill-color:#1a1712!important;color:#1a1712!important;filter:none!important;text-shadow:none!important;}
+#screen-app .stat-label,#screen-app .xp-bar-label,#screen-app .card .stat-label{color:#7a766d!important;}
+#screen-app .card-title,#screen-app .tr-status,#screen-app .check-pts{color:#6a665d!important;opacity:1;}
+#screen-app .card-title::after{background:linear-gradient(90deg,#d9c9a2,transparent);}
+#screen-app .stat-box::before{left:30%;right:30%;height:2px;background:#C9A45C;border-radius:0 0 2px 2px;}
+#screen-app .link-card .ic,#screen-app .check-icon,#screen-app .rank-avatar,#screen-app .feed-avatar{color:#4a463e!important;}
+#screen-app .check-icon,#screen-app .rank-avatar,#screen-app .feed-avatar{border-color:#d9c9a2;}
+#screen-app .tr-ex .tr-ex-meta a{color:#1a1712!important;}
+#screen-app .tr-pill,#screen-app .tr-ex .tr-pill{color:#4a463e!important;border-color:#d9c9a2;background:#f3ecdc;}
+#screen-app .tr-btn,#screen-app .card button[data-i18n="viewAllLevels"]{color:#1a1712!important;border-color:#cdbb92;background:#f5eedd;}
+#screen-app .tr-btn.solid{color:#120d05!important;}
+#screen-app .badge-box.unlocked div,#screen-app .badge-box.unlocked span{color:#4a463e!important;}
+#screen-app .rank-item.me{background:linear-gradient(170deg,#fdf3d6,#f4e3b0)!important;border-color:#C9A45C!important;}
+#screen-app .tr-ex .tr-ex-note{background:#f1e7cc;border-left-color:#C9A45C;color:#2a261d!important;}
+#screen-app .check-item.done,#screen-app .tr-ex.done{background:linear-gradient(170deg,#eef5e8,#dde9d5)!important;border-color:#a7c49b!important;}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
