@@ -966,7 +966,7 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
     <h4>Refeição fora de hora?</h4>
     <p>Comeu tarde? Marque a refeição mais próxima. O que vale é a constância, não o horário exato.</p>
     <h4>Rankings</h4>
-    <p><b>Mês atual</b> zera todo mês, então todo mundo recomeça do zero. <b>Pontuação Geral</b> soma tudo. No <b>Desafio</b>, vale quem treinou em mais dias, e não quem fez mais pontos.</p>
+    <p><b>Mês atual</b> zera todo mês, então todo mundo recomeça do zero. <b>Pontuação Geral</b> soma tudo.</p>
     <h4>Níveis e conquistas</h4>
     <p>Seus pontos sobem seu nível. Medalhas são liberadas por treinos, sequência, hidratação, peso e muito mais, na aba Conquistas.</p>
     <button class="eng-btn" onclick="closeRules()" style="margin-top:12px">Entendi</button>
@@ -1645,7 +1645,7 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
   </div>
 </div>
 
-<script src="translations.js?v=10"></script>
+<script src="translations.js?v=11"></script>
 <script>
 // ===== Sons (gerados no aparelho, sem arquivos) =====
 (function(){
@@ -1856,7 +1856,10 @@ const CHALLENGE = {
   end: '2026-12-14',
   prize: 'Top 3 ganham correção de treino por vídeo com o Lira 🎁'
 };
+// Desafio desligado por enquanto. Para voltar: troque para true (e ajuste as datas acima).
+const CHALLENGE_ENABLED = false;
 function isChallengeActive() {
+  if(!CHALLENGE_ENABLED) return false;
   const d=getTodayKey();
   return d>=CHALLENGE.start && d<=CHALLENGE.end;
 }
@@ -2308,7 +2311,8 @@ function renderEngagement() {
 
   // --- desafio ---
   const ch = document.getElementById('challenge-card');
-  if(ch) {
+  if(ch && !CHALLENGE_ENABLED) ch.style.display='none';
+  else if(ch) {
     const now = getTodayKey();
     const started = now>=CHALLENGE.start, ended = now>CHALLENGE.end;
     const field = 'ch_'+CHALLENGE.id;
