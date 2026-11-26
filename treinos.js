@@ -293,7 +293,7 @@ function studentClick(e) {
     const r = curR(), w = curW();
     S.run = { key: r.rid + '|' + w.id, start: Date.now(), done: {}, loads: {} }; saveRun(); return renderStudent();
   }
-  if (act === 'chk') { const ex = curW().exercises[i]; S.run.done[ex.id] = !S.run.done[ex.id]; saveRun(); return renderStudent(); }
+  if (act === 'chk') { const ex = curW().exercises[i]; S.run.done[ex.id] = !S.run.done[ex.id]; if (S.run.done[ex.id] && window.LBSound) LBSound.play('done'); saveRun(); return renderStudent(); }
   if (act === 'load') {
     const ex = curW().exercises[i];
     const o = modal(`<h3>Carga utilizada</h3><div class="tr-field"><label>Atualize a carga utilizada</label><input id="tr-load" value="${esc(S.run.loads[ex.id] != null ? S.run.loads[ex.id] : (ex.carga || ''))}" placeholder="Ex: 40kg"></div><button class="tr-btn solid tr-fin" id="tr-load-ok">Atualizar</button>`);
@@ -320,7 +320,7 @@ function restModal(name, secs) {
     running = true; go.textContent = 'Pausar';
     _rest = setInterval(() => {
       left--; n.textContent = mmss(left);
-      if (left <= 0) { clearInterval(_rest); _rest = null; running = false; go.textContent = 'Iniciar'; left = secs; n.textContent = mmss(left); try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {} LB().toast('Descanso finalizado'); }
+      if (left <= 0) { clearInterval(_rest); _rest = null; running = false; go.textContent = 'Iniciar'; left = secs; n.textContent = mmss(left); try { window.LBSound && LBSound.play('beep'); navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {} LB().toast('Descanso finalizado'); }
     }, 1000);
   };
   $('#tr-rest-stop', o).onclick = () => { if (_rest) { clearInterval(_rest); _rest = null; } running = false; left = secs; n.textContent = mmss(left); go.textContent = 'Iniciar'; };
@@ -350,6 +350,7 @@ function finishModal() {
       S.run = null; saveRun();
       try { await LB().checkTreino(); } catch (e) {}
       closeModal();
+      if (window.LBSound) LBSound.play('win');
       const o2 = modal(`<h3>Parabéns!</h3><div style="text-align:center;font-size:14px;margin-bottom:6px">Você concluiu o seu treino.</div>
         <div class="tr-big" style="font-size:54px">${dur(secs)}</div>
         <div style="text-align:center;font-size:12px;color:var(--gray);margin-bottom:18px">${esc(w.name)} · ${fmtDate(dayKey(now))}</div>

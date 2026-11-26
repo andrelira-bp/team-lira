@@ -1061,6 +1061,7 @@ body{
       </div>
     </div>
 
+    <button class="btn-primary lb-sound-btn" style="margin-top:8px" onclick="LBSound.toggle()">Sons: ligados</button>
     <button class="btn-primary lb-install-link" style="display:none;margin-top:8px" onclick="lbInstall()">Instalar o app no celular</button>
     <button class="btn-primary" style="margin-top:8px;background:#222;border:1px solid #444;color:var(--gray)" onclick="doLogout()" data-i18n="profileLogout">Sair da conta</button>
   </div>
@@ -1338,6 +1339,37 @@ body{
 
 <script src="translations.js?v=9"></script>
 <script>
+// ===== Sons (gerados no aparelho, sem arquivos) =====
+(function(){
+  var ctx=null;
+  function on(){return localStorage.getItem('lb_sound')!=='0';}
+  function ac(){
+    if(!ctx){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return null; ctx=new C(); }
+    if(ctx.state==='suspended') ctx.resume();
+    return ctx;
+  }
+  function tone(f,t0,d,vol,type){
+    var c=ac(); if(!c) return;
+    var o=c.createOscillator(), g=c.createGain(), t=c.currentTime+t0;
+    o.type=type||'sine'; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+0.02);
+  }
+  var S={
+    beep:function(){ [0,0.28,0.56].forEach(function(t){ tone(1320,t,0.16,0.35,'square'); }); },
+    done:function(){ tone(196,0,0.16,0.28,'sine'); tone(294,0.07,0.2,0.2,'sine'); },
+    win:function(){ [523,659,784,1047].forEach(function(f,i){ tone(f,i*0.11,0.3,0.26,'triangle'); }); tone(1047,0.5,0.6,0.2,'sine'); }
+  };
+  window.LBSound={
+    play:function(n){ if(!on()||!S[n]) return; try{ S[n](); }catch(e){} },
+    enabled:on,
+    toggle:function(){ var v=!on(); localStorage.setItem('lb_sound',v?'1':'0'); window.LBSound.refresh(); if(v) window.LBSound.play('done'); return v; },
+    refresh:function(){ document.querySelectorAll('.lb-sound-btn').forEach(function(b){ b.textContent=on()?'Sons: ligados':'Sons: desligados'; }); }
+  };
+  ['pointerdown','touchstart','keydown'].forEach(function(ev){ document.addEventListener(ev,function(){ if(on()) ac(); },{once:true,passive:true}); });
+  document.addEventListener('DOMContentLoaded',window.LBSound.refresh);
+})();
+
 // ===== Instalação (PWA), modal de regras e service worker =====
 (function(){
   var deferred=null;
@@ -3208,6 +3240,7 @@ window.completeMission=completeMission;
 // ===== CELEBRATIONS =====
 function showCelebration(emoji, title, sub, isLevelUp=false) {
   spawnConfetti();
+  if(window.LBSound) LBSound.play(isLevelUp?'win':'done');
   if(isLevelUp) {
     document.getElementById('lu-emoji').textContent = emoji;
     document.getElementById('lu-title').textContent = title;
@@ -3883,6 +3916,6 @@ function saveCustomPhrase() {
 window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
-<script type="module" src="treinos.js?v=1"></script>
+<script type="module" src="treinos.js?v=2"></script>
 </body>
 </html>
