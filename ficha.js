@@ -334,6 +334,13 @@ function goalForm(ctx, assess, items, done) {
 // =====================================================================
 //                    PAINÉIS (aluno e professor)
 // =====================================================================
+const UPD = [['adesao', 'Adesão ao protocolo (0 a 10)'], ['just', 'Justificativa'], ['altura', 'Altura'], ['peso', 'Peso em jejum'], ['fome', 'Fome'], ['cardio', 'Meta de cardio'], ['livres', 'Refeições livres'], ['percep', 'Percepção das mudanças do físico'], ['recup', 'Recuperação entre treinos'], ['volume', 'Margem para mais volume de treino'], ['tempo', 'Tempo para as séries extras'], ['carga', 'Dificuldade para progredir carga'], ['extra', 'Mais alguma coisa']];
+function updCard(u) {
+  const d = u.d || {};
+  return `<div class="tr-box"><div class="fbk-h"><b>${fmtBR(u.date)}</b>${d.adesao ? `<span class="fbk-ok">adesão ${esc(d.adesao)}/10</span>` : ''}</div>
+    ${UPD.filter(([k]) => d[k] && k !== 'adesao').map(([k, n]) => `<div class="fi-row"><small>${n}</small><div>${esc(d[k])}</div></div>`).join('')}
+    <div style="font-size:10px;color:var(--gray);margin-top:8px">${u.src === 'forms' ? 'Importado do formulário Atualização do Físico' : 'Enviado pelo aluno'}</div></div>`;
+}
 function tabs(list, cur) { return `<div class="seg fi-seg">${list.map(([k, n]) => `<button class="${k === cur ? 'on' : ''}" data-t="${k}">${n}</button>`).join('')}</div><div id="fi-c"></div>`; }
 
 async function renderTab(root, ctx, tab) {
@@ -341,6 +348,9 @@ async function renderTab(root, ctx, tab) {
   if (tab === 'anam') {
     let a = null; try { a = await LB().get('anamnese', ctx.uid); } catch (e) {}
     box.innerHTML = anamneseView(a);
+  } else if (tab === 'upd') {
+    let l = []; try { l = (await LB().listWhere('monthlyUpdates', 'uid', ctx.uid)).sort((a, b) => String(b.date).localeCompare(String(a.date))); } catch (e) {}
+    box.innerHTML = l.length ? l.map(updCard).join('') : '<div class="tr-empty">Nenhuma atualização do físico registrada para este aluno.</div>';
   } else if (tab === 'aval') {
     const list = await loadAssess(ctx.uid);
     box.innerHTML = '<button class="tr-btn solid tr-fin" data-as="new" style="margin-bottom:14px">' + ic('plus') + ' Nova avaliação</button>' + assessHtml(list);
@@ -383,7 +393,7 @@ function openPanel(kicker, title, ctx, tabList, first) {
 function evolucao() { const me = LB().me(); openPanel('Acompanhamento', 'Minha <em>evolução</em>', { uid: me.uid, name: me.name, admin: false }, [['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'aval'); }
 function ficha(u) {
   if (!u || !u.uid) return;
-  openPanel('Ficha do aluno', esc((u.name || '').split(' ')[0]) + ' <em>completa</em>', { uid: u.uid, name: u.name, admin: true }, [['anam', 'Anamnese'], ['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'anam');
+  openPanel('Ficha do aluno', esc((u.name || '').split(' ')[0]) + ' <em>completa</em>', { uid: u.uid, name: u.name, admin: true }, [['anam', 'Anamnese'], ['upd', 'Atualiz.'], ['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'anam');
 }
 
 // avisos para a central de notificações do aluno
