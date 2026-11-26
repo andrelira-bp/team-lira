@@ -1,6 +1,6 @@
 // L Body — service worker
 // Estratégia: rede primeiro (sempre pega a versão nova do app) e, sem internet, usa o que está salvo.
-const CACHE_NAME = 'l-body-v43';
+const CACHE_NAME = 'l-body-v44';
 const CORE = [
   './',
   'index.html',
@@ -56,5 +56,15 @@ self.addEventListener('notificationclick', function(e){
   e.waitUntil(self.clients.matchAll({type:'window', includeUncontrolled:true}).then(function(cs){
     for (var i=0;i<cs.length;i++){ if ('focus' in cs[i]) return cs[i].focus(); }
     return self.clients.openWindow('./');
+  }));
+});
+
+// Push (Firebase Cloud Messaging): mostra o aviso mesmo com o app fechado
+self.addEventListener('push', function(e){
+  var p = {};
+  try { p = e.data ? e.data.json() : {}; } catch (x) { try { p = { data: { title: 'L Body', body: e.data.text() } }; } catch (y) {} }
+  var d = p.data || (p.notification ? { title: p.notification.title, body: p.notification.body } : {});
+  e.waitUntil(self.registration.showNotification(d.title || 'L Body', {
+    body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png', tag: d.tag || 'lb', renotify: true, data: { url: d.url || './' }
   }));
 });

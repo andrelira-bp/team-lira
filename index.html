@@ -1909,9 +1909,42 @@ window.switchTab=switchTab;
 window.showPage=showPage;
 window.showToast=showToast;
 
+// ===== PUSH (avisos com o app fechado) =====
+let lbMsgMod = null;
+async function lbPushRegister(ask){
+  try {
+    if(!('Notification' in window) || !('serviceWorker' in navigator) || !auth.currentUser) return false;
+    if(Notification.permission==='default' && ask) await Notification.requestPermission();
+    if(Notification.permission!=='granted') return false;
+    lbMsgMod = lbMsgMod || await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js');
+    if(!(await lbMsgMod.isSupported())) return false;
+    const reg = await navigator.serviceWorker.ready;
+    const token = await lbMsgMod.getToken(lbMsgMod.getMessaging(app), { serviceWorkerRegistration: reg });
+    if(!token) return false;
+    const adm = (auth.currentUser.email||'').toLowerCase() === ADMIN_EMAIL;
+    await setDoc(doc(db,'pushTokens', token.slice(-40)), { token, uid: auth.currentUser.uid, role: adm ? 'admin' : 'aluno', ua: navigator.userAgent.slice(0,80), ts: Date.now() });
+    return true;
+  } catch(e){ console.warn('push', e); return false; }
+}
+window.lbPushRegister = lbPushRegister;
+
+function lbPushPrompt(){
+  try {
+    if(!('Notification' in window)) return;
+    if(Notification.permission==='granted'){ lbPushRegister(false); return; }
+    if(Notification.permission!=='default' || document.getElementById('lb-push-btn')) return;
+    const b = document.createElement('button'); b.id='lb-push-btn'; b.className='btn-gold';
+    b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:90;padding:12px 20px;border-radius:14px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.6)';
+    b.textContent='🔔 Ativar avisos no celular';
+    b.onclick = async () => { b.remove(); const ok = await lbPushRegister(true); showToast(ok ? 'Avisos ativados' : 'Avisos não ativados'); };
+    document.body.appendChild(b);
+  } catch(e){}
+}
+window.lbPushPrompt = lbPushPrompt;
+
 // ===== AUTH =====
 function startAdminSession() {
-  isAdmin = true;
+  isAdmin = true; setTimeout(lbPushPrompt, 1500);
   showScreen('screen-admin');
   loadAdminData();
   setTimeout(() => { if(window.LBX) window.LBX.adminToday(); }, 800);
@@ -3854,7 +3887,7 @@ async function renderExpiry(){
 window.lbEnableNotif = async function(){
   if(!window.Notification) { showToast('Seu aparelho não permite avisos'); return; }
   const p = await Notification.requestPermission();
-  if(p==='granted'){ showToast('Avisos ativados'); renderExpiry(); } else showToast('Avisos não permitidos');
+  if(p==='granted'){ const ok = await lbPushRegister(false); showToast(ok ? 'Avisos ativados' : 'Avisos ativados (neste aparelho só com o app aberto)'); renderExpiry(); } else showToast('Avisos não permitidos');
 };
 async function lbNotify(items){
   try {
@@ -3887,6 +3920,7 @@ function enterApp() {
   renderDashboard();
   renderMission();
   renderExpiry();
+  setTimeout(lbPushPrompt, 2000);
   if(window.LBX) window.LBX.home();
   checkStudentMessages();
   checkMonthlyReset();
