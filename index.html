@@ -639,10 +639,10 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 #screen-welcome{background:#000!important;}
 #screen-welcome>div{justify-content:space-between!important;min-height:100vh;min-height:100dvh;padding:max(28px,4.5vh) 26px max(30px,5vh)!important;}
 #screen-welcome .welcome-logo{width:min(360px,90vw)!important;max-width:none;margin:0!important;animation:none;}
-.welcome-sign{display:flex;align-items:center;justify-content:center;gap:14px;margin:4px 0 0;width:min(300px,80vw);}
+.welcome-sign{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 0;width:min(340px,88vw);}
 .welcome-sign i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim));}
 .welcome-sign i:last-child{background:linear-gradient(270deg,transparent,var(--gold-dim));}
-#screen-welcome .welcome-seal{width:64px!important;margin:0!important;filter:none!important;}
+#screen-welcome .welcome-seal{width:100px!important;margin:0!important;filter:none!important;}
 .welcome-mid{display:flex;flex-direction:column;align-items:center;width:100%;margin:auto 0;padding:3vh 0;}
 .welcome-mid::before{content:"";width:8px;height:8px;background:var(--gold-grad);transform:rotate(45deg);margin-bottom:3.2vh;}
 #screen-welcome .welcome-greeting{display:flex;flex-direction:column;align-items:center;margin:0 0 14px;line-height:1;}
@@ -657,6 +657,11 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 #screen-welcome.active .welcome-sign{animation-delay:.1s}
 #screen-welcome.active .welcome-mid{animation-delay:.25s}
 #screen-welcome.active .welcome-btn{animation-delay:.45s}
+.exp-card{border:1px solid var(--gold);border-left:4px solid var(--gold);background:linear-gradient(90deg,rgba(201,164,92,.12),#0b0b0b 70%);padding:14px 16px;margin-bottom:12px;}
+.exp-card.late{border-color:#d9534f;background:linear-gradient(90deg,rgba(217,83,79,.16),#0b0b0b 70%);}
+.exp-t{font-family:var(--head);font-style:italic;text-transform:uppercase;font-weight:700;font-size:20px;letter-spacing:.03em;color:var(--gold-lt);}
+.exp-card.late .exp-t{color:#ff8a84;}
+.exp-m{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
@@ -794,6 +799,9 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
       <div class="stat-box"><div class="stat-num" id="stat-rank">#—</div><div class="stat-label" data-i18n="rankingTitle">Ranking</div></div>
     </div>
 
+
+    <!-- AVISOS DE VENCIMENTO -->
+    <div id="expiry-alerts"></div>
 
     <!-- INSTALAR O APP -->
     <div id="install-banner" class="eng-card" style="display:none">
@@ -3000,7 +3008,8 @@ async function openStudentModal(uid) {
     + '<div class="modal-stat"><span class="modal-stat-label">Check-ins hoje</span><span class="modal-stat-value">' + checkCount + '/4</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">' + t('modalLastCheckin') + '</span><span class="modal-stat-value">' + (u.lastCheckinDate ? getDaysAgoText(u.lastCheckinDate) : t('modalNever')) + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo peso</span><span class="modal-stat-value">' + (u.weightHistory&&u.weightHistory.length>0 ? u.weightHistory[u.weightHistory.length-1].weight+'kg' : '-') + '</span></div>'
-    + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>';
+    + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>'
+    + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">Vencimento do plano</span><span style="display:flex;gap:6px;align-items:center"><input type="date" id="plan-end-input" value="' + (u.planEnd||'') + '" style="background:var(--dark3);color:var(--white);border:1px solid #333;padding:6px;font-size:13px"><button onclick="savePlanEnd()" class="btn-gold" style="padding:8px 12px;font-size:10px">Salvar</button></span></div>';
 
   // Show/hide approve button based on status
   const approveBtn = document.getElementById('modal-approve-btn');
@@ -3175,6 +3184,27 @@ async function renderWeeklyReport() {
     });
   }
   
+  // Vencimentos de plano e de treino (próximos 10 dias ou já vencidos)
+  try {
+    const pSnap = await getDocs(collection(db,'plans'));
+    const plans = {}; pSnap.docs.forEach(d => { plans[d.id] = d.data(); });
+    const exp = [];
+    all.forEach(u => {
+      if(u.planEnd) exp.push({u, kind:'Plano', d:u.planEnd});
+      ((plans[u.uid]||{}).routines||[]).forEach(r => { if(r.validTo) exp.push({u, kind:'Treino ' + (r.name||''), d:r.validTo}); });
+    });
+    const near = exp.map(x => ({...x, n: lbDaysLeft(x.d)})).filter(x => x.n <= 10).sort((a,b)=>a.n-b.n);
+    let vh = '<div style="font-size:13px;font-weight:700;color:var(--gold);margin:4px 0 8px">Vencimentos (' + near.length + ')</div>';
+    if(!near.length) vh += '<div style="color:var(--success);font-size:13px;margin-bottom:14px">Nenhum plano ou treino vencendo nos próximos 10 dias.</div>';
+    near.forEach(x => {
+      const late = x.n < 0, txt = late ? 'venceu há ' + (-x.n) + (x.n===-1?' dia':' dias') : (x.n===0 ? 'vence hoje' : 'vence em ' + x.n + (x.n===1?' dia':' dias'));
+      vh += '<div class="weekly-card ' + (late?'danger':'') + '"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
+        + '<div style="font-weight:700">' + x.u.name.split(' ')[0] + '</div>'
+        + '<button data-uid="' + x.u.uid + '" data-name="' + x.u.name.split(' ')[0] + '" onclick="quickMsg(this.dataset.uid,this.dataset.name)" style="background:var(--gold);color:var(--black);border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Avisar</button></div>'
+        + '<div style="font-size:12px;color:#888;margin-top:4px">' + escapeHtml(x.kind) + ' · ' + txt + ' (' + lbBR(x.d) + ')</div></div>';
+    });
+    weekHtml = vh + '<div style="height:10px"></div>' + weekHtml;
+  } catch(e){}
   container.innerHTML = weekHtml;
 }
 
@@ -3511,11 +3541,63 @@ function closeLevelsModal() {
 window.openLevelsModal = openLevelsModal;
 window.closeLevelsModal = closeLevelsModal;
 
+// ===== AVISOS DE VENCIMENTO (treino e plano contratado) =====
+const EXPIRY_WARN_DAYS = 7;
+function lbDaysLeft(d){ return Math.round((new Date(d+'T00:00:00') - new Date(getTodayKey()+'T00:00:00'))/86400000); }
+function lbBR(d){ return d.split('-').reverse().join('/'); }
+function lbExpiryText(kind, name, d){
+  const n = lbDaysLeft(d), what = kind==='plano' ? 'Seu plano' : 'Seu treino ' + name;
+  if(n < 0) return {n, level:'late', title: kind==='plano' ? 'Plano vencido' : 'Treino vencido', msg: what + ' venceu em ' + lbBR(d) + '. Fale com o professor para renovar.'};
+  if(n === 0) return {n, level:'soon', title: kind==='plano' ? 'Plano vence hoje' : 'Treino vence hoje', msg: what + ' vence hoje (' + lbBR(d) + '). Fale com o professor para renovar.'};
+  return {n, level:'soon', title: (kind==='plano' ? 'Plano' : 'Treino') + ' vence em ' + n + (n===1?' dia':' dias'), msg: what + ' vence em ' + lbBR(d) + '. Combine a renovação com o professor.'};
+}
+async function renderExpiry(){
+  const box = document.getElementById('expiry-alerts'); if(!box || !currentUserData) return;
+  box.innerHTML = '';
+  const items = [];
+  try {
+    if(currentUserData.planEnd){ const e = lbExpiryText('plano','',currentUserData.planEnd); if(e.n <= EXPIRY_WARN_DAYS) items.push(e); }
+    const ps = await getDoc(doc(db,'plans',currentUserData.uid));
+    if(ps.exists()) (ps.data().routines||[]).forEach(r => { if(r.validTo){ const e = lbExpiryText('treino', r.name||'', r.validTo); if(e.n <= EXPIRY_WARN_DAYS) items.push(e); } });
+  } catch(e){}
+  if(!items.length) return;
+  items.sort((a,b)=>a.n-b.n);
+  box.innerHTML = items.map(e => '<div class="exp-card ' + e.level + '"><div class="exp-t">' + e.title + '</div><div class="exp-m">' + escapeHtml(e.msg) + '</div></div>').join('')
+    + ((window.Notification && Notification.permission==='default') ? '<button class="eng-btn ghost" style="width:100%;margin-bottom:14px" onclick="lbEnableNotif()">Ativar avisos no celular</button>' : '');
+  if(window.LBSound && items.some(e=>e.level==='late')) { /* aviso visual apenas */ }
+  lbNotify(items);
+}
+window.lbEnableNotif = async function(){
+  if(!window.Notification) { showToast('Seu aparelho não permite avisos'); return; }
+  const p = await Notification.requestPermission();
+  if(p==='granted'){ showToast('Avisos ativados'); renderExpiry(); } else showToast('Avisos não permitidos');
+};
+async function lbNotify(items){
+  try {
+    if(!window.Notification || Notification.permission!=='granted') return;
+    const key = 'lb_exp_notif_' + currentUserData.uid, today = getTodayKey();
+    if(localStorage.getItem(key)===today) return;
+    localStorage.setItem(key, today);
+    const e = items[0], extra = items.length>1 ? ' (+' + (items.length-1) + ')' : '';
+    const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+    const opts = {body: e.msg, icon:'icon-192.png', badge:'icon-192.png', tag:'lb-expiry'};
+    if(reg) reg.showNotification('L Body · ' + e.title + extra, opts); else new Notification('L Body · ' + e.title + extra, opts);
+  } catch(err){}
+}
+async function savePlanEnd(){
+  const v = document.getElementById('plan-end-input').value;
+  if(!currentModalUid) return;
+  try { await updateDoc(doc(db,'users',currentModalUid), {planEnd: v || ''}); showToast(v ? 'Vencimento salvo' : 'Vencimento removido'); }
+  catch(e){ showToast('Erro ao salvar: ' + (e.code||e.message)); }
+}
+window.savePlanEnd = savePlanEnd; window.renderExpiry = renderExpiry;
+
 function enterApp() {
   showScreen('screen-app');
   showPage('home');
   renderDashboard();
   renderMission();
+  renderExpiry();
   checkStudentMessages();
   checkMonthlyReset();
   fixMonthlyPointsIfNeeded();
