@@ -21,6 +21,20 @@
     ['Abra com 1 toque, direto da tela inicial, sem digitar link.', 'Open it with one tap, straight from your home screen.', 'Ábrela con un toque, directo desde la pantalla de inicio.'],
     ['Instalar agora', 'Install now', 'Instalar ahora'], ['Agora não', 'Not now', 'Ahora no'], ['Instalar o app no celular', 'Install the app on your phone', 'Instalar la app en el celular'],
     ['Ativar avisos no celular', 'Turn on phone alerts', 'Activar avisos en el celular'],
+    ['Suas', 'Your', 'Tus'], ['conquistas', 'achievements', 'logros'], ['Desbloqueie todas as medalhas', 'Unlock all the badges', 'Desbloquea todas las medallas'],
+    ['Notificações', 'Notifications', 'Notificaciones'],
+    ['Não foi possível carregar seus treinos agora. Tente de novo em instantes.', 'We could not load your workouts right now. Please try again in a moment.', 'No pudimos cargar tus entrenamientos ahora. Inténtalo de nuevo en unos instantes.'],
+    ['Os campeões dos meses anteriores', 'The champions of previous months', 'Los campeones de los meses anteriores'],
+    ['aparecerão aqui a partir do', 'will appear here starting on', 'aparecerán aquí a partir del'],
+    ['dia 1° do próximo mês!', 'the 1st of next month!', 'día 1° del próximo mes!'],
+    ['Nenhuma atividade ainda.', 'No activity yet.', 'Aún no hay actividad.'], ['Seja o primeiro.', 'Be the first.', 'Sé el primero.'],
+    ['Não foi possível salvar. Tente novamente.', 'Could not save. Please try again.', 'No se pudo guardar. Inténtalo de nuevo.'],
+    ['Não foi possível enviar agora', 'Could not send right now', 'No se pudo enviar ahora'],
+    ['Preparando o arquivo...', 'Preparing the file...', 'Preparando el archivo...'],
+    ['Não foi possível abrir o arquivo', 'Could not open the file', 'No se pudo abrir el archivo'], ['Não foi possível abrir', 'Could not open', 'No se pudo abrir'],
+    ['Dados salvos', 'Data saved', 'Datos guardados'], ['Mensagem enviada ao grupo', 'Message sent to the group', 'Mensaje enviado al grupo'], ['Apagar esta mensagem?', 'Delete this message?', '¿Borrar este mensaje?'],
+    ['No iPhone (Safari): toque em Compartilhar (quadrado com seta) e depois em "Adicionar à Tela de Início".', 'On iPhone (Safari): tap Share (square with an arrow) and then "Add to Home Screen".', 'En iPhone (Safari): toca Compartir (cuadrado con flecha) y luego "Añadir a pantalla de inicio".'],
+    ['No Android (Chrome): toque nos 3 pontinhos do navegador e depois em "Instalar app" ou "Adicionar à tela inicial".', 'On Android (Chrome): tap the 3 dots in the browser and then "Install app" or "Add to Home screen".', 'En Android (Chrome): toca los 3 puntos del navegador y luego "Instalar app" o "Añadir a la pantalla de inicio".'],
     ['concluiu mais um treino! O time não para 💪', 'completed another workout! The team never stops 💪', '¡completó otro entrenamiento! El equipo no para 💪'],
     ['começou o dia com disciplina! Foco total ☀️', 'started the day with discipline! Full focus ☀️', '¡empezó el día con disciplina! Foco total ☀️'],
     ['não deixou passar o lanche! Consistência em ação 🥗', 'didn\'t skip the snack! Consistency in action 🥗', '¡no se saltó la merienda! Consistencia en acción 🥗'],
@@ -200,6 +214,9 @@
   const pl = (n, en1, enN, es1, esN) => (idx() === 0 ? (n === 1 ? en1 : enN) : (n === 1 ? es1 : esN));
   const dayWords = s => s.replace(/\b(Seg|Ter|Qua|Qui|Sex|Sáb|Dom)\b/g, m => (idx() === 0 ? EN_D : ES_D)[m]);
   const RULES = [
+    [/^Erro ao salvar:? ?(.*)$/, m => (idx() === 0 ? 'Could not save: ' : 'No se pudo guardar: ') + m[1]],
+    [/^Erro ao enviar:? ?(.*)$/, m => (idx() === 0 ? 'Could not send: ' : 'No se pudo enviar: ') + m[1]],
+    [/^📩 Mensagem do Professor:\s*([\s\S]*)$/, m => (idx() === 0 ? '📩 Message from your coach:\n\n' : '📩 Mensaje de tu entrenador:\n\n') + m[1]],
     [/^concluiu a missão: (.+) ⚡$/, m => (idx() === 0 ? 'completed the mission: ' : 'completó la misión: ') + (translate(m[1]) || m[1]) + ' ⚡'],
     [/^desbloqueou a conquista: (.+) 🎖️$/, m => (idx() === 0 ? 'unlocked the achievement: ' : 'desbloqueó el logro: ') + (translate(m[1]) || m[1]) + ' 🎖️'],
     [/^subiu para o nível (.+)! 🏆$/, m => (idx() === 0 ? 'reached level ' : 'subió al nivel ') + m[1] + '! 🏆'],
@@ -305,5 +322,11 @@
   // quando troca o idioma
   const wrap = () => { if (typeof setLang === 'function' && !setLang.__lb) { const o = setLang; const w = function (l) { o(l); setTimeout(run, 30); setTimeout(run, 400); }; w.__lb = 1; window.setLang = w; } };
   wrap(); window.addEventListener('load', wrap);
+  // janelas do navegador (alert, confirm, prompt) também passam pelo dicionário
+  ['alert', 'confirm', 'prompt'].forEach(fn => {
+    const o = window[fn]; if (!o || o.__lb) return;
+    const w = function (msg, ...rest) { let m = msg; try { if (L() !== 'pt' && typeof msg === 'string') { const t2 = translate(msg); if (t2 != null) m = t2; } } catch (e) {} return o.call(window, m, ...rest); };
+    w.__lb = 1; window[fn] = w;
+  });
   window.LBI18N = { run, translate, D, miss: () => { const out = new Set(); const w = document.createTreeWalker(document.getElementById('screen-app') || document.body, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const t = n.nodeValue.replace(/\s+/g, ' ').trim(); if (t && /[À-ú]|\b(você|seu|sua|para|com|que|não|dias?|treino|hoje)\b/i.test(t) && !TEXT.get(n)) out.add(t); } return [...out]; } };
 })();

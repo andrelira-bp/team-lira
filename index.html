@@ -1647,8 +1647,8 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
   </div>
 </div>
 
-<script src="translations.js?v=14"></script>
-<script src="i18n-extra.js?v=5"></script>
+<script src="translations.js?v=15"></script>
+<script src="i18n-extra.js?v=7"></script>
 <script>
 // ===== Sons (gerados no aparelho, sem arquivos) =====
 (function(){
@@ -1907,6 +1907,23 @@ function switchTab(tab) {
 }
 window.switchTab=switchTab;
 window.showPage=showPage;
+// Ao trocar o idioma, redesenha a tela aberta (data, frase do dia, missões, ranking, perfil, conquistas, feed, treinos)
+window.lbRerender = function(){
+  try {
+    if(!currentUserData || isAdmin) return;
+    renderDashboard(); renderMission();
+    const vis = ['home','treinos','ranking','badges','feed','chat','profile'].find(p => { const el=document.getElementById('page-'+p); return el && !el.classList.contains('hidden'); });
+    if(vis==='ranking') switchRankTab(currentRankTab || 'monthly');
+    else if(vis==='badges') renderBadges();
+    else if(vis==='profile') renderProfile();
+    else if(vis==='feed') renderFeed();
+    else if(vis==='treinos' && window.LBT) window.LBT.student();
+    if(window.LBX && vis==='home') window.LBX.home();
+    const wQuote = document.getElementById('w-quote'); if(wQuote) wQuote.textContent = getDailyPhrase();
+    renderExpiry();
+    if(window.lbPushRegister && 'Notification' in window && Notification.permission==='granted') lbPushRegister(false); // atualiza o idioma dos avisos
+  } catch(e){ console.warn('rerender', e); }
+};
 window.showToast=showToast;
 
 // ===== PUSH (avisos com o app fechado) =====
@@ -1922,7 +1939,7 @@ async function lbPushRegister(ask){
     const token = await lbMsgMod.getToken(lbMsgMod.getMessaging(app), { serviceWorkerRegistration: reg });
     if(!token) return false;
     const adm = (auth.currentUser.email||'').toLowerCase() === ADMIN_EMAIL;
-    await setDoc(doc(db,'pushTokens', token.slice(-40)), { token, uid: auth.currentUser.uid, role: adm ? 'admin' : 'aluno', ua: navigator.userAgent.slice(0,80), ts: Date.now() });
+    await setDoc(doc(db,'pushTokens', token.slice(-40)), { token, uid: auth.currentUser.uid, role: adm ? 'admin' : 'aluno', lang: (localStorage.getItem('tl_lang') || 'pt'), ua: navigator.userAgent.slice(0,80), ts: Date.now() });
     return true;
   } catch(e){ console.warn('push', e); return false; }
 }
@@ -3895,7 +3912,7 @@ async function lbNotify(items){
     const key = 'lb_exp_notif_' + currentUserData.uid, today = getTodayKey();
     if(localStorage.getItem(key)===today) return;
     localStorage.setItem(key, today);
-    const e = items[0], extra = items.length>1 ? ' (+' + (items.length-1) + ')' : '';
+    const tr = s => (window.LBI18N && currentLang !== 'pt') ? (window.LBI18N.translate(s) || s) : s; const e0 = items[0], e = {title: tr(e0.title), msg: tr(e0.msg)}, extra = items.length>1 ? ' (+' + (items.length-1) + ')' : '';
     const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
     const opts = {body: e.msg, icon:'icon-192.png', badge:'icon-192.png', tag:'lb-expiry'};
     if(reg) reg.showNotification('L Body · ' + e.title + extra, opts); else new Notification('L Body · ' + e.title + extra, opts);

@@ -582,7 +582,7 @@ const TRANSLATIONS = {
 
     // DATES
     dateWeekdays: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-    dateMonths: ['january','february','march','april','may','june','july','august','september','october','november','december'],
+    dateMonths: ['January','February','March','April','May','June','July','August','September','October','November','December'],
     dateMonthsFull: ['January','February','March','April','May','June','July','August','September','October','November','December'],
 
     // POINTS
@@ -1709,6 +1709,7 @@ function setLang(lang) {
     btn.style.color      = l === currentLang ? 'var(--black)' : '#ccc';
   });
   applyTranslations();
+  if (typeof window.lbRerender === 'function') window.lbRerender();
   // Re-renderiza app se já logado
   if (typeof currentUserData !== 'undefined' && currentUserData) {
     if (typeof renderDashboard === 'function') renderDashboard();
