@@ -2779,7 +2779,7 @@ async function renderStreakCalendar() {
   container.innerHTML = days.map((d, i) => {
     const isToday = d === today;
     const done = results[i];
-    const bg = done ? (isToday ? 'background:var(--gold);box-shadow:0 0 6px var(--gold)' : 'background:var(--gold)') : 'background:var(--dark3)';
+    const bg = done ? (isToday ? 'background:#e5262b;box-shadow:0 0 8px #e5262b' : 'background:#e5262b') : 'background:var(--dark3)';
     return '<div style="width:100%;aspect-ratio:1;border-radius:4px;' + bg + '" title="' + d + '"></div>';
   }).join('');
 }
