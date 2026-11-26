@@ -12,6 +12,7 @@ const GRUPOS = {
   'ombros':'Ombros','panturrilhas':'Panturrilhas','peitoral':'Peitoral','posteriores':'Posteriores de coxa',
   'quadriceps':'Quadríceps','trapezio':'Trapézio','triceps':'Tríceps'
 };
+const TECNICAS = ['Pirâmide crescente', 'Pirâmide decrescente', 'Drop-set', 'Rest-pause', 'Isometria', 'Unilateral', 'Falha'];
 const RPE = ['Muito leve','Leve','Moderada','Pouco intensa','Intensa','Muito intensa','Muito, muito intensa','Exaustão máxima'];
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -106,6 +107,18 @@ const CSS = `
 .tr-table th{font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;font-weight:500;}
 .tr-section-title{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin:16px 0 10px;display:flex;align-items:center;gap:12px;}
 .tr-section-title::before{content:"";width:28px;height:1px;background:var(--gold);}
+.tr-bi{position:relative;border:1px solid var(--gold);border-radius:18px;padding:30px 8px 4px;margin-bottom:14px;background:linear-gradient(160deg,rgba(201,164,92,.10),transparent 70%);}
+.tr-bi .tr-ex{margin-bottom:8px;}
+.tr-bi-tag{position:absolute;top:8px;left:14px;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;}
+.tr-bi-tag::after{content:"  · faça os exercícios em sequência e descanse só ao final";letter-spacing:.06em;text-transform:none;color:var(--gray);font-weight:400;}
+.tr-ex-tags{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 2px;}
+.tr-ex-tags .tr-pill{margin:0;}
+.tr-tec{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.tr-tec button{padding:6px 10px;border:1px solid var(--line);background:transparent;color:var(--gray);font-size:10px;letter-spacing:.06em;border-radius:99px;cursor:pointer;font-family:var(--body);}
+.tr-tec button.on{background:var(--gold-grad);color:#14100a;border-color:var(--gold);}
+.tr-ed-ex.bi-link{border-color:var(--gold);box-shadow:0 0 0 1px rgba(201,164,92,.4);}
+.tr-ed-ex .bi-btn{margin-top:8px;width:100%;}
+.tr-ed-ex .bi-btn.on{background:var(--gold-grad);color:#14100a;border-color:var(--gold);}
 `;
 document.head.appendChild(Object.assign(document.createElement('style'), { id: 'treinos-css', textContent: CSS }));
 
@@ -224,18 +237,30 @@ function vWorkout() {
   if (w.desc) h += `<p class="lux-sub">${esc(w.desc)}</p>`;
   if (running) h += `<div class="tr-timer" id="tr-timer">${dur((Date.now() - S.run.start) / 1000)}</div>`;
   else h += `<div class="tr-banner"><p>Você está no modo visualização.<br>Toque em INICIAR para começar seu treino.</p><button class="tr-btn solid" data-act="start" style="width:100%">Iniciar</button></div>`;
-  h += (w.exercises || []).map((ex, i) => {
+  const exs = w.exercises || [];
+  const card = (ex, i) => {
     const done = running && S.run.done && S.run.done[ex.id];
+    const tags = [...(ex.tec || []), ...(ex.cad ? ['Cadência ' + ex.cad] : [])];
     return `<div class="tr-ex ${done ? 'done' : ''}">
       ${running ? `<button class="tr-chk" data-act="chk" data-i="${i}" aria-label="Marcar como feito"></button>` : ''}
       <div class="tr-ex-body"><div class="tr-ex-name">${esc(ex.n)}</div>
+        ${tags.length ? `<div class="tr-ex-tags">${tags.map(t => `<span class="tr-pill">${esc(t)}</span>`).join('')}</div>` : ''}
         <div class="tr-ex-meta">Séries: ${esc(ex.series || '—')}</div>
         <div class="tr-ex-meta">Carga: ${esc(runLoad(ex))}${running ? `<a data-act="load" data-i="${i}">Editar</a>` : ''}</div>
         ${ex.descanso ? `<div class="tr-ex-meta"><a data-act="rest" data-i="${i}" style="margin-left:0">Intervalo: ${esc(ex.descanso)}s</a></div>` : ''}
         ${ex.notas ? `<div class="tr-ex-note">${esc(ex.notas)}</div>` : ''}</div>
       <img class="tr-gif" src="${gif(ex.id)}" loading="lazy" alt="${esc(ex.n)}" data-act="gif" data-i="${i}">
     </div>`;
-  }).join('');
+  };
+  // exercícios ligados por "bi-set" ficam juntos num bloco
+  for (let i = 0; i < exs.length; i++) {
+    if (exs[i].bi && i < exs.length - 1) {
+      let j = i; const blk = [];
+      while (j < exs.length) { blk.push(card(exs[j], j)); if (!exs[j].bi || j === exs.length - 1) break; j++; }
+      h += `<div class="tr-bi"><div class="tr-bi-tag">${blk.length > 2 ? 'Tri-set' : 'Bi-set'}</div>${blk.join('')}</div>`;
+      i = j;
+    } else h += card(exs[i], i);
+  }
   if (running) h += `<button class="tr-btn solid tr-fin" data-act="finish">Finalizar treino</button>
     <button class="tr-btn danger tr-fin" data-act="cancel" style="margin-top:10px">Cancelar treino</button>`;
   return h;
@@ -456,10 +481,13 @@ function vEditor() {
   h += (r.workouts || []).map((w, wi) => `<div class="tr-wk">
     <div class="tr-field"><label>Treino ${wi + 1}</label><input data-bind="w.${wi}.name" value="${esc(w.name)}" placeholder="Ex: Peito / Tríceps"></div>
     <div class="tr-field"><label>Descrição (opcional)</label><input data-bind="w.${wi}.desc" value="${esc(w.desc)}"></div>
-    ${(w.exercises || []).map((ex, ei) => `<div class="tr-ed-ex"><div class="top"><img src="${gif(ex.id)}" loading="lazy" alt=""><b style="font-size:13px;font-weight:500;flex:1">${esc(ex.n)}</b>
+    ${(w.exercises || []).map((ex, ei) => `<div class="tr-ed-ex ${ex.bi || (ei > 0 && w.exercises[ei - 1].bi) ? 'bi-link' : ''}"><div class="top"><img src="${gif(ex.id)}" loading="lazy" alt=""><b style="font-size:13px;font-weight:500;flex:1">${esc(ex.n)}</b>
         <div class="tr-mini"><button data-act="exUp" data-w="${wi}" data-e="${ei}">↑</button><button data-act="exDn" data-w="${wi}" data-e="${ei}">↓</button><button data-act="exRm" data-w="${wi}" data-e="${ei}">×</button></div></div>
       <div class="grid"><input class="tr-in" data-bind="w.${wi}.e.${ei}.series" value="${esc(ex.series)}" placeholder="Séries (3x10)"><input class="tr-in" data-bind="w.${wi}.e.${ei}.carga" value="${esc(ex.carga)}" placeholder="Carga"><input class="tr-in" data-bind="w.${wi}.e.${ei}.descanso" value="${esc(ex.descanso)}" placeholder="Descanso (s)" inputmode="numeric"></div>
-      <input class="tr-in" style="margin-top:8px;font-size:13px" data-bind="w.${wi}.e.${ei}.notas" value="${esc(ex.notas)}" placeholder="Instruções (opcional)"></div>`).join('')}
+      <div class="tr-tec">${TECNICAS.map(t => `<button type="button" data-act="tec" data-w="${wi}" data-e="${ei}" data-t="${esc(t)}" class="${(ex.tec || []).includes(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div>
+      <input class="tr-in" style="margin-top:8px;font-size:13px" data-bind="w.${wi}.e.${ei}.cad" value="${esc(ex.cad || '')}" placeholder="Cadência (ex.: 3-1-1) — opcional">
+      <input class="tr-in" style="margin-top:8px;font-size:13px" data-bind="w.${wi}.e.${ei}.notas" value="${esc(ex.notas)}" placeholder="Observações e instruções (opcional)">
+      ${ei < (w.exercises || []).length - 1 ? `<button type="button" class="tr-btn sm bi-btn ${ex.bi ? 'on' : ''}" data-act="bi" data-w="${wi}" data-e="${ei}">${ex.bi ? 'Bi-set com o próximo exercício ✓' : 'Combinar com o próximo (bi-set)'}</button>` : ''}</div>`).join('')}
     <div class="tr-row"><button class="tr-btn sm solid" data-act="addEx" data-w="${wi}">Adicionar exercício</button><button class="tr-btn sm danger" data-act="rmW" data-w="${wi}">Remover treino</button></div></div>`).join('');
   h += `<button class="tr-btn tr-fin" data-act="addW" style="margin-bottom:10px">Adicionar treino</button>
     <button class="tr-btn solid tr-fin" data-act="saveR">Salvar rotina</button>`;
@@ -520,7 +548,19 @@ function adminClick(e) {
   if (act === 'exDn') { const l = A.edit.workouts[wi].exercises; if (ei < l.length - 1) { [l[ei + 1], l[ei]] = [l[ei], l[ei + 1]]; return renderAdmin(); } return; }
   if (act === 'addEx') {
     const o = modal(`<h3>Adicionar exercício</h3><div id="tr-pk"></div><button class="tr-btn solid tr-fin" data-x="1" style="margin-top:10px">Concluir</button>`, () => renderAdmin());
-    pickerRender($('#tr-pk', o), x => { A.edit.workouts[wi].exercises.push({ id: x.i, n: x.n, g: x.g, series: '3x10', carga: '', descanso: 60, notas: '' }); LB().toast('Adicionado: ' + x.n); });
+    pickerRender($('#tr-pk', o), x => { A.edit.workouts[wi].exercises.push({ id: x.i, n: x.n, g: x.g, series: '3x10', carga: '', descanso: 60, notas: '', tec: [], cad: '', bi: false }); LB().toast('Adicionado: ' + x.n); });
+    return;
+  }
+  if (act === 'tec') {
+    const ex = A.edit.workouts[wi].exercises[ei]; ex.tec = ex.tec || []; const t = a.dataset.t;
+    ex.tec = ex.tec.includes(t) ? ex.tec.filter(x => x !== t) : [...ex.tec, t]; a.classList.toggle('on');
+    return;
+  }
+  if (act === 'bi') {
+    const l = A.edit.workouts[wi].exercises, ex = l[ei]; ex.bi = !ex.bi;
+    a.classList.toggle('on', ex.bi); a.textContent = ex.bi ? 'Bi-set com o próximo exercício ✓' : 'Combinar com o próximo (bi-set)';
+    const cards = a.closest('.tr-wk').querySelectorAll('.tr-ed-ex');
+    cards.forEach((c, i) => c.classList.toggle('bi-link', !!(l[i] && l[i].bi) || !!(i > 0 && l[i - 1] && l[i - 1].bi)));
     return;
   }
   if (act === 'saveR') return saveRoutine();
@@ -535,7 +575,8 @@ async function saveRoutine() {
   const clean = {
     name: r.name.trim(), goal: (r.goal || '').trim(), level: r.level || '', notes: (r.notes || '').trim(), updatedAt: Date.now(),
     workouts: r.workouts.map(w => ({ id: w.id, name: String(w.name).trim() || 'Treino', desc: (w.desc || '').trim(),
-      exercises: w.exercises.map(x => ({ id: x.id, n: x.n, g: x.g || '', series: String(x.series || '').trim(), carga: String(x.carga || '').trim(), descanso: parseInt(x.descanso, 10) || 0, notas: String(x.notas || '').trim() })) }))
+      exercises: w.exercises.map((x, i, a) => ({ id: x.id, n: x.n, g: x.g || '', series: String(x.series || '').trim(), carga: String(x.carga || '').trim(), descanso: parseInt(x.descanso, 10) || 0, notas: String(x.notas || '').trim(),
+        tec: Array.isArray(x.tec) ? x.tec : [], cad: String(x.cad || '').trim(), bi: !!x.bi && i < a.length - 1 })) }))
   };
   try {
     await LB().set('routines', r.id, clean);

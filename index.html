@@ -814,6 +814,54 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
 #page-chat>div[style*="calc(100vh - 200px)"]{height:calc(100vh - 345px)!important;height:calc(100dvh - 345px)!important;min-height:230px;}
 #page-chat #chat-input{background:#0d0d0d!important;border:1px solid #2b2b2b!important;}
 #page-chat button[onclick="sendChatMsg()"]{border-radius:14px!important;width:50px!important;height:50px!important;}
+/* ---------- área de treino: cartões em marfim, para dar vida e combinar com o fundo branco dos GIFs ---------- */
+.tr-ex{background:linear-gradient(165deg,#f8f3e8,#ece4d2)!important;border:1px solid #d9c9a2!important;box-shadow:0 10px 24px -12px rgba(0,0,0,.8),inset 0 1px 0 #fff!important;color:#1d1810;}
+.tr-ex .tr-ex-name{color:#14100a;font-weight:700;font-size:15px;}
+.tr-ex .tr-ex-meta{color:#5b5242;}
+.tr-ex .tr-ex-meta a{color:#8C6A2B;font-weight:600;}
+.tr-ex .tr-ex-note{color:#3b3322;background:rgba(201,164,92,.20);border-left:3px solid #C9A45C;border-radius:0 10px 10px 0;}
+.tr-ex .tr-pill{color:#7a5a1c;border-color:#C9A45C;background:rgba(201,164,92,.16);font-weight:600;}
+.tr-ex .tr-chk{background:#fff;border:2px solid #C9A45C;box-shadow:none;}
+.tr-ex.done{opacity:1;background:linear-gradient(165deg,#eaf3e4,#d8e6cf)!important;border-color:#8fb583!important;}
+.tr-ex.done .tr-chk{background:linear-gradient(135deg,#4f9a63,#7bc58b);border-color:#4f9a63;box-shadow:0 0 14px rgba(111,191,134,.6);}
+.tr-ex.done .tr-chk::after{border-color:#fff;}
+.tr-ex.done .tr-ex-name{color:#2f5a3b;}
+.tr-ex .tr-gif{border-radius:14px;border:1px solid #d9c9a2;background:#fff;}
+.tr-bi{background:linear-gradient(160deg,rgba(201,164,92,.16),rgba(201,164,92,.04) 70%);}
+/* ---------- mais vida: superfícies em marfim no app do aluno, com fundo escuro e dourado em volta ---------- */
+#screen-app .card,#screen-app .stat-box,#screen-app .check-item,#screen-app .link-card,#screen-app .rank-item,#screen-app .feed-item,#screen-app .tr-card,#screen-app .tr-box,#screen-app .badge-box.unlocked,#screen-app .seg{
+  --white:#1d1810;--gray:#5b5242;--gray2:#7a7160;--gold:#8C6A2B;--gold-lt:#7a5a1c;--line:#d9c9a2;
+  background:linear-gradient(165deg,#f8f3e8,#ece4d2)!important;border:1px solid #d9c9a2!important;color:#1d1810;
+  box-shadow:0 10px 24px -14px rgba(0,0,0,.85),inset 0 1px 0 #fff!important;
+}
+#screen-app .stat-num,#screen-app .rank-pts,#screen-app .tr-card b{background:linear-gradient(135deg,#7a5a1c,#C9A45C 55%,#8C6A2B);-webkit-background-clip:text;background-clip:text;color:transparent;filter:none;}
+#screen-app .stat-box::before{background:linear-gradient(90deg,#8C6A2B,#E8CE92,#8C6A2B);}
+#screen-app .card-title{color:#8C6A2B;}
+#screen-app .card-title::after{background:linear-gradient(90deg,#C9A45C,transparent);}
+#screen-app .check-name,#screen-app .rank-name{color:#1d1810;}
+#screen-app .check-pts{color:#8C6A2B;opacity:1;}
+#screen-app .check-icon{background:#fff;border:1px solid #C9A45C;box-shadow:none;color:#8C6A2B;}
+#screen-app .check-btn{border-color:#C9A45C;background:#fff;}
+#screen-app .check-item.done{background:linear-gradient(165deg,#eaf3e4,#d8e6cf)!important;border-color:#8fb583!important;}
+#screen-app .check-item.done .check-btn{background:linear-gradient(135deg,#4f9a63,#7bc58b);border-color:#4f9a63;box-shadow:0 0 14px rgba(111,191,134,.6);}
+#screen-app .check-item.done .check-btn::after{border-color:#fff;}
+#screen-app .check-item.done .check-name{color:#2f5a3b;}
+#screen-app .rank-item.me{background:linear-gradient(165deg,#fbefd0,#f0dca4)!important;border-color:#C9A45C!important;}
+#screen-app .rank-pos{color:#8C6A2B;text-shadow:none;}
+#screen-app .rank-sub,#screen-app .rank-item small{color:#5b5242;}
+#screen-app .rank-avatar,#screen-app .feed-avatar{background:#fff;color:#8C6A2B;border-color:#C9A45C;}
+#screen-app .link-card .ic{color:#8C6A2B;}
+#screen-app .link-card b,#screen-app .tr-box h4{color:#14100a;}
+#screen-app .seg button{color:#7a7160;}
+#screen-app .seg button.on{color:#14100a;}
+#screen-app .card input,#screen-app .card textarea,#screen-app .card select,#screen-app .form-group input{background:#fff!important;border:1px solid #d9c9a2!important;color:#1d1810!important;}
+#screen-app .card .btn-primary{color:#14100a;}
+#screen-app .tr-pill{background:rgba(201,164,92,.18);color:#7a5a1c;}
+#screen-app .tr-status{color:#8C6A2B;}
+#screen-app .tr-btn{background:rgba(201,164,92,.14);color:#6b4d14;border-color:#C9A45C;box-shadow:none;}
+#screen-app .tr-btn.solid{color:#120d05;}
+#screen-app .tr-btn.danger{color:#b3403a;border-color:#d9534f;background:rgba(217,83,79,.08);}
+#screen-app .badge-box.unlocked .badge-name{color:#1d1810;}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
@@ -4215,7 +4263,7 @@ function saveCustomPhrase() {
 window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
-<script type="module" src="treinos.js?v=2"></script>
+<script type="module" src="treinos.js?v=3"></script>
 <script type="module" src="ficha.js?v=5"></script>
 <script type="module" src="extras.js?v=6"></script>
 </body>
