@@ -662,6 +662,116 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 .exp-t{font-family:var(--head);font-style:italic;text-transform:uppercase;font-weight:700;font-size:20px;letter-spacing:.03em;color:var(--gold-lt);}
 .exp-card.late .exp-t{color:#ff8a84;}
 .exp-m{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
+/* ---------- topo: sino e sair ---------- */
+.top-icon-btn{position:relative;width:38px;height:38px;border-radius:12px;border:1px solid var(--lx-edge);background:rgba(201,164,92,.06);color:var(--gold-lt);display:grid;place-items:center;cursor:pointer;padding:0;}
+.top-icon-btn .ic{width:20px;height:20px;}
+.bell-dot{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#d9534f;color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #000;font-family:var(--body);}
+.top-exit-btn{height:38px;padding:0 14px;border-radius:12px;border:1px solid var(--gold-dim);background:transparent;color:var(--gold-lt);font-family:var(--body);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;}
+.top-bar{gap:8px;}
+
+/* ---------- telas cheias do aluno ---------- */
+.lbs{position:fixed;inset:0;z-index:6500;background:#000;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:lxUp .3s both;}
+.lbs-in{max-width:520px;margin:0 auto;padding:22px 18px 60px;}
+.lbx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.lbx-grid .link-card{flex-direction:column;align-items:flex-start;gap:8px;padding:14px 12px;margin:0;}
+.lbx-grid .link-card b{font-size:17px;}
+.lbx-grid .link-card span{font-size:10px;}
+.ap-card{display:flex;gap:14px;align-items:center;padding:14px;margin-bottom:12px;border:1px solid var(--lx-edge);background:var(--lx-card);border-radius:18px;}
+.ap-card.now{border-color:var(--gold);box-shadow:0 0 20px -10px rgba(201,164,92,.4);}
+.ap-card.past{opacity:.55;}
+.ap-day{width:54px;text-align:center;border-radius:14px;border:1px solid var(--gold-dim);padding:8px 0;flex-shrink:0;}
+.ap-day b{display:block;font-family:var(--head);font-style:italic;font-size:26px;line-height:1;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.ap-day span{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);}
+.ap-body b{display:block;font-size:14px;font-weight:600;}
+.ap-body span,.ap-body small{display:block;font-size:12px;color:var(--gray);margin-top:2px;}
+.nt-card{display:flex;gap:12px;padding:14px;margin-bottom:10px;border:1px solid var(--line);background:#0a0a0a;border-radius:16px;}
+.nt-card.new{border-color:var(--gold);background:linear-gradient(90deg,rgba(201,164,92,.12),#0a0a0a 75%);}
+.nt-ic{width:38px;height:38px;border-radius:12px;border:1px solid var(--gold-dim);display:grid;place-items:center;color:var(--gold);flex-shrink:0;}
+.nt-ic .ic{width:20px;height:20px;}
+.nt-b b{display:block;font-size:13px;font-weight:600;}
+.nt-b span{display:block;font-size:12px;color:var(--gray);margin-top:3px;line-height:1.5;}
+.rt{display:flex;gap:8px;}
+.rt-b{flex:1;height:44px;border-radius:12px;border:1px solid var(--lx-edge);background:#0a0a0a;color:var(--gray);font-family:var(--head);font-style:italic;font-size:20px;font-weight:700;cursor:pointer;}
+.rt-b.on{background:var(--gold-grad);color:#14100a;border-color:var(--gold);}
+.fb-rates{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+.fb-rates span{font-size:11px;padding:4px 9px;border-radius:99px;border:1px solid var(--lx-edge);color:var(--gold-lt);}
+.fb-rates span.lo{border-color:#d9534f;color:#ff8a84;}
+
+/* ---------- painel: agenda e acompanhamento ---------- */
+.ap-row{display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;border:1px solid var(--line);background:#0a0a0a;border-radius:14px;}
+.ap-row.done{opacity:.5;}
+.ap-row.late{border-color:#d9534f;}
+.ap-time{font-family:var(--head);font-style:italic;font-size:22px;font-weight:700;color:var(--gold-lt);min-width:58px;}
+.ap-who{flex:1;min-width:0;}
+.ap-who b{display:block;font-size:13px;font-weight:600;}
+.ap-who span{display:block;font-size:11px;color:var(--gray);margin-top:2px;}
+.ap-act{display:flex;gap:6px;flex-shrink:0;}
+.ap-b{width:36px;height:36px;border-radius:11px;border:1px solid var(--lx-edge);background:rgba(201,164,92,.06);color:var(--gold-lt);display:grid;place-items:center;cursor:pointer;font-size:18px;padding:0;}
+.ap-b .ic{width:18px;height:18px;}
+.ap-b.wa{color:#6fd08c;border-color:rgba(111,208,140,.4);background:rgba(111,208,140,.07);}
+.ap-b.x{color:#ff8a84;border-color:rgba(217,83,79,.4);}
+.ag-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.ag-nav b{font-family:var(--head);font-style:italic;font-size:22px;text-transform:uppercase;letter-spacing:.03em;}
+.ag-day{margin-bottom:12px;}
+.ag-dh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:11px;color:var(--gray);}
+.ag-dh b{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.ag-day.today .ag-dh b{color:var(--gold-lt);text-shadow:0 0 10px rgba(232,206,146,.6);}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px;}
+.cal i{font-style:normal;text-align:center;font-size:10px;letter-spacing:.2em;color:var(--gray2);padding:4px 0;}
+.cal button{position:relative;aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:#0a0a0a;color:var(--white);font-family:var(--body);font-size:13px;cursor:pointer;}
+.cal button.today{border-color:var(--gold);color:var(--gold-lt);}
+.cal button.sel{background:var(--gold-grad);color:#14100a;border-color:var(--gold);}
+.cal button em{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font-style:normal;font-size:9px;padding:0 5px;border-radius:99px;background:var(--gold);color:#14100a;font-weight:700;}
+.fbk{padding:16px;}
+.fbk.alert{border-color:#d9534f!important;}
+.fbk-h{display:flex;justify-content:space-between;align-items:center;}
+.fbk-h b{font-size:15px;}
+.fbk-ok{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--success);}
+.fbk-al{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#ff8a84;}
+.fbk-t{font-size:12px;color:#cfc6b2;margin:6px 0;line-height:1.5;}
+.fbk-t small{display:block;color:var(--gray);font-size:10px;letter-spacing:.18em;text-transform:uppercase;}
+.fbk-r{width:100%;min-height:64px;margin:8px 0 4px;border-radius:12px;background:#0d0d0d;border:1px solid #2b2b2b;color:var(--white);padding:10px;font-family:var(--body);font-size:13px;}
+.lb-in{background:#0d0d0d;color:var(--white);border:1px solid #2b2b2b;border-radius:10px;padding:8px;font-size:13px;font-family:var(--body);}
+.btn-gold.wa{background:linear-gradient(135deg,#1f7a3f,#4fd17a);color:#06210f;text-shadow:none;}
+#admin-today .card-title,#admin-agenda-section .card-title{margin-bottom:12px;}
+.admin-tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;}
+.admin-tabs::-webkit-scrollbar{display:none;}
+.admin-tab{flex-shrink:0;white-space:nowrap;}
+
+/* ---------- cantos arredondados em tudo ---------- */
+.card,.stat-box,.admin-stat,.check-item,.rank-item,.feed-item,.badge-box,.weekly-card,.msg-item,.link-card,.level-card,.mission-card,.eng-card,
+.tr-card,.tr-box,.tr-ex,.tr-wk,.tr-st,.tr-pick,.tr-banner,.tr-empty,.tr-reply,.tr-timer,.exp-card,.welcome-streak,.soon,.tr-ed-ex,.modal-stat{border-radius:18px!important;}
+.level-card,.mission-card,.eng-card,.stat-box,.admin-stat,.exp-card,.card{overflow:hidden;}
+.exp-card{border-left-width:1px!important;}
+.login-card{border-radius:22px!important;}
+.login-card::before,.login-card::after{display:none!important;}
+.login-tabs{border-radius:14px!important;background:#0d0d0d;border:1px solid var(--line);padding:4px;border-bottom:1px solid var(--line);}
+.login-tab{border-radius:10px!important;border-bottom:0!important;margin:0!important;}
+.login-tab.active{background:var(--gold-grad)!important;color:#14100a!important;}
+.modal-box,.rules-box,.tr-modal{border-radius:22px!important;border-top-width:1px!important;}
+.seg{border-radius:14px;overflow:hidden;padding:4px;gap:4px;}
+.seg button{border-radius:10px!important;}
+.admin-tab,.filter-tab,.tr-chip,#rank-tab-monthly,#rank-tab-total,#rank-tab-fame{border-radius:999px!important;}
+.btn-primary,.btn-gold,.mission-btn,.eng-btn,.welcome-btn,.celebration-btn,.tr-btn.solid{clip-path:none!important;border-radius:14px!important;}
+.eng-btn.ghost,.tr-btn,.btn-danger,.btn-success,.top-exit-btn{border-radius:14px!important;}
+.btn-gold{border-radius:12px!important;}
+.level-badge,.admin-badge,.toast,.tr-pill,.mission-badge{border-radius:99px!important;}
+.xp-bar-bg,.eng-bar,.xp-bar-fill,.eng-bar>div{border-radius:99px!important;}
+.check-icon{border-radius:14px!important;}
+.check-btn,.tr-chk{border-radius:50%!important;}
+.podium-block{border-radius:14px 14px 0 0!important;}
+.form-group input,.msg-textarea,.search-input,.weight-row input,.invite-edit-input,.tr-field input,.tr-field textarea,.tr-field select,.tr-in,.form-group select,.form-group textarea{
+  background:#0d0d0d!important;border:1px solid #2b2b2b!important;border-radius:12px!important;padding:13px 14px!important;color:var(--white)!important;}
+.form-group input:focus,.msg-textarea:focus,.search-input:focus,.tr-field input:focus,.tr-field textarea:focus,.tr-field select:focus{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(201,164,92,.12)!important;}
+#admin-chat-input{border-radius:12px!important;}
+#page-profile button:not([data-i18n="viewAllLevels"]):not(.btn-primary),#page-profile button[data-i18n="viewAllLevels"],#page-profile .btn-primary,#page-profile input{border-radius:12px!important;}
+#page-profile input{border:1px solid #2b2b2b!important;padding:12px 14px!important;background:#0d0d0d!important;}
+.nav-item.active::after{border-radius:0 0 4px 4px;}
+.back-link{padding:6px 0;}
+.profile-avatar,.rank-avatar,.feed-avatar,.podium-avatar{border-radius:50%!important;}
+.stat-box::before,.admin-stat::before{border-radius:0 0 4px 4px;}
+.rank-item,.feed-item,.msg-item{overflow:hidden;}
+.table-wrap,.admin-table{border-radius:14px;overflow:hidden;}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
@@ -693,6 +803,12 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
   <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="1"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17h12l-1.5-2V10.5a4.5 4.5 0 0 0-9 0V15Z"/><path d="M10 20h4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3.5h7.5L19 8v12.5H7Z"/><path d="M14 3.5V8h5M9.5 13h6M9.5 16.5h6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4.1A8 8 0 1 1 8.2 19Z"/><path d="M9 9c.3 2.6 2.4 4.7 5.5 5.5l1.2-1.2-1.8-1-.8.7c-.9-.4-1.7-1.2-2.1-2.1l.7-.8-1-1.8Z"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
 </svg>
 
@@ -765,7 +881,11 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
   <div class="top-bar">
     <img src="logo-lbody.png" alt="L Body">
     <img src="selo-lira.png" class="top-seal" alt="André Lira">
-    <div class="top-bar-user" id="top-username">—</div>
+<span id="top-username" style="display:none">—</span>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;margin-left:auto">
+      <button class="top-icon-btn" id="bell-btn" onclick="lbOpenNotifs()" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><span class="bell-dot" id="bell-dot" style="display:none">0</span></button>
+      <button class="top-exit-btn" onclick="doLogout()" data-i18n="topExit">Sair</button>
+    </div>
     <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
       <button onclick="setLang('pt')" data-lang-btn="pt" style="background:var(--gold);color:var(--black);border:none;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;">PT</button>
       <button onclick="setLang('en')" data-lang-btn="en" style="background:rgba(255,255,255,0.1);color:#ccc;border:none;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;">EN</button>
@@ -802,6 +922,7 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 
     <!-- AVISOS DE VENCIMENTO -->
     <div id="expiry-alerts"></div>
+    <div id="home-extras"></div>
 
     <!-- INSTALAR O APP -->
     <div id="install-banner" class="eng-card" style="display:none">
@@ -1177,7 +1298,10 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
     </div>
     <div class="admin-tabs">
       <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">Ranking</div>
+      <div class="admin-tab" onclick="showAdminTab('agenda')" id="atab-agenda">Agenda</div>
       <div class="admin-tab" onclick="showAdminTab('treinos')" id="atab-treinos">Treinos</div>
+      <div class="admin-tab" onclick="showAdminTab('acomp')" id="atab-acomp">Acompanhamento</div>
+      <div class="admin-tab" onclick="showAdminTab('nutri')" id="atab-nutri">Nutrição</div>
       <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">Semanal</div>
       <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">Feed</div>
       <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">Chat</div>
@@ -1189,6 +1313,7 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
       <div class="admin-stat"><div class="admin-stat-num" id="a-avg">—</div><div class="admin-stat-label" data-i18n="adminAvgPts">Média pontos</div></div>
       <div class="admin-stat"><div class="admin-stat-num" id="a-treinos">—</div><div class="admin-stat-label" id="a-treinos-label" data-i18n="workoutsToday">Treinos hoje</div></div>
     </div>
+    <div class="card" id="admin-today"></div>
     <div class="card" id="admin-ranking-card">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
         <span id="admin-card-title" data-i18n="adminRankTitle">🏆 Ranking completo</span>
@@ -1247,6 +1372,9 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
 
     <!-- MESSAGES -->
     <div class="card hidden" id="admin-treinos-section"></div>
+    <div class="card hidden" id="admin-agenda-section"></div>
+    <div class="card hidden" id="admin-acomp-section"></div>
+    <div class="card hidden" id="admin-nutri-section"></div>
     <div class="card hidden" id="admin-msgs-section">
       <div class="card-title" data-i18n="messagesTitle">✉️ Mensagens enviadas</div>
       <div id="msgs-content"><div style="color:var(--gray);font-size:13px" data-i18n="messagesEmpty">Nenhuma mensagem enviada ainda.</div></div>
@@ -1377,7 +1505,7 @@ body::before{content:"";position:fixed;inset:-15%;z-index:-1;pointer-events:none
   </div>
 </div>
 
-<script src="translations.js?v=9"></script>
+<script src="translations.js?v=10"></script>
 <script>
 // ===== Sons (gerados no aparelho, sem arquivos) =====
 (function(){
@@ -1640,6 +1768,7 @@ function startAdminSession() {
   isAdmin = true;
   showScreen('screen-admin');
   loadAdminData();
+  setTimeout(() => { if(window.LBX) window.LBX.adminToday(); }, 800);
   if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
   window.adminRefreshInterval = setInterval(() => {
     if(isAdmin) loadAdminData();
@@ -3009,7 +3138,9 @@ async function openStudentModal(uid) {
     + '<div class="modal-stat"><span class="modal-stat-label">' + t('modalLastCheckin') + '</span><span class="modal-stat-value">' + (u.lastCheckinDate ? getDaysAgoText(u.lastCheckinDate) : t('modalNever')) + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Ultimo peso</span><span class="modal-stat-value">' + (u.weightHistory&&u.weightHistory.length>0 ? u.weightHistory[u.weightHistory.length-1].weight+'kg' : '-') + '</span></div>'
     + '<div class="modal-stat"><span class="modal-stat-label">Status</span><span class="modal-stat-value" style="color:' + (isPending?'#f5a623':isBlocked?'#e53935':'#4caf50') + '">' + (isPending?'Pendente':isBlocked?'Bloqueado':'Ativo') + '</span></div>'
-    + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">Vencimento do plano</span><span style="display:flex;gap:6px;align-items:center"><input type="date" id="plan-end-input" value="' + (u.planEnd||'') + '" style="background:var(--dark3);color:var(--white);border:1px solid #333;padding:6px;font-size:13px"><button onclick="savePlanEnd()" class="btn-gold" style="padding:8px 12px;font-size:10px">Salvar</button></span></div>';
+    + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">Vencimento do plano</span><span style="display:flex;gap:6px;align-items:center"><input type="date" id="plan-end-input" value="' + (u.planEnd||'') + '" class="lb-in"></span></div>'
+    + '<div class="modal-stat" style="align-items:center"><span class="modal-stat-label">WhatsApp</span><span style="display:flex;gap:6px;align-items:center"><input type="tel" id="phone-input" inputmode="tel" placeholder="(11) 99999-9999" value="' + (u.phone||'') + '" class="lb-in"></span></div>'
+    + '<div style="display:flex;gap:8px;margin-top:10px"><button onclick="savePlanEnd()" class="btn-gold" style="flex:1;padding:12px">Salvar dados</button><button onclick="LBX.waOpen(window.modalUser())" class="btn-gold wa" style="flex:1;padding:12px">WhatsApp</button></div>';
 
   // Show/hide approve button based on status
   const approveBtn = document.getElementById('modal-approve-btn');
@@ -3096,10 +3227,14 @@ window.confirmSendMsg=confirmSendMsg;
 
 // ===== ADMIN TABS =====
 function showAdminTab(tab) {
-  ['ranking','treinos','weekly','feed','chat','msgs'].forEach(t => {
+  ['ranking','agenda','treinos','acomp','nutri','weekly','feed','chat','msgs'].forEach(t => {
     const el = document.getElementById('atab-'+t);
     if(el) el.classList.toggle('active', t===tab);
   });
+  ['agenda','acomp','nutri'].forEach(k => { const s = document.getElementById('admin-'+k+'-section'); if(s) s.classList.toggle('hidden', tab!==k); });
+  const todayCard = document.getElementById('admin-today'); if(todayCard) todayCard.classList.toggle('hidden', tab!=='ranking');
+  if(window.LBX && ['agenda','acomp','nutri'].includes(tab)) window.LBX.admin(tab);
+  if(window.LBX && tab==='ranking') window.LBX.adminToday();
   // Hide/show ranking card
   const rankingCard = document.getElementById('admin-ranking-card');
   if(rankingCard) rankingCard.classList.toggle('hidden', tab!=='ranking');
@@ -3586,10 +3721,15 @@ async function lbNotify(items){
 }
 async function savePlanEnd(){
   const v = document.getElementById('plan-end-input').value;
+  const ph = (document.getElementById('phone-input')||{}).value || '';
   if(!currentModalUid) return;
-  try { await updateDoc(doc(db,'users',currentModalUid), {planEnd: v || ''}); showToast(v ? 'Vencimento salvo' : 'Vencimento removido'); }
-  catch(e){ showToast('Erro ao salvar: ' + (e.code||e.message)); }
+  try {
+    await updateDoc(doc(db,'users',currentModalUid), {planEnd: v || '', phone: ph.trim()});
+    if(currentModalUser){ currentModalUser.planEnd = v || ''; currentModalUser.phone = ph.trim(); }
+    showToast('Dados salvos');
+  } catch(e){ showToast('Erro ao salvar: ' + (e.code||e.message)); }
 }
+window.modalUser = () => currentModalUser;
 window.savePlanEnd = savePlanEnd; window.renderExpiry = renderExpiry;
 
 function enterApp() {
@@ -3598,6 +3738,7 @@ function enterApp() {
   renderDashboard();
   renderMission();
   renderExpiry();
+  if(window.LBX) window.LBX.home();
   checkStudentMessages();
   checkMonthlyReset();
   fixMonthlyPointsIfNeeded();
@@ -4031,5 +4172,6 @@ window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
 <script type="module" src="treinos.js?v=2"></script>
+<script type="module" src="extras.js?v=2"></script>
 </body>
 </html>
