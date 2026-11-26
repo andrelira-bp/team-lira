@@ -1182,7 +1182,7 @@ h2{font-size:30px;}
 // ===== Instalação (PWA), modal de regras e service worker =====
 (function(){
   var deferred=null;
-  function isStandalone(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
+  function isStandalone(){var s=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true; if(s) localStorage.setItem('lb_installed','1'); return s || localStorage.getItem('lb_installed')==='1';}
   function hidden(){return Date.now()<(parseInt(localStorage.getItem('lb_install_hide')||'0',10));}
   function show(ios){
     if(isStandalone()||hidden()) return;
@@ -1201,7 +1201,7 @@ h2{font-size:30px;}
   };
   document.addEventListener('DOMContentLoaded',links);
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;show(false);});
-  window.addEventListener('appinstalled',function(){var b=document.getElementById('install-banner'); if(b)b.style.display='none';});
+  window.addEventListener('appinstalled',function(){localStorage.setItem('lb_installed','1'); document.querySelectorAll('.lb-install-link').forEach(function(el){el.style.display='none';}); var b=document.getElementById('install-banner'); if(b)b.style.display='none';});
   document.addEventListener('DOMContentLoaded',function(){
     var btn=document.getElementById('install-btn'), x=document.getElementById('install-close');
     if(btn) btn.onclick=function(){ if(!deferred) return; deferred.prompt(); deferred.userChoice.finally(function(){deferred=null;var b=document.getElementById('install-banner'); if(b)b.style.display='none';}); };
