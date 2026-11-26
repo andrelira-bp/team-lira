@@ -422,7 +422,7 @@ function apptForm() {
     <div class="tr-field" id="g-d"><label>Data</label><input id="ap-d" type="date" value="${AD.day || today()}"></div>
     <div class="tr-field" id="g-w" style="display:none"><label>Dias da semana</label><div class="wd">${WD.map(([d, n]) => `<button type="button" data-wd="${d}">${n}</button>`).join('')}</div></div>
     <div class="tr-field"><label>Horário</label><input id="ap-h" type="time"></div>
-    <div class="tr-field"><label>Duração</label><select id="ap-dur"><option>30</option><option>45</option><option selected>60</option><option>90</option></select></div>
+    <div class="tr-field"><label>Duração</label><select id="ap-dur"><option value="" selected>Sem duração</option><option>30</option><option>45</option><option>60</option><option>90</option></select></div>
     <div class="tr-field"><label>Título</label><input id="ap-t" value="Treino presencial"></div>
     <div class="tr-field"><label>Local ou observação</label><input id="ap-n" placeholder="Ex.: Academia, sala 2"></div>
     <div class="tr-field" id="g-r"><label>Repetir toda semana por</label><select id="ap-r"><option value="1">Só esta vez</option><option value="4">4 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas</option></select></div>
@@ -435,7 +435,7 @@ function apptForm() {
   $('#ap-ok', o).onclick = async () => {
     const uid = $('#ap-u', o).value, h = $('#ap-h', o).value;
     if (!uid || !h) { LB().toast('Escolha o aluno e o horário'); return; }
-    const u = userOf(uid), btn = $('#ap-ok', o), base = { uid, name: u.name || '', time: h, dur: +$('#ap-dur', o).value, title: $('#ap-t', o).value.trim() || 'Treino presencial', notes: $('#ap-n', o).value.trim(), createdAt: Date.now() };
+    const u = userOf(uid), btn = $('#ap-ok', o), base = { uid, name: u.name || '', time: h, dur: $('#ap-dur', o).value ? +$('#ap-dur', o).value : null, title: $('#ap-t', o).value.trim() || 'Treino presencial', notes: $('#ap-n', o).value.trim(), createdAt: Date.now() };
     if (type === 'fixed' && !days.size) { LB().toast('Escolha pelo menos um dia da semana'); return; }
     if (type === 'once' && !$('#ap-d', o).value) { LB().toast('Escolha a data'); return; }
     btn.disabled = true; btn.textContent = 'Salvando...';
