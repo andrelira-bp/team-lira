@@ -21,6 +21,14 @@ const daysLeft = k => Math.round((new Date(k + 'T00:00:00') - new Date(today() +
 const first = n => String(n || '').split(' ')[0];
 const byTime = (a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''));
 
+// ----------------------------------------------------------------- horários fixos semanais
+// Um horário fixo (ex.: Seg, Qua, Qui e Sex às 17:00) vale toda semana e gera os compromissos de cada dia sozinho.
+const WD = [[1, 'Seg'], [2, 'Ter'], [3, 'Qua'], [4, 'Qui'], [5, 'Sex'], [6, 'Sáb'], [0, 'Dom']];
+const daysTxt = days => { const n = WD.filter(([d]) => (days || []).includes(d)).map(([, x]) => x); return n.length > 1 ? n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1] : n[0] || ''; };
+const slotOn = (s, k) => s.active !== false && (s.days || []).includes(dow(k)) && (!s.startDate || k >= s.startDate) && (!s.endDate || k <= s.endDate) && !(s.skips || []).includes(k);
+const slotAppt = (s, k) => ({ id: 'fx|' + s.id + '|' + k, fixed: true, slotId: s.id, uid: s.uid, name: s.name, date: k, time: s.time, dur: s.dur, title: s.title, notes: s.notes, status: (s.done || []).includes(k) ? 'concluido' : 'agendado' });
+const expandSlots = (slots, from, to) => { const out = []; for (let k = from; k <= to; k = addDays(k, 1)) slots.forEach(s => { if (slotOn(s, k)) out.push(slotAppt(s, k)); }); return out; };
+
 // ----------------------------------------------------------------- WhatsApp
 function waLink(phone, text) {
   let d = String(phone || '').replace(/\D/g, '');
@@ -67,7 +75,11 @@ const seenSet = () => { try { return new Set(JSON.parse(localStorage.getItem(see
 
 async function loadMine() {
   const me = LB().me(); if (!me) return;
-  try { ST.appts = (await LB().listWhere('appointments', 'uid', me.uid)).filter(a => a.status !== 'cancelado').sort(byTime); } catch (e) { ST.appts = []; }
+  let one = [], slots = [];
+  try { one = (await LB().listWhere('appointments', 'uid', me.uid)).filter(a => a.status !== 'cancelado'); } catch (e) {}
+  try { slots = (await LB().listWhere('fixedSlots', 'uid', me.uid)).filter(s => s.active !== false); } catch (e) {}
+  ST.slots = slots;
+  ST.appts = [...one, ...expandSlots(slots, addDays(today(), -14), addDays(today(), 45))].sort(byTime);
 }
 
 function apptLine(a) {
@@ -121,8 +133,9 @@ async function studentAgenda() {
   const up = ST.appts.filter(a => a.date >= t).sort(byTime);
   const past = ST.appts.filter(a => a.date < t).sort((a, b) => byTime(b, a)).slice(0, 6);
   let h = '';
+  (ST.slots || []).forEach(s => { h += `<div class="tr-box" style="padding:14px 16px"><div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)">Horário fixo</div><b style="font-size:15px">${esc(daysTxt(s.days))} às ${esc(s.time)}</b><div style="font-size:12px;color:var(--gray)">${esc(s.title || 'Treino presencial')}${s.notes ? ' · ' + esc(s.notes) : ''}</div></div>`; });
   if (!up.length) h += `<div class="tr-empty">${ic('calendar')}<div>Nenhum compromisso marcado.<br>Quando o seu professor marcar um treino presencial, ele aparece aqui.</div></div>`;
-  h += up.map(a => `<div class="ap-card ${a.date === t ? 'now' : ''}">
+  h += up.slice(0, 16).map(a => `<div class="ap-card ${a.date === t ? 'now' : ''}">
     <div class="ap-day"><b>${a.date.slice(8, 10)}</b><span>${DOW[dow(a.date)]}</span></div>
     <div class="ap-body"><b>${esc(a.title || 'Treino presencial')}</b>
     <span>${esc(apptLine(a))}${a.dur ? ' · ' + a.dur + ' min' : ''}</span>${a.notes ? `<small>${esc(a.notes)}</small>` : ''}</div></div>`).join('');
@@ -275,11 +288,15 @@ async function studentNutri() {
 // =====================================================================
 const AD = { users: [], appts: [], view: 'day', day: null, month: null, loaded: false, wk: null };
 async function adminLoad() {
-  const [us, ap] = await Promise.all([LB().list('users'), LB().list('appointments')]);
+  const [us, ap, sl] = await Promise.all([LB().list('users'), LB().list('appointments'), LB().list('fixedSlots').catch(() => [])]);
   AD.users = us.filter(u => u.status !== 'deleted' && u.status !== 'pending' && u.status !== 'blocked').sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   AD.appts = ap.sort(byTime);
+  AD.slots = sl;
   AD.loaded = true;
 }
+// compromissos de um dia: avulsos + horários fixos
+AD.dayList = k => [...AD.appts.filter(a => a.date === k && a.status !== 'cancelado'), ...(AD.slots || []).filter(s => slotOn(s, k)).map(s => slotAppt(s, k))].sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+const findAppt = id => { if (String(id).startsWith('fx|')) { const [, sid, k] = id.split('|'); const s = (AD.slots || []).find(x => x.id === sid); return s ? slotAppt(s, k) : null; } return AD.appts.find(x => x.id === id); };
 const userOf = id => AD.users.find(u => u.uid === id) || { name: '', uid: id };
 function reminderText(a) {
   const when = a.date === today() ? 'hoje' : a.date === addDays(today(), 1) ? 'amanhã' : 'no dia ' + fmtBR(a.date);
@@ -289,16 +306,27 @@ function reminderText(a) {
 async function adminToday() {
   const box = $('#admin-today'); if (!box) return;
   try { await adminLoad(); } catch (e) { box.innerHTML = ''; return; }
-  const t = today(), list = AD.appts.filter(a => a.date === t && a.status !== 'cancelado');
+  const t = today(), list = AD.dayList(t);
   box.innerHTML = `<div class="card-title">Compromissos de hoje</div>` + (list.length ? list.map(apptRow).join('') : '<div style="color:var(--gray);font-size:13px">Nenhum compromisso marcado para hoje.</div>')
-    + `<button class="eng-btn ghost" style="width:100%;margin-top:12px" data-ag="open">Abrir agenda</button>`;
+    + `<button class="eng-btn ghost" style="width:100%;margin-top:12px" data-ag="open">Abrir agenda</button>`
+    + ((window.Notification && Notification.permission === 'default') ? `<button class="eng-btn ghost" style="width:100%;margin-top:8px" data-ag="allow">Ativar avisos no celular</button>` : '');
   bindAppts(box);
+  // aviso do aparelho, uma vez por dia, com o resumo dos compromissos de hoje
+  try {
+    if (list.length && window.Notification && Notification.permission === 'granted' && localStorage.getItem('lb_admin_ap_' + t) !== '1') {
+      localStorage.setItem('lb_admin_ap_' + t, '1');
+      const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+      const opts = { body: list.slice(0, 5).map(a => `${a.time || ''} ${first(a.name)}`).join(' · '), icon: 'icon-192.png', tag: 'lb-day' };
+      const title = `L Body · ${list.length} ${list.length === 1 ? 'compromisso' : 'compromissos'} hoje`;
+      if (reg) reg.showNotification(title, opts); else new Notification(title, opts);
+    }
+  } catch (e) {}
 }
 function apptRow(a) {
   const u = userOf(a.uid);
   return `<div class="ap-row ${a.status === 'concluido' ? 'done' : ''}" data-id="${a.id}">
     <div class="ap-time">${esc(a.time || '--:--')}</div>
-    <div class="ap-who"><b>${esc(a.name || u.name)}</b><span>${esc(a.title || 'Treino presencial')}${a.dur ? ' · ' + a.dur + ' min' : ''}${a.notes ? ' · ' + esc(a.notes) : ''}</span></div>
+    <div class="ap-who"><b>${esc(a.name || u.name)}</b><span>${esc(a.title || 'Treino presencial')}${a.dur ? ' · ' + a.dur + ' min' : ''}${a.fixed ? ' · fixo' : ''}${a.notes ? ' · ' + esc(a.notes) : ''}</span></div>
     <div class="ap-act">
       <button class="ap-b wa" data-ag="wa" aria-label="WhatsApp">${ic('wa')}</button>
       <button class="ap-b" data-ag="done" aria-label="Concluir">${ic('check')}</button>
@@ -309,9 +337,13 @@ function bindAppts(root) {
   if (root.dataset.apBound) return; root.dataset.apBound = '1';
   root.addEventListener('click', async e => {
     const b = e.target.closest('[data-ag]'); if (!b) return;
-    const act = b.dataset.ag, row = b.closest('[data-id]'), a = row && AD.appts.find(x => x.id === row.dataset.id);
+    const act = b.dataset.ag, row = b.closest('[data-id]'), a = row && findAppt(row.dataset.id);
     if (act === 'open') return window.showAdminTab('agenda');
+    if (act === 'allow') { await Notification.requestPermission(); return adminToday(); }
     if (act === 'wa' && a) return waOpen({ phone: (userOf(a.uid) || {}).phone }, reminderText(a));
+    const refreshAll = async () => { await adminLoad(); adminToday(); if (!$('#admin-agenda-section').classList.contains('hidden')) renderAgenda(); };
+    if (act === 'done' && a && a.fixed) { const s = AD.slots.find(x => x.id === a.slotId), d = new Set(s.done || []); d.has(a.date) ? d.delete(a.date) : d.add(a.date); await LB().upd('fixedSlots', s.id, { done: [...d] }); return refreshAll(); }
+    if (act === 'del' && a && a.fixed) { if (!confirm('Pular só este dia? O horário fixo continua nos outros dias.')) return; const s = AD.slots.find(x => x.id === a.slotId); await LB().upd('fixedSlots', s.id, { skips: [...(s.skips || []), a.date] }); return refreshAll(); }
     if (act === 'done' && a) { await LB().upd('appointments', a.id, { status: a.status === 'concluido' ? 'agendado' : 'concluido' }); await adminLoad(); adminToday(); if (!$('#admin-agenda-section').classList.contains('hidden')) renderAgenda(); return; }
     if (act === 'del' && a) { if (!confirm('Excluir este compromisso?')) return; await LB().del('appointments', a.id); await adminLoad(); adminToday(); if (!$('#admin-agenda-section').classList.contains('hidden')) renderAgenda(); return; }
   });
@@ -332,12 +364,12 @@ function renderAgenda() {
   const visible = a => a.status !== 'cancelado';
   if (v === 'day') {
     nav = `${fmtDay(AD.day)}${AD.day === t ? ' · hoje' : ''}`;
-    const l = AD.appts.filter(a => a.date === AD.day && visible(a));
+    const l = AD.dayList(AD.day);
     body = l.length ? l.map(apptRow).join('') : '<div class="tr-empty" style="padding:20px">Nada marcado neste dia.</div>';
   } else if (v === 'week') {
     const ws = weekStart(AD.day); nav = `${fmtBR(ws).slice(0, 5)} a ${fmtBR(addDays(ws, 6)).slice(0, 5)}`;
     for (let i = 0; i < 7; i++) {
-      const k = addDays(ws, i), l = AD.appts.filter(a => a.date === k && visible(a));
+      const k = addDays(ws, i), l = AD.dayList(k);
       body += `<div class="ag-day ${k === t ? 'today' : ''}"><div class="ag-dh"><b>${fmtDay(k)}</b><span>${l.length ? l.length + (l.length === 1 ? ' compromisso' : ' compromissos') : 'livre'}</span></div>${l.map(apptRow).join('')}</div>`;
     }
   } else {
@@ -346,15 +378,15 @@ function renderAgenda() {
     body = `<div class="cal">${['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map(d => `<i>${d}</i>`).join('')}`;
     for (let i = 0; i < lead; i++) body += '<u></u>';
     for (let d = 1; d <= days; d++) {
-      const k = `${AD.month}-${String(d).padStart(2, '0')}`, n = AD.appts.filter(a => a.date === k && visible(a)).length;
+      const k = `${AD.month}-${String(d).padStart(2, '0')}`, n = AD.dayList(k).length;
       body += `<button class="${k === t ? 'today' : ''} ${k === AD.day ? 'sel' : ''}" data-ag="pick" data-k="${k}">${d}${n ? `<em>${n}</em>` : ''}</button>`;
     }
     body += '</div>';
-    const l = AD.appts.filter(a => a.date === AD.day && visible(a));
+    const l = AD.dayList(AD.day);
     body += `<div class="tr-section-title">${fmtDay(AD.day)}</div>` + (l.length ? l.map(apptRow).join('') : '<div style="color:var(--gray);font-size:13px">Nada marcado neste dia.</div>');
   }
   h += `<div class="ag-nav"><button class="ap-b" data-ag="prev">${ic('chev-l')}</button><b>${nav}</b><button class="ap-b" data-ag="next">${ic('chev-r')}</button></div>
-    <div class="tr-row" style="margin:0 0 14px"><button class="tr-btn" data-ag="todaybtn">Hoje</button><button class="tr-btn solid" data-ag="new">${ic('plus')} Novo compromisso</button></div>` + body;
+    <div class="tr-row" style="margin:0 0 14px"><button class="tr-btn" data-ag="todaybtn">Hoje</button><button class="tr-btn solid" data-ag="new">${ic('plus')} Novo compromisso</button></div>` + body + slotsHtml();
   box.innerHTML = h;
   if (!box.dataset.agBound) {
     box.dataset.agBound = '1';
@@ -370,6 +402,14 @@ function renderAgenda() {
         else { const [y, m] = AD.month.split('-').map(Number), d = new Date(y, m - 1 + s, 1); AD.month = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); AD.day = AD.month + '-01'; }
         renderAgenda();
       } else if (a === 'new') apptForm();
+      else if (a === 'sp' || a === 'sd') {
+        const s = (AD.slots || []).find(x => x.id === b.closest('[data-sid]').dataset.sid); if (!s) return;
+        (async () => {
+          if (a === 'sp') await LB().upd('fixedSlots', s.id, { active: s.active === false });
+          else { if (!confirm('Excluir o horário fixo de ' + s.name + '? Os compromissos futuros dele somem da agenda.')) return; await LB().del('fixedSlots', s.id); }
+          await adminLoad(); renderAgenda(); adminToday();
+        })();
+      }
     });
     bindAppts(box);
   }
@@ -378,26 +418,49 @@ function apptForm() {
   const opts = AD.users.map(u => `<option value="${u.uid}">${esc(u.name)}</option>`).join('');
   const o = pop(`<h3>Novo compromisso</h3>
     <div class="tr-field"><label>Aluno</label><select id="ap-u"><option value="">Selecione</option>${opts}</select></div>
-    <div class="tr-field"><label>Data</label><input id="ap-d" type="date" value="${AD.day || today()}"></div>
+    <div class="seg" style="margin-bottom:14px"><button type="button" class="on" data-ty="once">Avulso</button><button type="button" data-ty="fixed">Fixo toda semana</button></div>
+    <div class="tr-field" id="g-d"><label>Data</label><input id="ap-d" type="date" value="${AD.day || today()}"></div>
+    <div class="tr-field" id="g-w" style="display:none"><label>Dias da semana</label><div class="wd">${WD.map(([d, n]) => `<button type="button" data-wd="${d}">${n}</button>`).join('')}</div></div>
     <div class="tr-field"><label>Horário</label><input id="ap-h" type="time"></div>
     <div class="tr-field"><label>Duração</label><select id="ap-dur"><option>30</option><option>45</option><option selected>60</option><option>90</option></select></div>
     <div class="tr-field"><label>Título</label><input id="ap-t" value="Treino presencial"></div>
     <div class="tr-field"><label>Local ou observação</label><input id="ap-n" placeholder="Ex.: Academia, sala 2"></div>
-    <div class="tr-field"><label>Repetir toda semana por</label><select id="ap-r"><option value="1">Só esta vez</option><option value="4">4 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas</option></select></div>
+    <div class="tr-field" id="g-r"><label>Repetir toda semana por</label><select id="ap-r"><option value="1">Só esta vez</option><option value="4">4 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas</option></select></div>
+    <div class="tr-field" id="g-s" style="display:none"><label>Começa em</label><input id="ap-s" type="date" value="${today()}"></div>
     <button class="tr-btn solid tr-fin" id="ap-ok">Salvar compromisso</button>`);
+  let type = 'once'; const days = new Set();
+  const setType = t => { type = t; $$('[data-ty]', o).forEach(b => b.classList.toggle('on', b.dataset.ty === t)); $('#g-d', o).style.display = $('#g-r', o).style.display = t === 'once' ? '' : 'none'; $('#g-w', o).style.display = $('#g-s', o).style.display = t === 'fixed' ? '' : 'none'; };
+  $$('[data-ty]', o).forEach(b => b.onclick = () => setType(b.dataset.ty));
+  $$('[data-wd]', o).forEach(b => b.onclick = () => { const d = +b.dataset.wd; days.has(d) ? days.delete(d) : days.add(d); b.classList.toggle('on', days.has(d)); });
   $('#ap-ok', o).onclick = async () => {
-    const uid = $('#ap-u', o).value, d = $('#ap-d', o).value, h = $('#ap-h', o).value;
-    if (!uid || !d || !h) { LB().toast('Escolha o aluno, a data e o horário'); return; }
-    const u = userOf(uid), n = +$('#ap-r', o).value, btn = $('#ap-ok', o); btn.disabled = true; btn.textContent = 'Salvando...';
+    const uid = $('#ap-u', o).value, h = $('#ap-h', o).value;
+    if (!uid || !h) { LB().toast('Escolha o aluno e o horário'); return; }
+    const u = userOf(uid), btn = $('#ap-ok', o), base = { uid, name: u.name || '', time: h, dur: +$('#ap-dur', o).value, title: $('#ap-t', o).value.trim() || 'Treino presencial', notes: $('#ap-n', o).value.trim(), createdAt: Date.now() };
+    if (type === 'fixed' && !days.size) { LB().toast('Escolha pelo menos um dia da semana'); return; }
+    if (type === 'once' && !$('#ap-d', o).value) { LB().toast('Escolha a data'); return; }
+    btn.disabled = true; btn.textContent = 'Salvando...';
     try {
-      for (let i = 0; i < n; i++) {
-        const id = rid();
-        await LB().set('appointments', id, { uid, name: u.name || '', date: addDays(d, 7 * i), time: h, dur: +$('#ap-dur', o).value, title: $('#ap-t', o).value.trim() || 'Treino presencial', notes: $('#ap-n', o).value.trim(), status: 'agendado', createdAt: Date.now() });
+      if (type === 'fixed') {
+        await LB().set('fixedSlots', rid(), { ...base, days: [...days], startDate: $('#ap-s', o).value || today(), active: true, done: [], skips: [] });
+        o.remove(); LB().toast('Horário fixo salvo: ' + daysTxt([...days]) + ' às ' + h);
+        await adminLoad(); renderAgenda(); adminToday();
+        return;
       }
+      const d = $('#ap-d', o).value, n = +$('#ap-r', o).value;
+      for (let i = 0; i < n; i++) await LB().set('appointments', rid(), { ...base, date: addDays(d, 7 * i), status: 'agendado' });
       o.remove(); LB().toast('Compromisso salvo');
       AD.day = d; AD.month = d.slice(0, 7); await adminLoad(); renderAgenda(); adminToday();
     } catch (e) { btn.disabled = false; btn.textContent = 'Salvar compromisso'; LB().toast('Erro ao salvar: ' + (e.code || e.message)); }
   };
+}
+// lista dos horários fixos, com pausar e excluir
+function slotsHtml() {
+  const sl = AD.slots || [];
+  if (!sl.length) return '';
+  return `<div class="tr-section-title" style="margin-top:22px">Horários fixos (${sl.length})</div>` + sl.map(s => `<div class="ap-row ${s.active === false ? 'done' : ''}" data-sid="${s.id}">
+    <div class="ap-time">${esc(s.time || '')}</div>
+    <div class="ap-who"><b>${esc(s.name)}</b><span>${esc(daysTxt(s.days))} · ${esc(s.title || 'Treino presencial')}${s.active === false ? ' · pausado' : ''}</span></div>
+    <div class="ap-act"><button class="ap-b" data-ag="sp" aria-label="Pausar">${s.active === false ? '▶' : '⏸'}</button><button class="ap-b x" data-ag="sd" aria-label="Excluir">×</button></div></div>`).join('');
 }
 
 // ----------------------------------------------------------------- acompanhamento (professor)
