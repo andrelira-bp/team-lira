@@ -21,6 +21,10 @@
     ['Abra com 1 toque, direto da tela inicial, sem digitar link.', 'Open it with one tap, straight from your home screen.', 'Ábrela con un toque, directo desde la pantalla de inicio.'],
     ['Instalar agora', 'Install now', 'Instalar ahora'], ['Agora não', 'Not now', 'Ahora no'], ['Instalar o app no celular', 'Install the app on your phone', 'Instalar la app en el celular'],
     ['Ativar avisos no celular', 'Turn on phone alerts', 'Activar avisos en el celular'],
+    ['Abrir agenda', 'Open schedule', 'Abrir agenda'], ['Alterar', 'Change', 'Cambiar'],
+    ['Avisos ativados', 'Alerts on', 'Avisos activados'], ['Avisos não ativados', 'Alerts not turned on', 'Avisos no activados'], ['Avisos não permitidos', 'Alerts not allowed', 'Avisos no permitidos'],
+    ['Avisos ativados (neste aparelho só com o app aberto)', 'Alerts on (on this device only while the app is open)', 'Avisos activados (en este dispositivo solo con la app abierta)'],
+    ['Seu aparelho não permite avisos', 'Your device does not allow alerts', 'Tu dispositivo no permite avisos'],
     ['Treinei hoje (+50 pts)', 'I trained today (+50 pts)', 'Entrené hoy (+50 pts)'],
     ['Basta 1 toque: marque seu treino. Ou registre 2 refeições.', 'Just one tap: mark your workout. Or log 2 meals.', 'Solo un toque: marca tu entreno. O registra 2 comidas.'],
     ['Sua meta de hoje', "Today's goal", 'Tu meta de hoy'],
@@ -183,6 +187,7 @@
   const pl = (n, en1, enN, es1, esN) => (idx() === 0 ? (n === 1 ? en1 : enN) : (n === 1 ? es1 : esN));
   const dayWords = s => s.replace(/\b(Seg|Ter|Qua|Qui|Sex|Sáb|Dom)\b/g, m => (idx() === 0 ? EN_D : ES_D)[m]);
   const RULES = [
+    [/^\+(\d+) pontos$/, m => `+${m[1]} ${idx() === 0 ? 'points' : 'puntos'}`],
     [/^Proteja sua sequência de (\d+) dias?$/, m => (idx() === 0 ? `Protect your ${m[1]}-day streak` : `Protege tu racha de ${m[1]} ${+m[1] === 1 ? 'día' : 'días'}`)],
     [/^Sequência de (\d+) dias? garantida\. Amanhã tem mais\.$/, m => (idx() === 0 ? `${m[1]}-day streak secured. More tomorrow.` : `Racha de ${m[1]} ${+m[1] === 1 ? 'día' : 'días'} asegurada. Mañana hay más.`)],
     [/^Nível (\d+)$/, m => (idx() === 0 ? `Level ${m[1]}` : `Nivel ${m[1]}`)],
@@ -235,6 +240,10 @@
     if (D[body]) out = D[body][idx()];
     else {
       for (const [re, fn] of RULES) { if (!fn) continue; const r = body.match(re); if (r) { const v = fn(r); if (v) { out = v; break; } } }
+    }
+    if (out == null) { // texto com emoji/símbolo na frente (ex.: "🔔 Ativar avisos"): traduz só a parte em letras
+      const mm = body.match(/^([^A-Za-zÀ-ÿ]+)([A-Za-zÀ-ÿ][\s\S]*)$/);
+      if (mm && mm[2] !== body) { const inner = translate(mm[2]); if (inner != null) out = mm[1] + inner.replace(/^\s+/, ''); }
     }
     return out == null ? null : lead + out + star + trail;
   }
