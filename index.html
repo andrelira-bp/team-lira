@@ -3194,6 +3194,7 @@ async function openStudentModal(uid) {
 async function modalApprove() {
   if(!currentModalUid) return;
   await updateDoc(doc(db,'users',currentModalUid), {status:'approved'});
+  try { if(window.LBF && currentModalUser) await LBF.adopt(currentModalUser); } catch(e){}
   showToast(t('toastStudentApproved'));
   closeModal('modal-student');
   loadAdminData();
@@ -4207,7 +4208,7 @@ window.saveCustomPhrase = saveCustomPhrase;
 
 </script>
 <script type="module" src="treinos.js?v=2"></script>
-<script type="module" src="ficha.js?v=4"></script>
+<script type="module" src="ficha.js?v=5"></script>
 <script type="module" src="extras.js?v=3"></script>
 </body>
 </html>

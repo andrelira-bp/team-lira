@@ -94,22 +94,20 @@ const RULES = [
 ];
 
 const emailKey = e => String(e || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
-// Anamnese importada do Google Forms fica guardada por e-mail (pré-cadastro) até o aluno entrar no app.
 async function anamStatus() {
-  const me = LB().me();
+  try { const a = await LB().get('anamnese', LB().me().uid); return !!(a && a.done); } catch (e) { return true; }
+}
+// Professor: ao abrir a ficha de um aluno, anexa a anamnese importada do Google Forms (guardada por e-mail), se houver.
+async function adoptFor(u) {
   try {
-    let a = await LB().get('anamnese', me.uid);
-    if (!a && me.email) {
-      const key = emailKey(me.email), p = await LB().get('anamnesePre', key);
-      if (p) {
-        a = { uid: me.uid, name: me.name || '', data: p.data || {}, step: AN.length - 1, done: true, imported: true, updatedAt: Date.now(), completedAt: p.importedAt || Date.now() };
-        await LB().set('anamnese', me.uid, a);
-        try { await LB().del('anamnesePre', key); } catch (e) {}
-        if (!me.phone && a.data.tel) { try { await LB().upd('users', me.uid, { phone: a.data.tel }); } catch (e) {} }
-      }
-    }
-    return !!(a && a.done);
-  } catch (e) { return true; }
+    if (!LB().admin() || !u || !u.uid || !u.email) return;
+    const ex = await LB().get('anamnese', u.uid); if (ex && ex.done) return;
+    const key = emailKey(u.email), p = await LB().get('anamnesePre', key); if (!p) return;
+    const now = Date.now();
+    await LB().set('anamnese', u.uid, { uid: u.uid, name: u.name || p.name || '', data: p.data || {}, step: AN.length - 1, done: true, imported: true, updatedAt: now, completedAt: p.importedAt || now });
+    await LB().del('anamnesePre', key);
+    if (!u.phone && p.data && p.data.tel) { await LB().upd('users', u.uid, { phone: p.data.tel }); }
+  } catch (e) {}
 }
 
 function fieldHtml(f, v) {
@@ -391,8 +389,9 @@ function openPanel(kicker, title, ctx, tabList, first) {
   go(first);
 }
 function evolucao() { const me = LB().me(); openPanel('Acompanhamento', 'Minha <em>evolução</em>', { uid: me.uid, name: me.name, admin: false }, [['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'aval'); }
-function ficha(u) {
+async function ficha(u) {
   if (!u || !u.uid) return;
+  await adoptFor(u);
   openPanel('Ficha do aluno', esc((u.name || '').split(' ')[0]) + ' <em>completa</em>', { uid: u.uid, name: u.name, email: u.email, admin: true }, [['anam', 'Anamnese'], ['upd', 'Atualiz.'], ['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'anam');
 }
 
@@ -406,4 +405,4 @@ async function notifs(me) {
   return out;
 }
 
-window.LBF = { anamnese: anamneseEntry, evolucao, ficha, anamStatus, notifs };
+window.LBF = { anamnese: anamneseEntry, evolucao, ficha, anamStatus, notifs, adopt: adoptFor };
