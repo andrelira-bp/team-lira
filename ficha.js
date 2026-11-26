@@ -349,7 +349,7 @@ async function renderTab(root, ctx, tab) {
     let a = null; try { a = await LB().get('anamnese', ctx.uid); } catch (e) {}
     box.innerHTML = anamneseView(a);
   } else if (tab === 'upd') {
-    let l = []; try { l = (await LB().listWhere('monthlyUpdates', 'uid', ctx.uid)).sort((a, b) => String(b.date).localeCompare(String(a.date))); } catch (e) {}
+    let l = []; try { l = await LB().listWhere('monthlyUpdates', 'uid', ctx.uid); if (ctx.email) { const e2 = await LB().listWhere('monthlyUpdates', 'email', String(ctx.email).toLowerCase()); e2.forEach(x => { if (!l.some(y => y.id === x.id)) l.push(x); }); } l.sort((a, b) => String(b.date).localeCompare(String(a.date))); } catch (e) {}
     box.innerHTML = l.length ? l.map(updCard).join('') : '<div class="tr-empty">Nenhuma atualização do físico registrada para este aluno.</div>';
   } else if (tab === 'aval') {
     const list = await loadAssess(ctx.uid);
@@ -393,7 +393,7 @@ function openPanel(kicker, title, ctx, tabList, first) {
 function evolucao() { const me = LB().me(); openPanel('Acompanhamento', 'Minha <em>evolução</em>', { uid: me.uid, name: me.name, admin: false }, [['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'aval'); }
 function ficha(u) {
   if (!u || !u.uid) return;
-  openPanel('Ficha do aluno', esc((u.name || '').split(' ')[0]) + ' <em>completa</em>', { uid: u.uid, name: u.name, admin: true }, [['anam', 'Anamnese'], ['upd', 'Atualiz.'], ['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'anam');
+  openPanel('Ficha do aluno', esc((u.name || '').split(' ')[0]) + ' <em>completa</em>', { uid: u.uid, name: u.name, email: u.email, admin: true }, [['anam', 'Anamnese'], ['upd', 'Atualiz.'], ['aval', 'Avaliações'], ['fotos', 'Fotos'], ['metas', 'Metas']], 'anam');
 }
 
 // avisos para a central de notificações do aluno
