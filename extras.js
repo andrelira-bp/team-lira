@@ -134,7 +134,7 @@ async function studentAgenda() {
   const past = ST.appts.filter(a => a.date < t).sort((a, b) => byTime(b, a)).slice(0, 6);
   let h = '';
   (ST.slots || []).forEach(s => { h += `<div class="tr-box" style="padding:14px 16px"><div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)">Horário fixo</div><b style="font-size:15px">${esc(daysTxt(s.days))} às ${esc(s.time)}</b><div style="font-size:12px;color:var(--gray)">${esc(s.title || 'Treino presencial')}${s.notes ? ' · ' + esc(s.notes) : ''}</div></div>`; });
-  if (!up.length) h += `<div class="tr-empty">${ic('calendar')}<div>Nenhum compromisso marcado.<br>Quando o seu professor marcar um treino presencial, ele aparece aqui.</div></div>`;
+  if (!up.length) h += `<div class="tr-empty">${ic('calendar')}<div>Nenhum compromisso marcado.<br>Quando o seu professor marcar qualquer compromisso com você (treino presencial, avaliação física, troca de treino e outros), ele aparece aqui e você recebe o aviso.</div></div>`;
   h += up.slice(0, 16).map(a => `<div class="ap-card ${a.date === t ? 'now' : ''}">
     <div class="ap-day"><b>${a.date.slice(8, 10)}</b><span>${DOW[dow(a.date)]}</span></div>
     <div class="ap-body"><b>${esc(a.title || 'Treino presencial')}</b>
