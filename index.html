@@ -1270,12 +1270,12 @@ figcaption{font-size:10px;color:var(--gray);margin-top:4px;text-align:center;let
     <div class="card">
       <div class="card-title" data-i18n="streakHeader">🔥 Sequência — últimos 30 dias</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:13px;color:var(--gray)" data-i18n="calCurrent">Atual:</strong> <strong style="color:var(--gold)" id="cal-streak">0 dias</strong></div>
+        <div style="font-size:13px;color:var(--gray)"><span data-i18n="calCurrentLabel">Atual:</span> <strong style="color:var(--gold)" id="cal-streak">0 dias</strong></div>
         <div style="font-size:13px;color:var(--gray)"><span data-i18n="calBestLabel">Melhor:</span> <strong style="color:var(--white)" id="cal-best">0 dias</strong></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:10px" id="streak-calendar"></div>
       <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--gray)">
-        <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:var(--gold)"></div> <span data-i18n="calFullDay">Dia completo</span></div>
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#E0A82E"></div> <span data-i18n="calFullDay">Dia completo</span></div>
         <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:var(--dark3)"></div> <span data-i18n="calNoRecord">Sem registro</span></div>
       </div>
     </div>
@@ -2810,26 +2810,32 @@ async function renderStreakCalendar() {
   if(!container || !currentUserData) return;
   const calStreak = document.getElementById('cal-streak');
   const calBest = document.getElementById('cal-best');
-  if(calStreak) calStreak.textContent = (currentUserData.streak||0) + ' ' + t('days');
-  if(calBest) calBest.textContent = (currentUserData.bestStreak||0) + ' ' + t('days');
+  const dayWord = n => n===1 ? ({pt:'dia',en:'day',es:'día'}[currentLang]||'dia') : t('days');
+  if(calStreak) calStreak.textContent = (currentUserData.streak||0) + ' ' + dayWord(currentUserData.streak||0);
+  if(calBest) calBest.textContent = (currentUserData.bestStreak||0) + ' ' + dayWord(currentUserData.bestStreak||0);
   const today = getTodayKey();
   const days = [];
-  for(let i=29; i>=0; i--) {
-    const d = new Date(Date.now() - i*86400000);
-    days.push(d.toISOString().slice(0,10));
-  }
+  for(let i=29; i>=0; i--) days.push(getDayKey(i)); // mesmo relógio (Brasília) da sequência
+  // dias em que o aluno finalizou um treino pelo app
+  const trained = new Set();
+  try {
+    const ls = await getDocs(query(collection(db,'workoutLogs'), where('uid','==',currentUserData.uid)));
+    ls.forEach(d => { const f = d.data().finishedAt; if(f) trained.add(new Date(f - 3*3600*1000).toISOString().slice(0,10)); });
+  } catch(e) {}
   const results = await Promise.all(days.map(async d => {
+    if(trained.has(d)) return true;
     try {
       const snap = await getDoc(doc(db,'checkins',currentUserData.uid+'_'+d));
       if(!snap.exists()) return false;
       const data = snap.data();
-      return ['cafe','lanche','almoco','jantar'].filter(m => data[m]).length >= 2;
+      // mesma regra da sequência: treino concluído OU 2+ refeições
+      return !!data.treino || ['cafe','almoco','jantar'].filter(m => data[m]).length >= 2;
     } catch(e) { return false; }
   }));
   container.innerHTML = days.map((d, i) => {
     const isToday = d === today;
     const done = results[i];
-    const bg = done ? (isToday ? 'background:#e5262b;box-shadow:0 0 8px #e5262b' : 'background:#e5262b') : 'background:var(--dark3)';
+    const bg = done ? (isToday ? 'background:#E0A82E;box-shadow:0 0 10px rgba(224,168,46,.75)' : 'background:#E0A82E') : 'background:var(--dark3)';
     return '<div style="width:100%;aspect-ratio:1;border-radius:4px;' + bg + '" title="' + d + '"></div>';
   }).join('');
 }
