@@ -296,8 +296,214 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 .spinner{width:20px;height:20px;border:2px solid #333;border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style id="premium">
+/* =====================================================================
+   L BODY — SISTEMA DE DESIGN PREMIUM (preto + dourado)
+   Camada por cima do CSS original: muda só a aparência, não a lógica.
+   ===================================================================== */
+:root{
+  --gold:#C9A45C;--gold-dim:#8C6A2B;--gold-lt:#F1D9A0;--gold-bg:#14100a;
+  --black:#050505;--dark:#0a0908;--dark2:#0f0e0c;--dark3:#17140d;
+  --white:#f5f2ea;--gray:#a79f8e;--gray2:#6f6757;--line:#2a2418;
+  --success:#6fbf86;--danger:#d9534f;
+  --gold-grad:linear-gradient(135deg,#8C6A2B 0%,#E8CE92 45%,#C9A45C 60%,#8C6A2B 100%);
+  --head:"Barlow Condensed","Arial Narrow",sans-serif;--body:Montserrat,"Segoe UI",Arial,sans-serif;
+}
+html{-webkit-tap-highlight-color:transparent;}
+body{background:#050505;font-family:var(--body);font-weight:300;color:var(--white);letter-spacing:.01em;}
+h1,h2,h3,.lux-h{font-family:var(--head);font-style:italic;text-transform:uppercase;font-weight:700;letter-spacing:.03em;line-height:1.05;}
+h2{font-size:30px;}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.lux-kicker{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-weight:500;margin:6px 0 10px;}
+.lux-kicker::before{content:"";width:34px;height:1px;background:var(--gold);}
+.lux-title{font-family:var(--head);font-style:italic;font-weight:700;text-transform:uppercase;font-size:34px;line-height:1;letter-spacing:.02em;margin-bottom:6px;}
+.lux-title em{font-style:italic;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em;}
+.lux-sub{font-size:13px;color:var(--gray);margin-bottom:18px;}
+
+/* ---------- botões ---------- */
+.btn-primary,.btn-gold,.mission-btn,.eng-btn,.welcome-btn,.celebration-btn{
+  background:var(--gold-grad);background-size:200% 100%;color:#14100a;border:0;border-radius:0;
+  font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);transition:background-position .4s,transform .2s;
+}
+.btn-primary:hover,.btn-gold:hover,.mission-btn:hover,.eng-btn:hover,.welcome-btn:hover{background:var(--gold-grad);background-size:200% 100%;background-position:100% 0;}
+.btn-primary{padding:16px;} .btn-gold{padding:13px 22px;} .mission-btn{padding:12px 24px;} .eng-btn{padding:14px;border-radius:0;}
+.welcome-btn{padding:18px 54px;font-size:13px;}
+.btn-primary:disabled,.mission-btn:disabled{opacity:.5;}
+.mission-btn.done{background:transparent;color:var(--success);border:1px solid var(--success);clip-path:none;}
+.eng-btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold-dim);clip-path:none;}
+.btn-danger,.btn-success{border-radius:0;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:12px;}
+
+/* ---------- entrada ---------- */
+#screen-loading{background:#050505;}
+#screen-login{background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,164,92,.22),transparent 70%),#050505;padding:40px 24px;}
+.login-logo{width:240px;margin-bottom:4px;}
+.login-seal{width:78px;margin:6px 0 4px;}
+.app-tagline{font-family:var(--head);font-style:italic;font-weight:600;font-size:18px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:30px;}
+.login-card{background:transparent;border:1px solid var(--line);border-radius:0;padding:30px 24px;max-width:380px;position:relative;}
+.login-card::before,.login-card::after{content:"";position:absolute;width:18px;height:18px;border:1px solid var(--gold);}
+.login-card::before{top:-1px;left:-1px;border-right:0;border-bottom:0;}
+.login-card::after{bottom:-1px;right:-1px;border-left:0;border-top:0;}
+.login-tabs{background:transparent;border-bottom:1px solid var(--line);border-radius:0;padding:0;margin-bottom:26px;}
+.login-tab{border-radius:0;padding:12px 4px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;color:var(--gray2);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.login-tab.active{background:transparent;color:var(--gold);border-bottom-color:var(--gold);}
+.form-group label{font-size:10px;letter-spacing:.28em;color:var(--gray);font-weight:500;}
+.form-group input,.msg-textarea,.search-input,.weight-row input,.invite-edit-input{background:rgba(255,255,255,.02);border:0;border-bottom:1px solid #3a3222;border-radius:0;color:var(--white);font-family:var(--body);font-weight:300;padding:12px 2px;}
+.form-group input:focus,.msg-textarea:focus,.search-input:focus{border-bottom-color:var(--gold);box-shadow:0 1px 0 var(--gold);}
+.form-error{color:#e08a85;}
+
+/* ---------- topo e navegação ---------- */
+.top-bar{background:rgba(5,5,5,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 16px;}
+.top-bar img{height:26px;}
+.top-bar img.top-seal{height:34px;}
+.top-bar-user{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+.bottom-nav{background:rgba(5,5,5,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);}
+.bottom-nav::before{content:"";position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);}
+.nav-item{padding:11px 2px 9px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:var(--gray2);gap:5px;position:relative;}
+.nav-item .ic{width:23px;height:23px;}
+.nav-item.active{color:var(--gold);}
+.nav-item.active::after{content:"";position:absolute;top:0;width:26px;height:2px;background:var(--gold-grad);}
+.page-content{padding:18px 16px 96px;}
+
+/* ---------- cartões ---------- */
+.card,.stat-box,.admin-stat,.check-item,.rank-item,.feed-item,.badge-box,.weekly-card,.msg-item{border-radius:0;border:1px solid var(--line);background:var(--dark2);}
+.card{padding:18px;}
+.card-title{font-size:10px;letter-spacing:.3em;color:var(--gold);font-weight:500;}
+.level-card{border-radius:0;border:1px solid var(--gold-dim);background:linear-gradient(160deg,#1c1608 0%,#0b0a07 70%);position:relative;padding:22px 20px;}
+.level-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold-grad);}
+.level-badge{border-radius:0;background:var(--gold-grad);font-size:10px;letter-spacing:.2em;font-weight:600;padding:5px 12px;}
+.level-name{font-family:var(--head);font-style:italic;font-size:30px;text-transform:uppercase;font-weight:700;letter-spacing:.03em;}
+.level-pts span,.stat-num,.rank-pts,.admin-stat-num,.podium-pts{font-family:var(--head);font-style:italic;font-weight:700;}
+.xp-bar-bg,.eng-bar{height:4px;border-radius:0;background:#241f14;}
+.xp-bar-fill,.eng-bar>div{border-radius:0;background:var(--gold-grad);}
+.stat-box{padding:16px 8px;}
+.stat-num{font-size:34px;line-height:1;}
+.stat-label{font-size:9px;letter-spacing:.24em;color:var(--gray);margin-top:6px;}
+
+/* ---------- check-ins ---------- */
+.check-item{padding:12px 14px;margin-bottom:8px;gap:10px;}
+.check-item.done{border-color:var(--gold-dim);background:linear-gradient(90deg,rgba(201,164,92,.10),transparent);}
+.check-icon{width:42px;height:42px;border:1px solid var(--line);display:grid;place-items:center;color:var(--gold);font-size:0;}
+.check-item.done .check-icon{border-color:var(--gold-dim);}
+.check-name{font-size:13px;font-weight:500;letter-spacing:.02em;}
+.check-pts{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray2);margin-top:2px;}
+.check-btn{border-radius:50%;width:28px;height:28px;border:1px solid #4a4130;font-size:0;color:transparent;position:relative;}
+.check-item.done .check-btn{background:var(--gold-grad);border-color:var(--gold);}
+.check-item.done .check-btn::after{content:"";width:6px;height:11px;border:solid #14100a;border-width:0 2px 2px 0;transform:rotate(45deg);position:absolute;top:5px;left:10px;}
+
+/* ---------- missão, metas, desafio ---------- */
+.mission-card,.eng-card{border-radius:0;border:1px solid var(--gold-dim);background:linear-gradient(160deg,#18130a,#0a0907 75%);}
+.eng-card.done{border-color:#2f5a3b;background:linear-gradient(160deg,#0f1a12,#0a0907 75%);}
+.mission-card::before{display:none;}
+.mission-badge{border-radius:0;background:transparent;color:var(--gold);padding:0;font-size:10px;letter-spacing:.3em;font-weight:500;}
+.mission-title,.eng-title{font-family:var(--head);font-style:italic;font-weight:700;text-transform:uppercase;font-size:22px;letter-spacing:.03em;line-height:1.1;}
+.mission-desc,.eng-desc{font-size:12px;}
+.eng-sub{letter-spacing:.3em;font-size:9px;}
+.ch-row{font-size:12px;border-bottom-color:var(--line);}
+.ch-row b{font-family:var(--head);font-style:italic;font-size:16px;}
+
+/* ---------- ranking ---------- */
+.podium-item.p1 .podium-block{background:var(--gold-grad);}
+.podium-item.p2 .podium-block{background:linear-gradient(160deg,#9a9a9a,#5c5c5c);}
+.podium-item.p3 .podium-block{background:linear-gradient(160deg,#a8743f,#6b4423);}
+.podium-block{border-radius:0;font-family:var(--head);font-style:italic;font-weight:800;}
+.podium-name{font-size:11px;letter-spacing:.04em;}
+.rank-item{padding:11px 14px;}
+.rank-item.me{border-color:var(--gold-dim);background:linear-gradient(90deg,rgba(201,164,92,.12),transparent);}
+.rank-pos{font-family:var(--head);font-style:italic;font-size:20px;color:var(--gold);}
+.rank-avatar,.feed-avatar,.podium-avatar{background:#15120c;}
+.rank-name{font-size:13px;font-weight:500;}
+.rank-pts{font-size:20px;}
+
+/* ---------- conquistas, perfil, feed ---------- */
+.badge-box{opacity:.38;filter:grayscale(.7);}
+.badge-box.unlocked{opacity:1;filter:none;border-color:var(--gold-dim);background:linear-gradient(160deg,#1b1508,#0c0a06);box-shadow:none;}
+.badge-name{font-size:10px;letter-spacing:.06em;font-weight:500;}
+.feed-item{padding:12px 14px;}
+.feed-avatar{border-color:var(--gold-dim);}
+.profile-avatar{border-width:1px;}
+
+/* ---------- boas-vindas ---------- */
+#screen-welcome{background:radial-gradient(ellipse 60% 45% at 50% 40%,rgba(201,164,92,.20),transparent 70%),#050505;}
+#screen-welcome>div{background:transparent!important;}
+.welcome-greeting{font-family:var(--head);font-style:italic;text-transform:uppercase;font-weight:700;font-size:36px;letter-spacing:.03em;line-height:1.05;}
+.welcome-quote{font-size:13px;color:var(--gray);}
+.welcome-streak{border-radius:0;background:transparent;border:1px solid var(--gold-dim);padding:14px 38px;position:relative;}
+.welcome-streak-num{font-family:var(--head);font-style:italic;font-size:64px;line-height:1;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.welcome-streak-label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;}
+
+/* ---------- modais, avisos ---------- */
+.modal-box,.rules-box{border-radius:0;background:#0c0b09;border:1px solid var(--gold-dim);border-top:2px solid var(--gold);}
+.rules-box h3,.modal-title{font-family:var(--head);font-style:italic;text-transform:uppercase;letter-spacing:.04em;font-size:24px;}
+.toast{background:var(--gold-grad);border-radius:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;}
+.celebration-title{font-family:var(--head);font-style:italic;text-transform:uppercase;font-size:40px;}
+.admin-tab,.filter-tab{border-radius:0;letter-spacing:.12em;text-transform:uppercase;font-size:11px;}
+.admin-tab.active,.filter-tab.active{background:var(--gold-grad);}
+#screen-admin .top-bar{background:rgba(5,5,5,.95);}
+.admin-badge{background:var(--gold-grad);color:#14100a;border-radius:0;letter-spacing:.2em;font-weight:600;}
+
+/* ---------- novo: segmentado (comunidade) e página de treinos ---------- */
+.seg{display:flex;border:1px solid var(--line);margin-bottom:18px;}
+.seg button{flex:1;padding:12px 4px;background:transparent;border:0;color:var(--gray2);font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;}
+.seg button.on{background:var(--gold-grad);color:#14100a;}
+.link-card{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);background:var(--dark2);margin-bottom:14px;cursor:pointer;}
+.link-card .ic{color:var(--gold);width:26px;height:26px;}
+.link-card b{display:block;font-family:var(--head);font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.03em;font-weight:700;}
+.link-card span{font-size:11px;color:var(--gray);}
+.link-card .chev{margin-left:auto;color:var(--gray2);}
+.soon{border:1px dashed var(--gold-dim);padding:34px 20px;text-align:center;}
+.soon .ic{width:40px;height:40px;color:var(--gold);margin-bottom:10px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;cursor:pointer;margin-bottom:14px;}
+.back-link .ic{width:16px;height:16px;}
+#rank-tab-monthly,#rank-tab-total,#rank-tab-fame{border-radius:0!important;font-family:var(--body)!important;font-weight:500!important;font-size:10px!important;letter-spacing:.14em!important;text-transform:uppercase;padding:12px 4px!important;background:transparent;border:1px solid var(--line)!important;}
+.feed-emoji{color:var(--gold);}
+#screen-admin .top-bar-title{font-size:11px;letter-spacing:.14em;}
+*{scrollbar-width:thin;scrollbar-color:#3a3222 transparent;}
+::-webkit-scrollbar{width:5px;height:3px;}
+::-webkit-scrollbar-thumb{background:#3a3222;}
+::-webkit-scrollbar-track{background:transparent;}
+.nav-item{letter-spacing:.1em!important;font-size:8.5px!important;white-space:nowrap;min-width:0;}
+#page-profile button:not([data-i18n="viewAllLevels"]):not(.btn-primary){border-radius:0!important;font-family:var(--body)!important;font-weight:600!important;letter-spacing:.14em!important;text-transform:uppercase!important;font-size:10px!important;background:var(--gold-grad)!important;color:#14100a!important;border:0!important;}
+#page-profile input{background:rgba(255,255,255,.02)!important;border:0!important;border-bottom:1px solid #3a3222!important;border-radius:0!important;color:var(--white)!important;font-family:var(--body)!important;}
+#page-profile button[data-i18n="viewAllLevels"]{border-radius:0!important;letter-spacing:.14em!important;text-transform:uppercase;font-size:10px!important;font-family:var(--body)!important;}
+#page-profile .btn-primary{background:transparent!important;border:1px solid var(--line)!important;clip-path:none!important;color:var(--gray)!important;}
+.badge-emoji,.feed-emoji{filter:grayscale(1) sepia(1) saturate(2.2) hue-rotate(-10deg) brightness(.95);}
+.rank-sub{letter-spacing:.04em;}
+</style>
 </head>
 <body>
+
+<!-- ÍCONES (linha fina) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4.5v1.5A3.5 3.5 0 0 0 8 11M16 6h3.5v1.5A3.5 3.5 0 0 1 16 11"/><path d="M12 13v4M8.5 20h7M10 17h4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H12l-4.5 3.5V16H4Z"/><path d="M8 10h8M8 13h5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 4-5.5 7.5-5.5s6.7 1.9 7.5 5.5"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c.5 3.2 4.5 5.2 4.5 9.5a4.5 4.5 0 0 1-9 0c0-2 1-3 2-4 .2 1.4 1 2 1.8 2.3C11.2 8.5 11 5.8 12 3Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5.5 13.5H11L10 21l7.5-10.5H12L13 3Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14Z"/><path d="M5 19 13 11"/></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M6 3v7M4 3v4.5a2 2 0 0 0 4 0V3M6 10.5V21M17 3c-2.2 1.6-3 4-3 7h3v11"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.7 12 3.5 12 3.5Z"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7.5c-2-2-6-1-6 4 0 4 2 8 4 8 1 0 1.2-.6 2-.6s1 .6 2 .6c2 0 4-4 4-8 0-5-4-6-6-4Z"/><path d="M12 7.5c0-2 1-3.5 3-4.5"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-5.5 3.2 11 2.3-5.5H21"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4Z"/><circle cx="12" cy="13" r="3.4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.9v.1"/></symbol>
+  <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M8.5 13.5 7 21l5-2.5 5 2.5-1.5-7.5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8L3.5 9.7l5.9-.9Z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m4 12 16-8-6 16-3-7Z"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="1"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+</svg>
 
 <div class="toast" id="toast"></div>
 
@@ -306,15 +512,15 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <div class="rules-box">
     <button class="rules-x" onclick="closeRules()" aria-label="Fechar">×</button>
     <h3>Como funciona o L Body</h3>
-    <h4>⚡ Pontos de cada check-in</h4>
+    <h4>Pontos de cada check-in</h4>
     <p>Treino <b>50</b> · Cardio <b>15</b> · Café, lanche, almoço e jantar <b>20</b> cada · Hidratação <b>15</b> · Frutas/vegetais <b>20</b> · Missão do dia <b>20 a 30</b>.</p>
-    <h4>🔥 Sequência</h4>
+    <h4>Sequência</h4>
     <p>O dia conta para a sequência se você <b>marcar o treino</b> OU registrar <b>2 refeições</b> (café, almoço ou jantar). Um toque já mantém seu fogo aceso. O dia vira à meia-noite, no horário de Brasília.</p>
-    <h4>🍽️ Refeição fora de hora?</h4>
+    <h4>Refeição fora de hora?</h4>
     <p>Comeu tarde? Marque a refeição mais próxima. O que vale é a constância, não o horário exato.</p>
-    <h4>🏆 Rankings</h4>
+    <h4>Rankings</h4>
     <p><b>Mês atual</b> zera todo mês, então todo mundo recomeça do zero. <b>Pontuação Geral</b> soma tudo. No <b>Desafio</b>, vale quem treinou em mais dias, e não quem fez mais pontos.</p>
-    <h4>🎖️ Níveis e conquistas</h4>
+    <h4>Níveis e conquistas</h4>
     <p>Seus pontos sobem seu nível. Medalhas são liberadas por treinos, sequência, hidratação, peso e muito mais, na aba Conquistas.</p>
     <button class="eng-btn" onclick="closeRules()" style="margin-top:12px">Entendi</button>
   </div>
@@ -377,12 +583,12 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
   <!-- HOME -->
   <div class="page-content" id="page-home">
-    <div style="padding:20px 0 8px">
-      <h2 style="font-size:22px;font-weight:700"><span id="dash-greeting" data-i18n="dashGreeting">Olá,</span> <span style="color:var(--gold)" id="dash-name">—</span>! 👋</h2>
-      <p style="font-size:13px;color:var(--gray);margin-top:4px" id="dash-date"></p>
+    <div style="padding:6px 0 4px">
+      <div class="lux-kicker" id="dash-date"></div>
+      <div class="lux-title" style="font-size:40px"><span id="dash-greeting" data-i18n="dashGreeting">Olá,</span> <em id="dash-name">—</em></div>
     </div>
-    <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:14px">
-      <p style="font-size:13px;color:var(--white);font-style:italic;line-height:1.5" id="daily-phrase"></p>
+    <div style="border-left:2px solid var(--gold);padding:4px 0 4px 14px;margin:6px 0 18px">
+      <p style="font-size:13px;color:var(--gray);font-style:italic;line-height:1.6;font-weight:300" id="daily-phrase"></p>
     </div>
 
     <div class="level-card">
@@ -398,13 +604,13 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div class="stats-row">
       <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-label" data-i18n="statStreak">🔥 Sequência</div></div>
       <div class="stat-box"><div class="stat-num" id="stat-treinos">0</div><div class="stat-label" data-i18n="statTrainings">💪 Treinos</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-rank">#—</div><div class="stat-label" data-i18n="rankingTitle">🏆 Ranking</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-rank">#—</div><div class="stat-label" data-i18n="rankingTitle">Ranking</div></div>
     </div>
 
 
     <!-- INSTALAR O APP -->
     <div id="install-banner" class="eng-card" style="display:none">
-      <div class="eng-title">📲 Instale o L Body no seu celular</div>
+      <div class="eng-title">Instale o L Body no seu celular</div>
       <div class="eng-desc" id="install-desc">Abra com 1 toque, direto da tela inicial, sem digitar link.</div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="eng-btn" id="install-btn" style="display:none">Instalar agora</button>
@@ -417,7 +623,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="eng-title" data-goal-title>🎯 Sua meta de hoje</div>
       <div class="eng-desc" data-goal-desc>Basta 1 toque: marque seu treino. Ou registre 2 refeições.</div>
       <div class="eng-bar"><div data-goal-bar style="width:0%"></div></div>
-      <button class="eng-btn" data-goal-btn onclick="toggleCheck('treino')" style="margin-top:12px">💪 Treinei hoje (+50 pts)</button>
+      <button class="eng-btn" data-goal-btn onclick="toggleCheck('treino')" style="margin-top:12px">Treinei hoje (+50 pts)</button>
     </div>
 
     <!-- DAILY MISSION -->
@@ -436,7 +642,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div class="eng-bar"><div data-ch-bar style="width:0%"></div></div>
       <div class="eng-desc" data-ch-mine style="margin-top:6px"></div>
       <div class="ch-list" data-ch-list></div>
-      <button class="eng-btn ghost" onclick="openRules()" style="margin-top:10px">ℹ️ Como funcionam os pontos</button>
+      <button class="eng-btn ghost" onclick="openRules()" style="margin-top:10px">Como funcionam os pontos</button>
     </div>
 
     <!-- SEQUENCIA RECOVERY BANNER -->
@@ -450,7 +656,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
     <!-- STORIES -->
     <div style="margin-bottom:14px">
-      <div style="font-size:14px;font-weight:700;margin-bottom:10px" data-i18n="dashStories">📸 Treinos de hoje</div>
+      <div class="lux-kicker" data-i18n="dashStories">Treinos de hoje</div>
       <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 0 8px" id="stories-row">
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0" onclick="document.getElementById('story-input').click()">
           <div style="width:62px;height:62px;border-radius:50%;padding:2px;background:var(--dark3);border:2px dashed var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px">📷</div>
@@ -460,37 +666,37 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <input type="file" id="story-input" accept="image/*" style="display:none" onchange="uploadStory(event)">
     </div>
 
-    <div style="font-size:16px;font-weight:700;margin-bottom:12px" data-i18n="dashCheckin">Check-in de hoje</div>
+    <div class="lux-kicker" style="margin-top:10px" data-i18n="dashCheckin">Check-in de hoje</div>
     <div class="check-item" id="check-treino" onclick="toggleCheck('treino')">
-      <div class="check-left"><div class="check-icon">💪</div><div><div class="check-name" data-i18n="checkinTreino">Treino concluído</div><div class="check-pts">+50 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-dumbbell"/></svg></div><div><div class="check-name" data-i18n="checkinTreino">Treino concluído</div><div class="check-pts">+50 pontos</div></div></div>
       <div class="check-btn" id="btn-treino">✓</div>
     </div>
     <div class="check-item" id="check-cardio" onclick="toggleCheck('cardio')">
-      <div class="check-left"><div class="check-icon">🏃</div><div><div class="check-name" data-i18n="checkinCardio">Cardio do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-pulse"/></svg></div><div><div class="check-name" data-i18n="checkinCardio">Cardio do dia</div><div class="check-pts">+15 pontos</div></div></div>
       <div class="check-btn" id="btn-cardio">✓</div>
     </div>
     <div class="check-item" id="check-cafe" onclick="toggleCheck('cafe')">
-      <div class="check-left"><div class="check-icon">☀️</div><div><div class="check-name" data-i18n="checkinCafe">Café da manhã seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-sun"/></svg></div><div><div class="check-name" data-i18n="checkinCafe">Café da manhã seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-cafe">✓</div>
     </div>
     <div class="check-item" id="check-lanche" onclick="toggleCheck('lanche')">
-      <div class="check-left"><div class="check-icon">🥗</div><div><div class="check-name" data-i18n="checkinLanche">Lanche da tarde seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-leaf"/></svg></div><div><div class="check-name" data-i18n="checkinLanche">Lanche da tarde seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-lanche">✓</div>
     </div>
     <div class="check-item" id="check-almoco" onclick="toggleCheck('almoco')">
-      <div class="check-left"><div class="check-icon">🍽️</div><div><div class="check-name" data-i18n="checkinAlmoco">Almoço seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-utensils"/></svg></div><div><div class="check-name" data-i18n="checkinAlmoco">Almoço seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-almoco">✓</div>
     </div>
     <div class="check-item" id="check-jantar" onclick="toggleCheck('jantar')">
-      <div class="check-left"><div class="check-icon">🌙</div><div><div class="check-name" data-i18n="checkinJantar">Jantar seguido</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-moon"/></svg></div><div><div class="check-name" data-i18n="checkinJantar">Jantar seguido</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-jantar">✓</div>
     </div>
     <div class="check-item" id="check-hidratacao" onclick="toggleCheck('hidratacao')">
-      <div class="check-left"><div class="check-icon">💧</div><div><div class="check-name" data-i18n="checkinHidra">Hidratação do dia</div><div class="check-pts">+15 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-drop"/></svg></div><div><div class="check-name" data-i18n="checkinHidra">Hidratação do dia</div><div class="check-pts">+15 pontos</div></div></div>
       <div class="check-btn" id="btn-hidratacao">✓</div>
     </div>
     <div class="check-item" id="check-frutas" onclick="toggleCheck('frutas',this)">
-      <div class="check-left"><div class="check-icon">🍎</div><div><div class="check-name" data-i18n="checkinFrutas">Comi frutas ou vegetais hoje</div><div class="check-pts">+20 pontos</div></div></div>
+      <div class="check-left"><div class="check-icon"><svg class="ic"><use href="#i-apple"/></svg></div><div><div class="check-name" data-i18n="checkinFrutas">Comi frutas ou vegetais hoje</div><div class="check-pts">+20 pontos</div></div></div>
       <div class="check-btn" id="btn-frutas">✓</div>
     </div>
   </div>
@@ -515,7 +721,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <!-- MES ATUAL -->
     <div id="rank-monthly-section">
       <div style="margin:4px 0 16px">
-        <div style="font-size:22px;font-weight:800">🏆 Ranking</div>
+        <div class="lux-kicker">Classificação</div><div class="lux-title">Ranking do <em>time</em></div>
         <div style="font-size:12px;color:var(--gray)" id="rank-month-label"></div>
       </div>
       <div class="ranking-podium" id="podium-monthly"></div>
@@ -540,10 +746,24 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div style="display:none" id="ranking-list"></div>
   </div>
 
+  <!-- TREINOS (em construção: será a área de treinos com GIFs) -->
+  <div class="page-content hidden" id="page-treinos">
+    <div class="lux-kicker">Seus treinos</div>
+    <div class="lux-title">Treino <em>de hoje</em></div>
+    <p class="lux-sub">Rotina montada pelo seu professor, com demonstração de cada exercício.</p>
+    <div class="soon">
+      <svg class="ic"><use href="#i-dumbbell"/></svg>
+      <div class="lux-title" style="font-size:24px">Em breve</div>
+      <p class="lux-sub" style="margin:0">Aqui você vai ver sua rotina, iniciar o treino, registrar a carga e enviar seu feedback.</p>
+    </div>
+  </div>
+
   <!-- CONQUISTAS -->
   <div class="page-content hidden" id="page-badges">
-    <h2 style="margin-bottom:4px" data-i18n="badgesTitle">🎖️ Conquistas</h2>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px" data-i18n="badgesSubtitle">Desbloqueie todas as medalhas</p>
+    <div class="back-link" onclick="showPage('profile')"><svg class="ic"><use href="#i-chev-l"/></svg>Perfil</div>
+    <div class="lux-kicker">Medalhas</div>
+    <div class="lux-title">Suas <em>conquistas</em></div>
+    <p class="lux-sub">Desbloqueie todas as medalhas</p>
     <div id="badges-grid"></div>
   </div>
 
@@ -554,10 +774,16 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
     <div style="text-align:center;padding:20px 0 16px">
       <div style="position:relative;display:inline-block">
         <div style="width:80px;height:80px;border-radius:50%;background:var(--dark3);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;margin:0 auto;overflow:hidden" id="prof-avatar"></div>
-        <div style="position:absolute;bottom:0;right:0;background:var(--gold);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--black)" onclick="document.getElementById('photo-input').click()">📷</div>
+        <div style="position:absolute;bottom:0;right:0;background:var(--gold);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--black)" onclick="document.getElementById('photo-input').click()"><svg class="ic" style="width:14px;height:14px;color:#14100a"><use href="#i-camera"/></svg></div>
       </div>
-      <div style="font-size:20px;font-weight:800;margin-top:10px" id="prof-name">—</div>
-      <div style="font-size:14px;color:var(--gold);margin-top:4px" id="prof-level"></div>
+      <div class="lux-title" style="margin-top:12px;margin-bottom:2px" id="prof-name">—</div>
+      <div style="font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-top:4px" id="prof-level"></div>
+    </div>
+
+    <div class="link-card" onclick="showPage('badges')">
+      <svg class="ic"><use href="#i-medal"/></svg>
+      <div><b>Conquistas</b><span>Suas medalhas e marcos</span></div>
+      <svg class="ic chev"><use href="#i-chev-r"/></svg>
     </div>
 
     <!-- NIVEL + PROGRESSO -->
@@ -690,8 +916,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
   <!-- CHAT PAGE -->
   <div class="page-content hidden" id="page-chat" style="padding-bottom:70px">
+    <div class="lux-kicker">Comunidade</div>
+    <div class="seg"><button onclick="showPage('feed')">Feed</button><button class="on" onclick="showPage('chat')">Chat</button></div>
     <div style="margin-bottom:12px">
-      <h2 style="margin-bottom:2px" data-i18n="chatTitle">💬 Chat do Time</h2>
       <p style="font-size:12px;color:var(--gray)" data-i18n="chatSubtitle">Grupo L Body</p>
     </div>
     <div style="display:flex;flex-direction:column;height:calc(100vh - 200px)">
@@ -701,36 +928,34 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       <div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid #222;margin-top:8px">
         <input style="flex:1;padding:12px 14px;background:var(--dark2);border:1px solid #333;border-radius:24px;color:var(--white);font-size:14px;outline:none" id="chat-input" placeholder="Mensagem..." data-i18n="chatPlaceholder" data-i18n-attr="placeholder" maxlength="500"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg();}">
-        <button style="width:44px;height:44px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;font-size:20px;flex-shrink:0" onclick="sendChatMsg()">➤</button>
+        <button style="width:46px;height:46px;border-radius:0;background:var(--gold-grad);border:none;cursor:pointer;flex-shrink:0;display:grid;place-items:center;color:#14100a" onclick="sendChatMsg()"><svg class="ic" style="width:20px;height:20px"><use href="#i-send"/></svg></button>
       </div>
     </div>
   </div>
 
   <!-- FEED PAGE -->
   <div class="page-content hidden" id="page-feed">
-    <h2 style="margin-bottom:4px" data-i18n="feedTitle">💬 Feed do Time</h2>
+    <div class="lux-kicker">Comunidade</div>
+    <div class="seg"><button class="on" onclick="showPage('feed')">Feed</button><button onclick="showPage('chat')">Chat</button></div>
     <p style="font-size:13px;color:var(--gray);margin-bottom:16px" data-i18n="feedSubtitle">O que está acontecendo no L Body</p>
     <div id="feed-list"><div style="text-align:center;color:var(--gray);padding:20px">Carregando...</div></div>
   </div>
 
   <div class="bottom-nav">
     <div class="nav-item active" onclick="showPage('home')" id="nav-home">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span data-i18n="navHome">Início</span>
+      <svg class="ic"><use href="#i-home"/></svg><span data-i18n="navHome">Início</span>
+    </div>
+    <div class="nav-item" onclick="showPage('treinos')" id="nav-treinos">
+      <svg class="ic"><use href="#i-dumbbell"/></svg><span>Treinos</span>
     </div>
     <div class="nav-item" onclick="showPage('ranking')" id="nav-ranking">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 16h2v5H7zm4-6h2v11h-2zm4 3h2v8h-2zM2 3h20v2H2z"/></svg><span data-i18n="navRanking">Ranking</span>
+      <svg class="ic"><use href="#i-trophy"/></svg><span data-i18n="navRanking">Ranking</span>
     </div>
-    <div class="nav-item" onclick="showPage('badges')" id="nav-badges">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><span data-i18n="navBadges">Conquistas</span>
-    </div>
-    <div class="nav-item" onclick="showPage('feed')" id="nav-feed">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><span data-i18n="navFeed">Feed</span>
-    </div>
-    <div class="nav-item" onclick="showPage('chat')" id="nav-chat">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="navChat">Chat</span>
+    <div class="nav-item" onclick="showPage('feed')" id="nav-community">
+      <svg class="ic"><use href="#i-chat"/></svg><span>Comunidade</span>
     </div>
     <div class="nav-item" onclick="showPage('profile')" id="nav-profile">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg><span data-i18n="navProfile">Perfil</span>
+      <svg class="ic"><use href="#i-user"/></svg><span data-i18n="navProfile">Perfil</span>
     </div>
   </div>
 </div>
@@ -761,11 +986,11 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
       </div>
     </div>
     <div class="admin-tabs">
-      <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">🏆 Ranking</div>
-      <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">📅 Semanal</div>
-      <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">💬 Feed</div>
-      <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">🗨️ Chat</div>
-      <div class="admin-tab" onclick="showAdminTab('msgs')" id="atab-msgs">✉️ Mensagens</div>
+      <div class="admin-tab active" onclick="showAdminTab('ranking')" id="atab-ranking">Ranking</div>
+      <div class="admin-tab" onclick="showAdminTab('weekly')" id="atab-weekly">Semanal</div>
+      <div class="admin-tab" onclick="showAdminTab('feed')" id="atab-feed">Feed</div>
+      <div class="admin-tab" onclick="showAdminTab('chat')" id="atab-chat">Chat</div>
+      <div class="admin-tab" onclick="showAdminTab('msgs')" id="atab-msgs">Mensagens</div>
     </div>
     <div class="admin-grid">
       <div class="admin-stat"><div class="admin-stat-num" id="a-total">—</div><div class="admin-stat-label" data-i18n="adminTotalStudents">Total alunos</div></div>
@@ -778,9 +1003,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
         <span id="admin-card-title" data-i18n="adminRankTitle">🏆 Ranking completo</span>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="cursor:pointer;color:var(--gold);font-size:12px" onclick="loadAdminData()">↻ Atualizar</span>
-          <button onclick="adminForceMonthlyReset()" style="background:#c0392b;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer" data-i18n="adminResetMonth">🔄 Zerar Mês</button>
-          <button onclick="adminFixHallOfFame()" style="background:#8e44ad;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer" data-i18n="fixHallBtn">🏆 Corrigir Hall</button>
-          <button onclick="adminSetRankOrder()" style="background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer" data-i18n="tiebreakBtn">🔢 Desempate</button>
+          <button onclick="adminForceMonthlyReset()" style="background:transparent;color:#d9534f;border:1px solid #d9534f;border-radius:0;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-family:var(--body);cursor:pointer" data-i18n="adminResetMonth">🔄 Zerar Mês</button>
+          <button onclick="adminFixHallOfFame()" style="background:transparent;color:var(--gold);border:1px solid var(--gold-dim);border-radius:0;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-family:var(--body);cursor:pointer" data-i18n="fixHallBtn">🏆 Corrigir Hall</button>
+          <button onclick="adminSetRankOrder()" style="background:transparent;color:var(--gold);border:1px solid var(--gold-dim);border-radius:0;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-family:var(--body);cursor:pointer" data-i18n="tiebreakBtn">🔢 Desempate</button>
         </div>
       </div>
       <div class="search-bar">
@@ -849,7 +1074,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;text-align:center;background:radial-gradient(ellipse at center,#1a1500 0%,#0f0f0f 70%)">
     <img src="logo-lbody.png" class="welcome-logo" alt="L Body">
     <img src="selo-lira.png" class="welcome-seal" alt="André Lira">
-    <div class="welcome-greeting"><span data-i18n="welcomeGreeting">Bem-vindo de volta,</span><br><span id="welcome-name">—</span>! 🔥</div>
+    <div class="welcome-greeting"><span data-i18n="welcomeGreeting">Bem-vindo de volta,</span><br><span id="welcome-name">—</span></div>
     <div class="welcome-quote" id="welcome-quote">Carregando...</div>
     <div class="welcome-streak">
       <div class="welcome-streak-num" id="welcome-streak">0</div>
@@ -896,9 +1121,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
 <!-- PENDING -->
 <div class="screen" id="screen-pending">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse at top,#1a1500 0%,#0f0f0f 60%)">
-    <div style="font-size:64px;margin-bottom:24px">⏳</div>
-    <div style="font-size:22px;font-weight:800;color:var(--gold);margin-bottom:12px" data-i18n="pendingTitle">Cadastro enviado!</div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,164,92,.2),transparent 70%),#050505">
+    <svg class="ic" style="width:56px;height:56px;color:var(--gold);margin-bottom:22px;stroke-width:1.2"><use href="#i-clock"/></svg>
+    <div class="lux-title" style="margin-bottom:12px" data-i18n="pendingTitle">Cadastro enviado!</div>
     <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px">Seu cadastro está aguardando aprovação do professor.<br><br>Você receberá acesso em breve. Tente entrar novamente mais tarde.</div>
     <button class="btn-primary" style="margin-top:32px;max-width:280px" onclick="doLogout()" data-i18n="back">Voltar ao início</button>
   </div>
@@ -906,9 +1131,9 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
 
 <!-- BLOCKED -->
 <div class="screen" id="screen-blocked">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse at top,#1a0000 0%,#0f0f0f 60%)">
-    <div style="font-size:64px;margin-bottom:24px">🚫</div>
-    <div style="font-size:22px;font-weight:800;color:#e53935;margin-bottom:12px" data-i18n="accessBlocked">Acesso bloqueado</div>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(217,83,79,.18),transparent 70%),#050505">
+    <svg class="ic" style="width:56px;height:56px;color:#d9534f;margin-bottom:22px;stroke-width:1.2"><use href="#i-lock"/></svg>
+    <div class="lux-title" style="color:#d9534f;margin-bottom:12px" data-i18n="accessBlocked">Acesso bloqueado</div>
     <div style="font-size:15px;color:var(--gray);line-height:1.6;max-width:300px">Sua conta foi bloqueada pelo professor.<br><br>Entre em contato para mais informações.</div>
     <button class="btn-primary" style="margin-top:32px;max-width:280px;background:#e53935" onclick="doLogout()">Voltar ao início</button>
   </div>
@@ -954,7 +1179,7 @@ body{background:var(--black);color:var(--white);font-family:'Segoe UI',Arial,san
   </div>
 </div>
 
-<script src="translations.js?v=7"></script>
+<script src="translations.js?v=8"></script>
 <script>
 // ===== Instalação (PWA), modal de regras e service worker =====
 (function(){
@@ -1129,12 +1354,17 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 function showPage(page) {
-  ['home','ranking','badges','feed','chat','profile'].forEach(p=>{
+  // Qual item da barra inferior fica aceso para cada página
+  const NAV = {home:'home', treinos:'treinos', ranking:'ranking', feed:'community', chat:'community', badges:'profile', profile:'profile'};
+  ['home','treinos','ranking','badges','feed','chat','profile'].forEach(p=>{
     const el = document.getElementById('page-'+p);
-    const nav = document.getElementById('nav-'+p);
     if(el) el.classList.toggle('hidden',p!==page);
-    if(nav) nav.classList.toggle('active',p===page);
   });
+  ['home','treinos','ranking','community','profile'].forEach(n=>{
+    const nav = document.getElementById('nav-'+n);
+    if(nav) nav.classList.toggle('active',NAV[page]===n);
+  });
+  window.scrollTo(0,0);
   if(page==='ranking') switchRankTab(currentRankTab || 'monthly');
   if(page==='badges') renderBadges();
   if(page==='profile') renderProfile();
@@ -1456,7 +1686,7 @@ async function renderDashboard() {
   document.getElementById('dash-name').textContent=currentUserData.name.split(' ')[0];
   document.getElementById('top-username').textContent=currentUserData.name.split(' ')[0];
   document.getElementById('dash-pts').textContent=pts.toLocaleString();
-  document.getElementById('dash-level-badge').textContent=level.badge;
+  document.getElementById('dash-level-badge').textContent=((typeof currentLang!=='undefined'&&currentLang==='en')?'Level ':(typeof currentLang!=='undefined'&&currentLang==='es')?'Nivel ':'Nível ')+(level.index+1);
   document.getElementById('dash-level-name').textContent=level.name;
   document.getElementById('dash-xp-bar').style.width=pct+'%';
   document.getElementById('dash-xp-cur').textContent=pts.toLocaleString()+' '+t('pts');
@@ -1540,13 +1770,13 @@ function renderEngagement() {
     const pEl = g.querySelector('[data-goal-bar]');
     if(goalDone) {
       g.classList.add('done');
-      sEl.textContent = '✅ Meta do dia cumprida!';
-      dEl.textContent = streak>0 ? '🔥 Sequência de '+streak+' dia'+(streak>1?'s':'')+' garantida. Amanhã tem mais.' : 'Boa! Volte amanhã para começar sua sequência.';
+      sEl.textContent = 'Meta do dia cumprida';
+      dEl.textContent = streak>0 ? 'Sequência de '+streak+' dia'+(streak>1?'s':'')+' garantida. Amanhã tem mais.' : 'Boa! Volte amanhã para começar sua sequência.';
       bEl.style.display='none';
       pEl.style.width='100%';
     } else {
       g.classList.remove('done');
-      sEl.textContent = (streak>0 && alive) ? '🔥 Proteja sua sequência de '+streak+' dia'+(streak>1?'s':'') : '🎯 Sua meta de hoje';
+      sEl.textContent = (streak>0 && alive) ? 'Proteja sua sequência de '+streak+' dia'+(streak>1?'s':'') : 'Sua meta de hoje';
       dEl.textContent = 'Basta 1 toque: marque seu treino. Ou registre 2 refeições.';
       bEl.style.display='block';
       pEl.style.width = Math.min(100, Math.round((meals/2)*100))+'%';
@@ -1563,14 +1793,14 @@ function renderEngagement() {
     const mine = currentUserData[field]||0;
     const list = (window.__allUsers||[]).filter(u=>(u[field]||0)>0).sort((a,b)=>(b[field]||0)-(a[field]||0)).slice(0,5);
     const fmt = d=>d.slice(8,10)+'/'+d.slice(5,7);
-    ch.querySelector('[data-ch-name]').textContent = '🏆 '+CHALLENGE.name;
+    ch.querySelector('[data-ch-name]').textContent = CHALLENGE.name;
     ch.querySelector('[data-ch-when]').textContent = !started ? 'Começa em '+fmt(CHALLENGE.start) : (ended ? 'Encerrado em '+fmt(CHALLENGE.end) : fmt(CHALLENGE.start)+' a '+fmt(CHALLENGE.end));
     ch.querySelector('[data-ch-prize]').textContent = CHALLENGE.prize;
     ch.querySelector('[data-ch-mine]').textContent = started ? ('Seus dias de treino: '+mine+' de '+totalDays) : 'Treine nos dias do desafio para subir no ranking.';
     ch.querySelector('[data-ch-bar]').style.width = Math.min(100,Math.round(mine/totalDays*100))+'%';
     ch.querySelector('[data-ch-list]').innerHTML = list.length
-      ? list.map((u,i)=>'<div class="ch-row"><span>'+(['🥇','🥈','🥉','4º','5º'][i])+' '+String(u.name||'').split(' ')[0].replace(/[<>&]/g,'')+(u.uid===currentUserData.uid?' (você)':'')+'</span><b>'+(u[field]||0)+' dias</b></div>').join('')
-      : '<div class="ch-row" style="color:var(--gray)">Ninguém pontuou ainda. Seja o primeiro! 💪</div>';
+      ? list.map((u,i)=>'<div class="ch-row"><span>'+(['1º','2º','3º','4º','5º'][i])+' '+String(u.name||'').split(' ')[0].replace(/[<>&]/g,'')+(u.uid===currentUserData.uid?' (você)':'')+'</span><b>'+(u[field]||0)+' dias</b></div>').join('')
+      : '<div class="ch-row" style="color:var(--gray)">Ninguém pontuou ainda. Seja o primeiro.</div>';
   }
 }
 window.renderEngagement = renderEngagement;
@@ -1643,7 +1873,7 @@ async function renderMonthlyRanking() {
         <div class="podium-pts">${(u.monthlyPoints||0).toLocaleString()}</div>
         <div class="podium-avatar" style="overflow:hidden">${avatarContent}</div>
         <div class="podium-name">${u.name.split(' ')[0]}</div>
-        <div class="podium-block">${emojis[realIdx]}</div>
+        <div class="podium-block">${realIdx+1}</div>
       </div>`;
     }).join('');
 
@@ -1654,7 +1884,7 @@ async function renderMonthlyRanking() {
         ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
         : u.name.charAt(0).toUpperCase();
       return '<div class="rank-item ' + (isMe ? 'me' : '') + '">'
-        + '<div class="rank-pos">' + ((['🥇','🥈','🥉'][i]) || (i+1)) + '</div>'
+        + '<div class="rank-pos">' + (i+1) + '</div>'
         + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="rank-info">'
         + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
@@ -1696,7 +1926,7 @@ async function renderTotalRanking() {
         <div class="podium-pts">${(u.points||0).toLocaleString()}</div>
         <div class="podium-avatar" style="overflow:hidden">${avatarContent}</div>
         <div class="podium-name">${u.name.split(' ')[0]}</div>
-        <div class="podium-block">${emojis[realIdx]}</div>
+        <div class="podium-block">${realIdx+1}</div>
       </div>`;
     }).join('');
 
@@ -1707,11 +1937,11 @@ async function renderTotalRanking() {
         ? '<img src="' + u.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
         : u.name.charAt(0).toUpperCase();
       return '<div class="rank-item ' + (isMe ? 'me' : '') + '">'
-        + '<div class="rank-pos">' + ((['🥇','🥈','🥉'][i]) || (i+1)) + '</div>'
+        + '<div class="rank-pos">' + (i+1) + '</div>'
         + '<div class="rank-avatar" style="overflow:hidden">' + avatarContent + '</div>'
         + '<div class="rank-info">'
         + '<div class="rank-name">' + u.name.split(' ')[0] + (isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : '') + '</div>'
-        + '<div class="rank-sub">' + level.badge + ' · 🔥' + (u.streak||0) + ' dias</div>'
+        + '<div class="rank-sub">' + level.name + ' · ' + (u.streak||0) + ' dias</div>'
         + '</div>'
         + '<div class="rank-pts">' + (u.points||0).toLocaleString() + ' pts</div>'
         + '</div>';
@@ -1948,7 +2178,7 @@ function renderProfile() {
   const profName = document.getElementById('prof-name');
   const profLevel = document.getElementById('prof-level');
   if(profName) profName.textContent = currentUserData.name;
-  if(profLevel) profLevel.textContent = level.badge;
+  if(profLevel) profLevel.textContent = level.name;
   // Pre-fill settings fields
   const cfgName = document.getElementById('cfg-name');
   const cfgEmail = document.getElementById('cfg-email');
@@ -1961,12 +2191,12 @@ function renderProfile() {
   const fillEl = document.getElementById('level-progress-fill');
   const ptsEl = document.getElementById('prof-pts-display');
   const ptsNextEl = document.getElementById('prof-pts-next');
-  if(levelNameEl) levelNameEl.textContent = level.badge;
+  if(levelNameEl) levelNameEl.textContent = level.name;
   if(ptsEl) ptsEl.textContent = pts.toLocaleString() + ' ' + t('pts');
   if(nextLevel) {
     const progress = ((pts - level.min) / (nextLevel.min - level.min)) * 100;
     if(fillEl) fillEl.style.width = Math.min(100, Math.max(0, progress)) + '%';
-    if(nextLevelEl) nextLevelEl.textContent = nextLevel.badge;
+    if(nextLevelEl) nextLevelEl.textContent = nextLevel.name;
     if(ptsNextEl) ptsNextEl.textContent = t('faltam') + (nextLevel.min - pts).toLocaleString() + t('ptsText');
   } else {
     if(fillEl) fillEl.style.width = '100%';
@@ -2428,7 +2658,7 @@ async function loadAdminFeed() {
       return;
     }
     const items = snap.data().items.filter(i=>i.name&&i.name!=='[Excluído]');
-    const emojis = {treino:'💪',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
+    const emojis = {treino:'dumbbell',cafe:'sun',almoco:'utensils',jantar:'moon',mission:'bolt',badge:'medal',levelup:'trophy',weight:'target'};
     container.innerHTML = items.map(item => {
       const ago = getTimeAgo(item.timestamp);
       const avatar = item.photoURL
@@ -2440,7 +2670,7 @@ async function loadAdminFeed() {
         + '<div><strong>' + item.name.split(' ')[0] + '</strong> ' + item.text + '</div>'
         + '<div class="feed-time">' + ago + '</div>'
         + '</div>'
-        + '<div class="feed-emoji">' + (emojis[item.type]||'🔥') + '</div>'
+        + '<div class="feed-emoji"><svg class="ic"><use href="#i-' + (emojis[item.type]||'flame') + '"/></svg></div>'
         + '</div>';
     }).join('');
   } catch(e) {
@@ -2890,11 +3120,11 @@ async function renderFeed() {
   try {
     const snap = await getDoc(doc(db,'feed','global'));
     if(!snap.exists()||!snap.data().items||snap.data().items.length===0) {
-      container.innerHTML='<div style="text-align:center;color:var(--gray);padding:40px">Nenhuma atividade ainda.<br>Seja o primeiro! 💪</div>';
+      container.innerHTML='<div style="text-align:center;color:var(--gray);padding:40px">Nenhuma atividade ainda.<br>Seja o primeiro.</div>';
       return;
     }
     const items = snap.data().items.filter(i=>i.name && i.name!=='[Excluído]');
-    const emojis = {treino:'💪',cafe:'☀️',almoco:'🍽️',jantar:'🌙',mission:'⚡',badge:'🎖️',levelup:'🏆',weight:'⚖️'};
+    const emojis = {treino:'dumbbell',cafe:'sun',almoco:'utensils',jantar:'moon',mission:'bolt',badge:'medal',levelup:'trophy',weight:'target'};
     container.innerHTML = items.map(item=>{
       const ago = getTimeAgo(item.timestamp);
       return `<div class="feed-item">
@@ -2903,7 +3133,7 @@ async function renderFeed() {
           <div><strong>${item.name.split(' ')[0]}</strong> ${item.text}</div>
           <div class="feed-time">${ago}</div>
         </div>
-        <div class="feed-emoji">${emojis[item.type]||'🔥'}</div>
+        <div class="feed-emoji"><svg class="ic"><use href="#i-${emojis[item.type]||'flame'}"/></svg></div>
       </div>`;
     }).join('');
   } catch(e){
@@ -3251,7 +3481,7 @@ async function loadChatMessages() {
   try {
     const snap = await getDoc(doc(db, 'chat', 'group'));
     if(!snap.exists() || !snap.data().messages || snap.data().messages.length === 0) {
-      container.innerHTML = '<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">Nenhuma mensagem ainda. Seja o primeiro! 💬</div>';
+      container.innerHTML = '<div style="text-align:center;color:var(--gray);font-size:13px;padding:40px 20px">Nenhuma mensagem ainda. Seja o primeiro.</div>';
       return;
     }
     const msgs = snap.data().messages || [];
@@ -3266,9 +3496,9 @@ async function loadChatMessages() {
         + '<div style="width:32px;height:32px;border-radius:50%;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;border:2px solid #333">' + avatarContent + '</div>'
         + '<div>'
         + (!isMe ? '<div style="font-size:11px;color:var(--gray);margin-bottom:3px">' + msg.name.split(' ')[0] + '</div>' : '')
-        + '<div style="max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;' + (isMe ? 'background:var(--gold);color:var(--black);border-bottom-right-radius:4px' : 'background:var(--dark2);color:var(--white);border-bottom-left-radius:4px;border:1px solid #2a2a2a') + '">' + escapeHtml(msg.text) + '</div>'
+        + '<div style="max-width:75%;padding:10px 14px;border-radius:0;font-size:13px;line-height:1.5;font-weight:400;' + (isMe ? 'background:var(--gold-grad);color:#14100a;font-weight:500' : 'background:var(--dark2);color:var(--white);border:1px solid var(--line)') + '">' + escapeHtml(msg.text) + '</div>'
         + '<div style="font-size:10px;color:var(--gray);opacity:0.6;margin-top:4px' + (isMe ? ';text-align:right' : '') + '">' + time + '</div>'
-        + (isMe ? '<div style="font-size:12px;color:#e53935;cursor:pointer;margin-top:4px;text-align:right" onclick="deleteChatMsg(' + idx + ')">🗑️ apagar</div>' : '')
+        + (isMe ? '<div style="font-size:12px;color:#e53935;cursor:pointer;margin-top:4px;text-align:right" onclick="deleteChatMsg(' + idx + ')">apagar</div>' : '')
         + '</div>'
         + '</div>';
     }).join('');
