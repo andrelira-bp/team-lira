@@ -93,8 +93,23 @@ const RULES = [
   'Se a atualização do físico não for preenchida em até 15 dias após o envio, não será possível atualizar o protocolo.'
 ];
 
+const emailKey = e => String(e || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
+// Anamnese importada do Google Forms fica guardada por e-mail (pré-cadastro) até o aluno entrar no app.
 async function anamStatus() {
-  try { const a = await LB().get('anamnese', LB().me().uid); return !!(a && a.done); } catch (e) { return true; }
+  const me = LB().me();
+  try {
+    let a = await LB().get('anamnese', me.uid);
+    if (!a && me.email) {
+      const key = emailKey(me.email), p = await LB().get('anamnesePre', key);
+      if (p) {
+        a = { uid: me.uid, name: me.name || '', data: p.data || {}, step: AN.length - 1, done: true, imported: true, updatedAt: Date.now(), completedAt: p.importedAt || Date.now() };
+        await LB().set('anamnese', me.uid, a);
+        try { await LB().del('anamnesePre', key); } catch (e) {}
+        if (!me.phone && a.data.tel) { try { await LB().upd('users', me.uid, { phone: a.data.tel }); } catch (e) {} }
+      }
+    }
+    return !!(a && a.done);
+  } catch (e) { return true; }
 }
 
 function fieldHtml(f, v) {
