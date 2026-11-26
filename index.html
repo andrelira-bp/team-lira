@@ -1047,7 +1047,7 @@ h2{font-size:30px;}
         <div style="color:var(--gray);font-size:13px;text-align:center;padding:20px">Carregando...</div>
       </div>
       <div style="display:flex;gap:8px;margin-top:12px">
-        <input type="text" id="admin-chat-input" placeholder="Escreva para o grupo..." maxlength="500" style="flex:1;min-width:0" onkeydown="if(event.key==='Enter')adminSendChat()">
+        <input type="text" id="admin-chat-input" placeholder="Escreva para o grupo..." maxlength="500" style="flex:1;min-width:0;background:var(--dark3);color:var(--white);border:1px solid #333;border-radius:8px;padding:12px;font-size:14px" onkeydown="if(event.key==='Enter')adminSendChat()">
         <button class="btn-gold" onclick="adminSendChat()">Enviar</button>
       </div>
     </div>
@@ -2886,6 +2886,7 @@ function showAdminTab(tab) {
   if(tab==='weekly') renderWeeklyReport();
   if(tab==='msgs') renderAdminMsgs();
   if(tab==='feed') loadAdminFeed();
+  if(tab==='chat') loadAdminChat();
 }
 window.showAdminTab=showAdminTab;
 
