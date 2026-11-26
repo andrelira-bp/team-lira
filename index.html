@@ -1009,8 +1009,9 @@ const db = getFirestore(app);
 
 // ===== CONSTANTS =====
 const INVITE_CODE = 'TEAMLIRA';
-// Senha do professor
-const ADMIN_PASS = 'lira2025';
+// Professor: entra com conta de verdade no Firebase Authentication (a senha NÃO fica no código).
+// O e-mail precisa ser igual ao da conta criada em Authentication e ao das regras do Firestore.
+const ADMIN_EMAIL = 'professor@lbody.app';
 let LEVELS = getLevels();
 const LEVELS_ORIGINAL = [
   {name:'Iniciante',      badge:'🥉 Iniciante',      min:0,     max:500},
@@ -1151,11 +1152,20 @@ window.showPage=showPage;
 window.showToast=showToast;
 
 // ===== AUTH =====
+function startAdminSession() {
+  isAdmin = true;
+  showScreen('screen-admin');
+  loadAdminData();
+  if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
+  window.adminRefreshInterval = setInterval(() => {
+    if(isAdmin) loadAdminData();
+    else clearInterval(window.adminRefreshInterval);
+  }, 30000);
+}
+localStorage.removeItem('tl_admin_session'); // sessão antiga (sem login) não vale mais
 onAuthStateChanged(auth, async user => {
-  if(localStorage.getItem('tl_admin_session') === '1') {
-    isAdmin = true;
-    showScreen('screen-admin');
-    loadAdminData();
+  if(user && user.email && user.email.toLowerCase() === ADMIN_EMAIL) {
+    startAdminSession();
     return;
   }
   if(user) {
@@ -1238,25 +1248,21 @@ async function doRegister() {
   }
 }
 
-function doAdminLogin() {
+async function doAdminLogin() {
   const pass = document.getElementById('a-pass').value;
   const err = document.getElementById('a-err');
-  if(pass !== ADMIN_PASS) { err.style.display='block'; return; }
   err.style.display = 'none';
-  isAdmin = true;
-  localStorage.setItem('tl_admin_session', '1');
-  showScreen('screen-admin');
-  loadAdminData();
-  if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
-  window.adminRefreshInterval = setInterval(() => {
-    if(isAdmin) loadAdminData();
-    else clearInterval(window.adminRefreshInterval);
-  }, 30000);
+  if(!pass) { err.style.display='block'; return; }
+  try {
+    // O acesso é liberado pelo onAuthStateChanged quando o login do professor é válido.
+    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pass);
+  } catch(e) {
+    err.style.display='block';
+  }
 }
 
 async function doLogout() {
   isAdmin=false; currentUserData=null;
-  localStorage.removeItem('tl_admin_session');
   if(window.adminRefreshInterval) clearInterval(window.adminRefreshInterval);
   await signOut(auth);
   showScreen('screen-login');
