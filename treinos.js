@@ -119,6 +119,8 @@ const CSS = `
 .tr-ed-ex.bi-link{border-color:var(--gold);box-shadow:0 0 0 1px rgba(201,164,92,.4);}
 .tr-ed-ex .bi-btn{margin-top:8px;width:100%;}
 .tr-ed-ex .bi-btn.on{background:var(--gold-grad);color:#14100a;border-color:var(--gold);}
+.tr-iso-tag{display:inline-block;margin:6px 0 2px;padding:5px 10px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.06em;color:#1a1712;background:#f3ecdc;border:1px solid #C9A45C;}
+canvas.big{width:100%;height:auto;background:#fff;display:block;border-radius:14px;}
 `;
 document.head.appendChild(Object.assign(document.createElement('style'), { id: 'treinos-css', textContent: CSS }));
 
@@ -181,6 +183,26 @@ function findRun() {
 const curR = () => (S.plan.routines || [])[S.r];
 const curW = () => (curR().workouts || [])[S.w];
 
+// Exercício isométrico: o aluno deve ficar parado, então a imagem não pode ficar se mexendo em loop.
+const ISO_RE = /prancha|plank|isometri|side-bridge|wall-sit|sustenta|hold|ponte-isom/i;
+function isIso(ex) { return !!ex && ((ex.tec || []).includes('Isometria') || ISO_RE.test((ex.id || '') + ' ' + (ex.n || ''))); }
+// troca a imagem animada pelo primeiro quadro (parada)
+function freezeIso(root) {
+  (root || document).querySelectorAll('img[data-iso]').forEach(im => {
+    if (im.dataset.frozen) return; im.dataset.frozen = '1';
+    const src = im.getAttribute('src'), probe = new Image();
+    probe.onload = () => {
+      try {
+        const c = document.createElement('canvas'); c.width = probe.naturalWidth; c.height = probe.naturalHeight;
+        c.getContext('2d').drawImage(probe, 0, 0);
+        c.className = im.className; if (im.className === 'big') c.style.maxWidth = '100%'; c.setAttribute('data-act', im.getAttribute('data-act') || ''); c.setAttribute('data-i', im.getAttribute('data-i') || '');
+        c.setAttribute('aria-label', im.alt || ''); c.style.cssText = 'object-fit:cover';
+        if (im.parentNode) im.replaceWith(c);
+      } catch (e) { /* mantém a imagem normal se o navegador não deixar */ }
+    };
+    probe.src = src;
+  });
+}
 function renderStudent() {
   const root = $('#treinos-root'); if (!root) return;
   const y = window.scrollY;
@@ -189,6 +211,7 @@ function renderStudent() {
   else if (S.view === 'workout') root.innerHTML = vWorkout();
   else if (S.view === 'evo') root.innerHTML = vEvo();
   else if (S.view === 'fb') root.innerHTML = vFb();
+  freezeIso(root);
   if (S.view === 'workout') startTick(); else stopTick();
   window.scrollTo(0, S.view === 'workout' ? y : 0);
 }
@@ -245,11 +268,12 @@ function vWorkout() {
       ${running ? `<button class="tr-chk" data-act="chk" data-i="${i}" aria-label="Marcar como feito"></button>` : ''}
       <div class="tr-ex-body"><div class="tr-ex-name">${esc(ex.n)}</div>
         ${tags.length ? `<div class="tr-ex-tags">${tags.map(t => `<span class="tr-pill">${esc(t)}</span>`).join('')}</div>` : ''}
+        ${isIso(ex) ? '<div class="tr-iso-tag">Isometria: mantenha a posição, sem se mover</div>' : ''}
         <div class="tr-ex-meta">Séries: ${esc(ex.series || '—')}</div>
         <div class="tr-ex-meta">Carga: ${esc(runLoad(ex))}${running ? `<a data-act="load" data-i="${i}">Editar</a>` : ''}</div>
         ${ex.descanso ? `<div class="tr-ex-meta"><a data-act="rest" data-i="${i}" style="margin-left:0">Intervalo: ${esc(ex.descanso)}s</a></div>` : ''}
         ${ex.notas ? `<div class="tr-ex-note">${esc(ex.notas)}</div>` : ''}</div>
-      <img class="tr-gif" src="${gif(ex.id)}" loading="lazy" alt="${esc(ex.n)}" data-act="gif" data-i="${i}">
+      <img class="tr-gif" src="${gif(ex.id)}" loading="lazy" alt="${esc(ex.n)}" data-act="gif" data-i="${i}" ${isIso(ex) ? 'data-iso="1"' : ''}>
     </div>`;
   };
   // exercícios ligados por "bi-set" ficam juntos num bloco
@@ -313,7 +337,12 @@ function studentClick(e) {
   if (act === 'openW') { S.w = wi; S.view = 'workout'; return renderStudent(); }
   if (act === 'evo') { S.w = wi; S.view = 'evo'; return renderStudent(); }
   if (act === 'fb') { S.w = wi; S.view = 'fb'; return renderStudent(); }
-  if (act === 'gif') { const ex = curW().exercises[i]; return modal(`<h3>${esc(ex.n)}</h3><img class="big" src="${gif(ex.id)}" alt="${esc(ex.n)}">`); }
+  if (act === 'gif') {
+    const ex = curW().exercises[i], iso = isIso(ex);
+    const o = modal(`<h3>${esc(ex.n)}</h3><img class="big" src="${gif(ex.id)}" alt="${esc(ex.n)}" ${iso ? 'data-iso="1"' : ''}>${iso ? '<div class="tr-iso-tag" style="margin-top:10px">Isometria: mantenha a posição, sem se mover</div>' : ''}`);
+    if (iso) freezeIso(o);
+    return o;
+  }
   if (act === 'start') {
     const r = curR(), w = curW();
     S.run = { key: r.rid + '|' + w.id, start: Date.now(), done: {}, loads: {} }; saveRun(); return renderStudent();
